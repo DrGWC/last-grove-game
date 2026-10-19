@@ -4,8 +4,8 @@
 
 ## 游玩
 
-打开 [游戏页面](https://drgwc.github.io/last-grove-game/)。
+打开 [最后的林地](https://drgwc.github.io/last-grove-game/)。
 
 ## 发布
 
-GitHub Actions 会在提交到 `main` 后自动部署 GitHub Pages。首次发布前，请到仓库 **Settings → Pages**，将 **Build and deployment → Source** 设为 **GitHub Actions**。
+每次提交到 `main` 分支后，GitHub Actions 会自动部署 GitHub Pages。
