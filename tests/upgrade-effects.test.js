@@ -5,11 +5,17 @@ const test = require('node:test');
 const vm = require('node:vm');
 
 const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
-const start = html.indexOf('function applyBlessing(');
-const end = html.indexOf('function showUpgrade(', start);
+const intervalStart = html.indexOf('function effectiveAttackInterval()');
+const intervalEnd = html.indexOf('function fresh()', intervalStart);
+const blessingStart = html.indexOf('function applyBlessing(');
+const blessingEnd = html.indexOf('function showUpgrade(', blessingStart);
+assert.notEqual(intervalStart, -1, 'missing effective attack-rate helpers');
+const intervalSource = html.slice(intervalStart, intervalEnd);
+const start = blessingStart;
+const end = blessingEnd;
 assert.notEqual(start, -1, 'missing applyBlessing');
 assert.notEqual(end, -1, 'missing boundary after applyBlessing');
-const source = html.slice(start, end);
+const source = `${intervalSource};${html.slice(start, end)}`;
 
 function apply(id, initial = {}) {
   const state = {
@@ -22,11 +28,23 @@ function apply(id, initial = {}) {
   return state;
 }
 
-test('haste increases attacks per second by 20 percent and respects the combat minimum', () => {
+test('haste increases attacks per second by 20 percent and the combat loop uses that same rate', () => {
   const result = apply('haste');
   assert.ok(Math.abs(result.hero.fireRate - (0.56 / 1.2)) < 1e-12);
   assert.equal(result.blessings.haste, 1);
-  assert.equal(apply('haste', { hero: { fireRate: 0.2 } }).hero.fireRate, 0.19);
+  assert.ok(Math.abs(1 / result.hero.fireRate - (1.2 / 0.56)) < 1e-12);
+  const capped = apply('haste', { hero: { fireRate: 0.2 } });
+  assert.ok(Math.abs(capped.hero.fireRate - (0.2 / 1.2)) < 1e-12);
+  assert.equal(vm.runInNewContext(`${source}; effectiveAttackInterval()`, capped), 0.19);
+  assert.ok(Math.abs(vm.runInNewContext(`${source}; attacksPerSecond()`, capped) - (1 / 0.19)) < 1e-12);
+});
+
+test('a high-rate weapon and Haste use the same capped combat and HUD rate', () => {
+  const result = apply('haste', { hero: { fireRate: 0.324 - 0.18 } });
+  assert.equal(vm.runInNewContext(`${source}; effectiveAttackInterval()`, result), 0.19);
+  assert.ok(Math.abs(vm.runInNewContext(`${source}; attacksPerSecond()`, result) - (1 / 0.19)) < 1e-12);
+  assert.match(html, /hero\\.fire=effectiveAttackInterval\\(\\)/, 'auto-attacks must use the shared capped interval');
+  assert.doesNotMatch(html, /hero\\.fireRate-\\(blessings\\.haste\\|\\|0\\)/, 'Haste must not be applied again in combat');
 });
 
 test('speed and damage blessings change their named combat stats', () => {
