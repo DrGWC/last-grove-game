@@ -225,3 +225,13 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Wave 2 cleared at 6:00 after north-lane intercept, tree 9,900, 9 kills. Wave 3 cleared at 9:46 with tree 8,800, 15 kills. Wave 4 boss announcement routed southeast; charge-circle cue appeared; boss defeated at 13:39 for +40 gold, +1 attack, +1,500 tree HP. Hero fell to 15 HP on the detour; return warning worked and hero later recovered to full. Treat balance evidence as provisional.
 - Approx. 12 focused minutes of production observation and interaction added this cycle. The one-hour observed playtest and 10-hour mission remain active and incomplete. Count honestly; do not count unattended game time.
 - Next: continue this run into wave 5 and check post-boss sustainability; watch return-warning timing. Shop/equipment actions had no reproduced defect, so avoid adjusting prices/effects without further evidence. Narrow-screen shop QA remains open.
+
+
+## Resume checkpoint — 2026-10-21, wave-six playtest and attack-speed fix
+
+- Repo `DrGWC/last-grove-game`, `main`; deployed HEAD `aa7b5d38964eaeeff289c415c431bd8555e387f8` (`Unify displayed and actual attack speed`); Pages workflow #97 succeeded. Game: `https://drgwc.github.io/last-grove-game/`, cache-busted `?v=aa7b5d3-attack-rate`.
+- Fix: combat, HUD, shop loadout, and gear comparison use the same 0.19-second effective interval minimum; Haste scales the base interval once. Full local suite 46/46; inline JS syntax and `git diff --check` pass. Fresh deployed run loaded at 1.8 attacks/s.
+- Production test tab 47 (`?v=2d73cb-hint`) remains at wave 7 / 21:02 with a level-up panel offering Haste, Thorns, or Damage; tree 7,498/10,000; each wall 25%; hero 160 HP; 40 kills. Do not reload if preserving the run.
+- Wave 4 clear 17:44/tree 10,000/26 kills; wave 5 clear 18:54/tree 10,000/31 kills; wave 6 clear 20:03/tree 7,498/40 kills. Boss reward and automatic 林风箭 hit/stun were observed. The crossbow + Haste mismatch triggered this fix; the same combination still needs live recheck on the deployed revision.
+- Avoid pushing the local `main` wholesale; it has separate work and is ahead/behind remote. For follow-ups, fetch remote blobs and publish only selected verified changes.
+- Next: resume tab 47 to sample later-wave defense, then start a fresh published run to reproduce the crossbow/Haste replacement rate if practical. Continue narrow-screen shop QA; keep any balance changes evidence-led. This session added about 30 focused minutes; game time/waiting excluded. One-hour playtest and 10-hour mission incomplete.
