@@ -10,7 +10,7 @@
 - Shop weapon purchase verified to apply attack bonus and update equipped/disabled states.
 - Latest Live Pages workflow #62 succeeded; live checks verified paused shop close, map zoom and outside-click close, and the deployed E-skill return-to-defense guidance.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
-- Tree danger warning now uses a 90% threshold while the hero is away and 75% nearby. A persistent warning is being adjusted to remain visible through the return until recovery; verify the published behavior and whether a return waypoint can save the tree.
+- Tree danger warning is being moved earlier: if a wave enemy comes within 2,500 world units while the hero is away, show the persistent return warning; retain 90%/75% HP fallback thresholds. A live run showed a 10-second warning-to-defeat window, too short for the measured return. Validate the pre-breach trigger.
 
 ## Active
 
@@ -30,4 +30,4 @@
 4. Re-check mobile layout, touch input, map interaction, and long-run performance.
 5. Add a lightweight smoke-test harness if it fits the single-file architecture without adding dependencies.
 
-- Automatic E/F tree healing and shielding require the hero to be in the 1,200-unit defense area. The return warning uses a higher away-from-tree threshold and lower nearby threshold; alert-to-failure timing and live return success still need measurement.
+- Automatic E/F tree healing and shielding require the hero to be in the 1,200-unit defense area. The return warning should use enemy proximity plus HP fallbacks and persist until safe; alert-to-failure timing and live return success still need measurement.

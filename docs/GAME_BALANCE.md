@@ -24,7 +24,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 
 - Wave enemies within 450 world units of the tree receive a 0.65 priority multiplier for hero auto-attacks. Bosses and elites retain distance-score multipliers of 1.5 and 1.35 respectively.
 - This defensive weighting helps the hero intercept active tree threats. The score logic passed numeric checks, but it needs live validation when an eligible target is within range; jungle enemies do not receive the tree-threat weight.
-- Tree danger warning triggers at 90% max HP while the hero is more than 1,200 world units away, and 75% while nearby. Once activated, the warning is designed to stay visible until tree HP recovers above 90%, so returning across the defense-range boundary does not hide it prematurely. Five Node tests cover threshold and latch boundaries. Live Pages has shown the warning at 7,163/10,000 HP, but the hero distance/crossing time were not sampled closely enough to prove the away threshold; a return waypoint has not yet saved the tree in a measured live test.
+- Tree danger warning triggers when a non-jungle wave enemy comes within 2,500 world units while the hero is farther than 1,200 units away. HP fallbacks remain 90% max while away and 75% nearby. The badge stays until the hero returns within range, tree HP recovers above 90%, and nearby wave threats are gone. Six Node tests cover warning thresholds and persistence. In live wave 2, warning was visible at 4,408/10,000 at 3:40 and defeat followed at 3:50 before the return waypoint saved the tree. The exact damage onset was missed; test whether the earlier enemy-distance trigger materially increases response time.
 
 ## Grove walls
 

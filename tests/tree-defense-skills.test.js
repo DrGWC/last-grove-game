@@ -53,7 +53,15 @@ test('tree defense skills wait when the tree is healthy and there is no siege', 
 });
 
 
-test('tree danger uses an earlier threshold while the hero is away', () => {
+test('tree danger warns before breach when wave enemies approach from afar', () => {
+  const check = (hp, heroX, enemies = []) => vm.runInNewContext(`${dangerSource}; isTreeInDanger(tree, hero, enemies)`, {tree:{x:0,y:0,hp,maxHp:10000},hero:{x:heroX,y:0},enemies});
+  assert.equal(check(10000, 5000, [{x:2500,y:0}]), true);
+  assert.equal(check(10000, 5000, [{x:2501,y:0}]), false);
+  assert.equal(check(10000, 5000, [{x:1000,y:0,jungle:true}]), false);
+  assert.equal(check(10000, 1200, [{x:1000,y:0}]), false);
+});
+
+test('tree danger still uses 90% away and 75% nearby damage thresholds', () => {
   const check = (hp, heroX) => vm.runInNewContext(`${dangerSource}; isTreeInDanger(tree, hero)`, {tree:{x:0,y:0,hp,maxHp:10000},hero:{x:heroX,y:0}});
   assert.equal(check(7501, 1200), false);
   assert.equal(check(7500, 1200), true);
@@ -63,12 +71,13 @@ test('tree danger uses an earlier threshold while the hero is away', () => {
   assert.equal(check(0, 1201), true);
 });
 
-
-test('tree warning stays visible through return and clears after recovery', () => {
-  const check = (hp, heroX, wasActive) => vm.runInNewContext(`${dangerSource}; ${warningSource}; isTreeWarningActive(tree, hero, wasActive)`, {tree:{x:0,y:0,hp,maxHp:10000},hero:{x:heroX,y:0},wasActive});
-  assert.equal(check(9000, 5000, false), true);
+test('tree warning stays visible through return until defense is stable', () => {
+  const check = (hp, heroX, wasActive, enemies = []) => vm.runInNewContext(`${dangerSource}; ${warningSource}; isTreeWarningActive(tree, hero, wasActive, enemies)`, {tree:{x:0,y:0,hp,maxHp:10000},hero:{x:heroX,y:0},wasActive,enemies});
+  assert.equal(check(10000, 5000, false, [{x:2500,y:0}]), true);
+  assert.equal(check(10000, 5000, true), true);
   assert.equal(check(8000, 0, true), true);
   assert.equal(check(9000, 0, true), true);
   assert.equal(check(9001, 0, true), false);
+  assert.equal(check(10000, 0, true, [{x:2000,y:0}]), true);
   assert.equal(check(8000, 0, false), false);
 });

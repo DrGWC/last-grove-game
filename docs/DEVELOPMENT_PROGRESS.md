@@ -74,3 +74,9 @@
 - Shop live review confirmed weapon/gear, potion, and skill-book tabs are distinct. Buying 藤木法杖 from 32 gold left 14, changed attack from 1 to 2, and marked the slot equipped; insufficient purchases were disabled. Potion stock correctly showed 已满; Q/E showed 已掌握 in skill books.
 - Found a UI-state edge case: because the danger threshold lowers from 90% to 75% when the hero returns, the alert could disappear at (for example) 80% without any recovery. Added a warning latch that persists until the tree heals above 90%; the five-test suite verifies it.
 - The latch change is currently local and uncommitted in this checkpoint. Publish after final validation, then verify the badge remains visible through the range change and clears only after recovery.
+
+## 2026-10-21 — Move the warning ahead of tree damage
+
+- The 90% HP warning did not give a safe return window in the live wave-2 pressure run: by 3:40 tree HP was 4,408/10,000 with the badge visible; defeat occurred at 3:50 before the map return completed. The sample missed the moment the tree first took damage, so the exact time gained by 90% cannot be stated.
+- Added a pre-breach candidate: while the hero is outside 1,200 units, warn if a non-jungle enemy enters 2,500 units from the tree. Keep the existing 90% away / 75% nearby HP fallbacks. Badge clears once the hero is back in range, tree exceeds 90% HP, and nearby wave threats are gone.
+- Expanded `tests/tree-defense-skills.test.js` to six cases including approaching wave enemies, jungle exclusion, the 2,500-unit boundary, HP fallback thresholds, and return latch behavior. All six pass; inline JS syntax and whitespace checks pass. Candidate awaits publishing/live timing validation.
