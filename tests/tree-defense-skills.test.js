@@ -52,10 +52,12 @@ test('tree defense skills wait when the tree is healthy and there is no siege', 
 });
 
 
-test('tree danger remains active at 75% health or below', () => {
-  const check = hp => vm.runInNewContext(`${dangerSource}; isTreeInDanger(tree)`, {tree:{hp,maxHp:10000}});
-  assert.equal(check(7501), false);
-  assert.equal(check(7500), true);
-  assert.equal(check(4299), true);
-  assert.equal(check(0), true);
+test('tree danger uses an earlier threshold while the hero is away', () => {
+  const check = (hp, heroX) => vm.runInNewContext(`${dangerSource}; isTreeInDanger(tree, hero)`, {tree:{x:0,y:0,hp,maxHp:10000},hero:{x:heroX,y:0}});
+  assert.equal(check(7501, 1200), false);
+  assert.equal(check(7500, 1200), true);
+  assert.equal(check(9001, 1201), false);
+  assert.equal(check(9000, 1201), true);
+  assert.equal(check(4299, 1201), true);
+  assert.equal(check(0, 1201), true);
 });
