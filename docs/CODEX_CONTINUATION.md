@@ -2,32 +2,31 @@
 
 - Repository: `DrGWC/last-grove-game`
 - Branch: `main`
-- Deployed remote base before current local candidate: `054e6cc8b5d05ab967d8d29954d8e816a2441240` (`Reset movement state on restart`).
+- Latest deployed remote commit: `965543881314f812b460cf51e6d9229c8de07d7f` (`Add map-based camp navigation`).
 - Source: single-file browser game in `index.html`; GitHub Pages deploys on pushes to `main` via `.github/workflows/deploy-pages.yml`.
 - Local validation server: `python3 -m http.server 8765` (shell session 77532; stop when done).
 
-## Current local candidate
+## Deployed features
 
-- Adds waypoint selection on the expanded map: clicking its canvas maps the click to world coordinates, sets `moveTarget`, closes the map, and shows a small target marker before closing. Clicking map blank space still closes without selecting a destination.
-- Adds smaller map title text below 420px to help avoid crowding the zoom tools.
-- Prior deployed source includes road-following enemy routes, nearest standing wall fallback, one-time breach feedback, and restart movement-state reset.
+- Expanded map waypoint selection: clicking its canvas maps the click to world coordinates, sets `moveTarget`, closes the map, and shows a small target marker. Clicking map blank space still closes without selecting a destination.
+- Map title text shrinks below 420px to help avoid crowding the zoom tools.
+- Enemy road following, nearest standing wall fallback, one-time breach feedback, and restart movement-state reset are deployed.
 
 ## Verification
 
 - Node syntax check and `git diff --check` pass for the local map-navigation candidate.
-- Local browser verified map click closes it, then hero moves toward the chosen world position; nearest-camp hint changed from 5.2 km to 4.2 km. Clicking outside closes map. Full mobile viewport and world-edge/zoom cases remain untested.
+- Local browser verified map click closes it, then hero moves toward the chosen world position; nearest-camp hint changed from 5.2 km to 4.2 km. Clicking outside closes map. Live Pages verified the destination prompt and waypoint selection; the nearest-camp hint moved from 5.2 km to 4.2 km. Full mobile viewport and world-edge/zoom cases remain untested.
 - Live site `?v=054e6cc-live` verified: wave 1 clear at 2:02, wave 2 clear by 4:02, all four walls fell but the tree recovered to full using E. Staff purchase correctly raised attack from 1 to 2 and reduced gold from 40 to 22.
-- Pages run `39470753104` for `054e6cc` succeeded. The map-waypoint candidate has not yet been deployed.
+- Pages run `39472021132` (#53) for `9655438` succeeded. The live page was refreshed with a cache-busting URL and verified with a map waypoint click.
 - Browser console log capability was unavailable; no runtime error appeared in visible UI.
 - No package manifest or test runner exists.
 
 ## Next steps
 
-1. Re-run syntax/diff checks after final changes.
-2. Commit and publish the map waypoint feature plus refreshed docs; verify GitHub Pages deploy.
-3. Refresh live game and test map waypoint, click-outside close, zoom, narrow mobile layout, and fresh-run movement reset.
-4. Continue a geared live run through wave 3 and, if possible, boss wave 4; check jungle travel and return timing.
-5. Continue the 10-hour mission only for actual work time. Goal timer was about 55 minutes across the thread at start of this cycle; it includes nonproductive waiting and is not a claim of 55 minutes coding.
+1. Continue a geared live run through wave 3 and, if possible, boss wave 4; check jungle travel and return timing.
+2. Verify map zoom, click-outside close, and destination selection at narrow mobile widths and near world edges.
+3. Re-test restart-state reset after a death, and assess ranged enemies after a wall breaks.
+4. Continue the 10-hour mission only for actual work time. Goal timer was about 55 minutes across the thread at the start of the previous cycle; it includes nonproductive waiting and is not a claim of 55 minutes coding.
 
 ## Known caveats
 
