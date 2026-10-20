@@ -11,8 +11,8 @@
 - Latest Live Pages workflow #62 succeeded; live checks verified paused shop close, map zoom and outside-click close, and the deployed E-skill return-to-defense guidance.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
 - Tree danger warning uses a 4,000-unit approach threshold while the hero is away and retains 90%/75% HP fallbacks. Live wave-1 sampling saw the warning by 0:33 when the north wall was at 34%; both north and south walls were broken by 1:00, with tree health still full. The sample did not include a return order, so its response value remains unproven. Earlier 2,500-unit warning was too late in wave 2; compare warning-to-wall-breach timing before further radius tuning.
-- Local candidate improves auto-targeting of wave enemies actively attacking their assigned standing wall (0.55 score multiplier inside 260 units), stacking with the existing near-tree multiplier. The bonus stops when the wall breaks. Automated numeric tests pass; live target-acquisition verification is pending.
-- Local candidate suppresses the “return home” banner while a wave enemy is already within the hero's auto-attack range plus 100 units; an active interception clears the latch only if tree HP is above 90%. Twelve automated tests pass. Verify banner behavior in a fresh browser run.
+- Published `4926efc` improves auto-targeting of wave enemies actively attacking their assigned standing wall (0.55 score multiplier inside 260 units), stacking with the existing near-tree multiplier. The bonus stops when the wall breaks. Automated numeric tests pass; live target-acquisition verification is pending.
+- Published `4926efc` suppresses the “return home” banner while a wave enemy is already within the hero's auto-attack range plus 100 units; an active interception clears the latch only if tree HP is above 90%. Twelve automated tests pass. Verify banner behavior during live combat.
 
 ## Active
 
