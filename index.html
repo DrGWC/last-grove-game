@@ -59,6 +59,22 @@
  .arena-wrap .hud-layout .bottom{margin-top:4px;padding-top:4px;gap:4px}
 }
 </style>
+
+<style>
+/* HUD refinement: compact left map, smaller and lighter status panel */
+.arena-wrap>.hud-layout{width:min(450px,calc(100% - 20px));left:10px;right:auto;grid-template-columns:minmax(0,1fr);gap:0}
+.arena-wrap .hud-layout>.card{transform:scale(.8);transform-origin:bottom left;background:rgba(22,37,34,.32)!important;backdrop-filter:blur(3px);padding:7px 9px;border-radius:13px}
+.arena-wrap>.minimap-panel{position:absolute;top:8px;left:8px;right:auto;z-index:5;width:70px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px;background:rgba(22,37,34,.35);border:1px solid #d7e8d533;border-radius:11px;box-shadow:none;backdrop-filter:blur(3px);pointer-events:auto}
+.arena-wrap:not(.playing)>.minimap-panel{display:none}
+.arena-wrap>.minimap-panel h2{font:600 8px 'DM Sans',sans-serif;margin:0;line-height:1.2}
+.arena-wrap>.minimap-panel #minimap{position:relative;inset:auto;display:block;width:58px;height:58px;aspect-ratio:1;border:1px solid #d7e8d522;border-radius:6px}
+@media(max-width:650px){
+ .arena-wrap>.hud-layout{width:min(450px,calc(100% - 12px));left:6px;right:auto;grid-template-columns:minmax(0,1fr)}
+ .arena-wrap .hud-layout>.card{transform:scale(.8);padding:6px 8px}
+ .arena-wrap>.minimap-panel{top:6px;left:6px;width:70px;padding:4px;gap:3px}
+ .arena-wrap>.minimap-panel #minimap{width:58px;height:58px}
+}
+</style>
 </head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="logo">🌳</div><div><h1>最后的林地</h1><p>古树守卫 · 生存挑战</p></div></div><div class="stats"><div class="pill">波次 <b id="wave">1</b></div><div class="pill">本波 <b id="waveProgress">0 / 4</b></div><div class="pill">⏱ <b id="time">0:00</b></div></div></header>
@@ -67,7 +83,7 @@
 <div class="overlay" id="start"><div class="modal"><div class="big">🌲</div><h2>守护远古之心</h2><p>林地地图边长扩大至原来的 10 倍。每局随机化身森林狐、灰狼、白兔、小鹿或小熊；腐化怪物沿固定道路从上下左右轮番来袭，八个野区营地等待挑战。</p><button class="btn" id="startBtn">开始守护</button><div class="hint">WASD / 方向键 / 点击地面移动 · Q / E 释放技能<br>手机使用左侧摇杆移动，底部按钮释放技能</div></div></div>
 <div class="overlay hidden" id="end"><div class="modal"><div class="big" id="endIcon">🍂</div><h2 id="endTitle">林地沦陷</h2><p id="endText">远古之心需要你的守护。</p><button class="btn" id="againBtn">再次守护林地</button></div></div>
 <div class="upgrade" id="shop"><div class="shopbox"><div class="shop-head"><h2>🛒 林地补给站</h2><button id="closeShop" aria-label="关闭">✕</button></div><p class="shop-balance">金币：<b id="shopGold">0</b>　｜　装备会在本局生效</p><div class="shop-tabs"><button class="active" data-tab="gear">装备</button><button data-tab="potion">药剂</button><button data-tab="skills">技能书</button></div><div id="shopItems"></div></div></div>
-<div class="hud-layout"><section class="card"><div class="row"><div class="tree-name">🌱 远古之心</div><div class="tree-health">古树 <b id="hpText">100%</b></div></div><div class="bar"><i id="hpBar"></i></div><div class="hero-bars"><div><div class="stat-title"><span>🧝 角色生命</span><b id="heroHpText">100 / 100</b></div><div class="hero-bar hero-hp"><i id="heroHpBar"></i></div></div><div><div class="stat-title"><span>💧 法力</span><b id="mpText">100 / 100</b></div><div class="hero-bar hero-mp"><i id="mpBar"></i></div></div></div><div class="stat-title attack-stat"><span>⚔ 攻击力 / 次</span><b id="attackText">1</b></div><div class="xpbar"><i id="xpBar"></i></div><div class="xptext"><span>🌿 林地经验</span><span id="levelText">等级 1 · 0 / 8</span></div><div class="bottom"><div class="objective">🧭 野区 <b id="campCount">8</b> 个营地 · <span id="campStatus">尚未挑战</span></div><div class="dock"><button id="shopBtn">🛒 商店 <b id="gold">20</b></button><button id="equipmentBtn">🎒 装备</button></div><div class="skills-row"><button class="skill ready" id="skillQ"><b>Q 自然脉冲</b><small id="qStatus">30 MP</small></button><button class="skill ready" id="skillE"><b>E 根须缠绕</b><small id="eStatus">40 MP</small></button></div><div class="pill">⚔ 击败 <b id="kills">0</b></div></div></section><aside class="minimap-panel"><h2>🗺️ 全图</h2><canvas id="minimap" aria-label="地图小地图"></canvas></aside></div>
+<div class="hud-layout"><section class="card"><div class="row"><div class="tree-name">🌱 远古之心</div><div class="tree-health">古树 <b id="hpText">100%</b></div></div><div class="bar"><i id="hpBar"></i></div><div class="hero-bars"><div><div class="stat-title"><span>🧝 角色生命</span><b id="heroHpText">100 / 100</b></div><div class="hero-bar hero-hp"><i id="heroHpBar"></i></div></div><div><div class="stat-title"><span>💧 法力</span><b id="mpText">100 / 100</b></div><div class="hero-bar hero-mp"><i id="mpBar"></i></div></div></div><div class="stat-title attack-stat"><span>⚔ 攻击力 / 次</span><b id="attackText">1</b></div><div class="xpbar"><i id="xpBar"></i></div><div class="xptext"><span>🌿 林地经验</span><span id="levelText">等级 1 · 0 / 8</span></div><div class="bottom"><div class="objective">🧭 野区 <b id="campCount">8</b> 个营地 · <span id="campStatus">尚未挑战</span></div><div class="dock"><button id="shopBtn">🛒 商店 <b id="gold">20</b></button><button id="equipmentBtn">🎒 装备</button></div><div class="skills-row"><button class="skill ready" id="skillQ"><b>Q 自然脉冲</b><small id="qStatus">30 MP</small></button><button class="skill ready" id="skillE"><b>E 根须缠绕</b><small id="eStatus">40 MP</small></button></div><div class="pill">⚔ 击败 <b id="kills">0</b></div></div></section></div><aside class="minimap-panel"><h2>🗺️ 全图</h2><canvas id="minimap" aria-label="地图小地图"></canvas></aside>
 <div id="skillPick"><div class="skill-picker-title">点击一个技能即可开始</div><div class="skill-picker-options"><button class="choice" id="pickQ"><span class="icon">🌿</span><span><strong>选 Q 并开始</strong><small>自然脉冲：范围伤害 · 恢复自身</small></span></button><button class="choice" id="pickE"><span class="icon">🌳</span><span><strong>选 E 并开始</strong><small>根须缠绕：定身敌人 · 治疗古树</small></span></button></div></div>
 <div class="controls"><div class="skills-row"><button class="skill ready" id="skillQm"><b>Q 脉冲</b><small id="qStatusM">30 法力</small></button><button class="skill ready" id="skillEm"><b>E 缠绕</b><small id="eStatusM">40 法力</small></button></div></div>
 <div class="upgrade" id="upgrade"><div class="upgrade-box"><h2>林地祝福 ✨</h2><p>选择一项强化，强化项显示在地图下方</p><div class="choices" id="choices"></div></div></div>
