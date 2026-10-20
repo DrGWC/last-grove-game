@@ -2,36 +2,30 @@
 
 ## 2026-10-20 — UI, automatic skills, wall defense, and live playtests
 
-- Published shop and equipment outside-click dismissal; both overlays pause gameplay while open.
-- Published the expanded translucent map; the arena remains visible behind it and clicking outside map tools closes it.
-- Published direct start without a skill-pick gate, automatic Q/E, shop-unlocked automatic R/F, and removal of mana and its potion.
-- Published four durable lane walls with health bars, breakable visuals, and ranged enemies targeting the wall.
-- Added route waypoint following for wave enemies so they follow the painted roads instead of cutting diagonally to the gate.
-- Added one-time breach toast and burst feedback for melee/ranged wall destruction.
-- Fixed run restart retaining the previous mouse or touch movement target; fresh runs now reset joystick state too.
-- Added fallback targeting: if an assigned wall is already broken and an enemy is still more than 700 world units from that breach, it switches to the nearest standing wall. Enemies already near the breach can enter the grove.
-- Latest deployed source at start of this cycle: `054e6cc` (`Reset movement state on restart`); Pages workflow `39470753104` succeeded.
-- Live second-wave run: wave 1 ended at 2:02 with 4 kills and tree at 10,000 HP. North and south walls had broken by 1:36. By 3:28 all four walls were down; tree briefly fell to 9,693, then automatic E restored it to 10,000 by 4:02. Wave 2 ended with 9 total kills.
-- Live shop check: buying 藤木法杖 at 40 gold cost 18, equipped it, and raised attack from 1 to 2. The shop rerendered the equipped state and correctly disabled unaffordable replacements.
-- Local exploration test exposed friction in long trips to camps: the nearest camp starts 5.2 km away. The expanded map now accepts a destination tap/click, marks it, closes, and starts click-to-move. Local and live Pages checks both moved the nearest-camp readout from 5.2 km to 4.2 km after selecting a map destination. Clicking outside the map still closes it without setting a new destination. A narrow-screen title size adjustment keeps the map controls legible.
-- Commit `9655438` deployed successfully via Pages run `39472021132` (run #53). After refreshing with a cache-busting URL, the live map showed the new instruction, and destination selection was visibly marked before the panel closed.
-- Found and fixed a pause-state bug: opening shop/equipment while already paused used to close into a stale overlay while simulation resumed. Local regression checks confirmed both panels preserve a pre-existing pause (timer stayed at 0:03/0:10 and the pause overlay remained); opening/closing shop from active gameplay still resumes normally.
+- Published shop/equipment outside-click dismissal, translucent expanded map, direct start without skill selection, automatic Q/E plus shop-unlocked R/F, and removal of MP.
+- Added four breakable lane walls, per-side health feedback, route waypoint enemy movement, breach warning/effects, and nearest-standing-wall fallback for enemies far from a broken gate.
+- Fixed restart retaining mouse/touch movement targets; fresh runs reset movement state.
+- Added expanded-map click-to-move waypoint selection and a nearest-camp hint. Live and local checks moved the nearest-camp readout from 5.2 km to 4.2 km after selecting a destination.
+- Fixed a pause-state bug: shop/equipment opened from an already paused run now restore the original pause state on close. Local checks covered both panel paths and active-game shop resume. Live shop regression verified the pause overlay remained after close and timer stayed at 0:02.
+- Latest deployed source: `4010e65215ea12964ca6d4329de5bce38b0704a5` (`Preserve pause state when closing panels`); Pages run `39472884036` (#55) succeeded.
+- Live second-wave run: wave 1 ended at 2:02 with 4 kills and tree at 10,000 HP. North/south walls broke by 1:36; all four walls were down by 3:28. The tree briefly fell to 9,693 and automatic E healed it to 10,000 by 4:02. Wave 2 ended with 9 kills.
+- Live shop check: 藤木法杖 cost 18 from 40 gold, equipped successfully, and raised attack from 1 to 2; unaffordable replacements were disabled.
+- Map controls live check: zoom button changed 100% to 125%; clicking outside closed the map. Prior live waypoint check confirmed click-to-move.
 
 ### Validation
 
-- Bundled Node `--check` for the inline game script: passed after map navigation change.
-- `git diff --check`: passed.
-- Local browser test: map destination selection closed the map and began travel; click-outside closed the map; game continued updating wall health and the nearest-camp indicator.
-- Live browser test: shop purchase and wave/wall/automatic-skill feedback verified. Browser console logs are unavailable in this tab; no runtime error was observed in the visible UI.
+- Inline game script Node `--check`: passed after map change.
+- `git diff --check`: passed for source and current documentation edits.
+- Browser checks showed no visible runtime error; browser console log access was unavailable.
 - No package manifest or pre-existing automated test suite is present.
 
 ### Observations and tuning
 
-- The first two waves can be cleared while stationary after buying the starter weapon; in the latest live run all walls were lost before wave 2 ended, but automatic E restored the tree to full. This leaves a clear wall-repair / defense-upgrade design opportunity, but current samples are too small to alter durability yet.
-- A prior exploratory run without early equipment failed at 5:34 while the hero was away from the tree. Test again with early gear and map navigation before rebalancing travel or tree damage.
-- Live breach alerts were visible in the accessibility tree for north, south, and east walls. Confirm their visual prominence on a narrow mobile viewport in a later check.
+- Latest live run cleared the first two waves while stationary after the starter weapon purchase, but all walls fell by wave 2 end; automatic E kept the tree healthy. Wall repair/defense upgrades may help but need more samples before tuning.
+- An earlier run without early gear failed at 5:34 while the hero was away from the tree. Re-test exploration with early gear before changing travel or tree damage.
+- Breach alerts appeared in the accessibility tree; visual prominence at narrow mobile widths remains unverified.
 
 ## Time accounting
 
-- The active goal timer showed about 55 minutes elapsed across the thread at the start of this cycle; that includes conversation and wait time, so it is not equivalent to productive development time.
-- This cycle was about 9 minutes of focused implementation and verification. The 10-hour mission target is not complete; continue with measured active work and keep idle time separate.
+- At the start of this cycle the active goal timer showed about 55 minutes elapsed across the thread, including conversation and wait time.
+- This cycle has accumulated about 12 minutes of focused implementation and verification (estimate). The 10-hour mission is not complete; count active work separately from idle time.
