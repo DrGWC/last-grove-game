@@ -72,3 +72,8 @@ The live wave-three sample destroyed the tree by 5:35 after all walls had fallen
 ## Revised early-wave tree damage candidate (2026-10-21)
 
 A live no-jungle build with a staff, boots and shirt lost the tree in wave 3 at 6:13 despite two 2,500-HP resin purchases. A second run cleared one jungle camp and unlocked 林风箭 but still lost the tree in wave 3 at 4:56; it began wave 3 with fewer kills and its camp fight caused a hero death. These samples show the previous 25% wave-three multiplier is not forgiving enough for early progression, though player route and build differ. New candidate: 10% through wave 4, 25% waves 5–6, 50% waves 7–8, full damage wave 9 onward. Treat as provisional until an upgraded camp route survives the first boss cycle.
+
+## XP pickup range candidate (2026-10-21)
+
+- XP orbs begin homing at `max(320, hero attack range + 60)` world units. 林地召唤 magnet blessing adds 55 units per stack. Attraction speed is 360 units/second, above the observed 307 movement speed, so an orb homing to a moving hero can catch up.
+- Rationale: the old 95-unit pickup radius was far shorter than the 270-unit baseline attack range and the 450-unit bow range. The wave-eight sample ended at level 4 with 52 kills, but this one run cannot prove missed XP caused the slow progression. Verify XP and level-up timing online before further tuning.

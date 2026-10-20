@@ -53,3 +53,6 @@
 
 - New online comparison shows wave 3 can destroy the tree by 4:56–6:13 under two different early builds, even with tree resin. Current 25% wave-three pressure is too steep for early progression. Candidate lowers waves 3–4 to the 10% opening tier, then ramps through 25% waves 5–6, 50% waves 7–8, and full pressure at wave 9. Validate with a camp-upgraded run before finalizing.
 - Jungle playtest: map waypoint reached the southwest camp during the 75-second wave-two preparation; camp cleared and rewarded currency, but the hero died during the fight and respawned at the tree. Improve camp danger readability and make first camp difficulty/reward more forgiving after the new tree curve is verified.
+
+- XP pickup candidate now homes from at least 320 units or weapon range +60, with 360 units/second attraction. Tests pass; verify its level-up pace in a live run.
+- Isolate the wave-eight wipe seen at 11:27 (52 kills, tree 9,936 at 11:16): observe whether remaining wave-eight enemies or wave nine caused it before changing late-game balance.
