@@ -248,3 +248,9 @@
 - Fresh published run `2a2b94c` started as 小鹿. Wave 1 was still alive at 0:57 with tree 10,000, north wall 0%, east 100%, south 75%, west 100%. At 1:52 wave 1 had cleared, tree remained full, and north/south gates were breached.
 - At 2:18, the live transition toast displayed `城墙修复 3000`; HUD showed north and south restored to 25%, east/west still full, tree 10,000. This confirms production wall repair executes and reports the correct recovered total.
 - Deployed build also passed a fresh-cache start-screen smoke test and showed the gear comparison preview before purchase. Pages workflow #88 succeeded.
+
+
+## 2026-10-21 — Fixed and verified the Haste blessing
+
+- Production playtesting showed that selecting `明亮灵灵` left the HUD at 1.8 attacks/second. Added its missing effect: divide the attack interval by 1.2, respecting the existing 0.19-second floor. Added shared blessing application logic and automated coverage for all blessing outcomes.
+- Local verification: selected Haste at level 2 in wave 2; the effect toast appeared and HUD rate rose from 1.8 to 2.1 attacks/second. HUD values are rounded to one decimal. Full suite 41/41 passed; inline script syntax and `git diff --check` passed. About 10 focused minutes in this resumed cycle; idle time excluded. Production verification pending.

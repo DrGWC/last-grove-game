@@ -111,3 +111,8 @@ The 25%-per-wall intermission repair is now live in `2a2b94c`. Local observation
 
 
 Production check: a live run reached wave 2 with north and south gates broken. The transition restored each to 25%, 3,000 total HP, while tree stayed at 10,000. This matches the intended recovery rule. Late-wave survivability still needs more samples.
+
+
+## Attack-speed blessing correction (2026-10-21)
+
+`明亮灵灵` divides the attack interval by 1.2, matching its stated +20% attacks-per-second bonus, capped by the 0.19-second minimum. Previously the choice was recorded but did not change combat rate. Local HUD confirmation changed the displayed rate from 1.8 to 2.1/s; the HUD rounds to one decimal. Production confirmation pending.

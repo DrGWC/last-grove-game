@@ -90,3 +90,8 @@
 
 
 - Production verification complete: live `2a2b94c` run confirmed the wave-one clear restores 3,000 HP across the two breached gates (25% each). The toast and wall HUD matched at 2:18; tree was full. Continue later-wave and mobile QA.
+
+
+## 2026-10-21 update — Haste fix
+
+- Haste now changes the attack interval to deliver its stated +20% attacks per second. Automated tests pass, and a local wave-two level-up showed the rate changing from 1.8 to 2.1/s. Publish and confirm on Pages; continue late-wave defense testing.

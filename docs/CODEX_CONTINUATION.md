@@ -178,3 +178,11 @@ Local build run reached wave 3. Wave 1 repair toast: 1,500. Wave 2 clear at 4:03
 ### Live repair confirmation
 
 Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tree 10,000 and north/south walls at 0%; wave 2 began at 2:18 with toast `城墙修复 3000`, north/south at 25%, east/west at 100%. Shop preview also appeared in published smoke test. Live playtest is active at wave 2; continue observing threat behavior and complete one-hour playtest.
+
+
+## Resume checkpoint — 2026-10-21, Haste verified locally
+
+- Published base: `57c37f5e2b21ab88bc4c571fcfbe5506239a36d6` (documentation update atop stable game commit `2a2b94c`). Local `main` has 13 additional commits and experimental changes; do not publish that branch wholesale.
+- Isolated fix: Haste now applies through shared blessing logic; its interval is divided by 1.2 and capped at 0.19 seconds. Added tests. Local suite: 41/41; inline JavaScript syntax and whitespace checks pass.
+- Local visual QA: wave 2, game time 4:05, choosing `明亮灵灵` displayed its effect toast and changed the HUD from 1.8 to 2.1 attacks/second (one-decimal display). Tree 9,022/10,000, hero 140/140, 8 kills, four walls breached.
+- Next: verify Pages deployment and test the production effect if practical. Continue studying wall recovery and later-wave defense; keep floating damage labels unpublished pending visual QA. About 10 focused minutes added this cycle; the 10-hour mission remains incomplete; do not count idle time.
