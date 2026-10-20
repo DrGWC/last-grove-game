@@ -8,7 +8,7 @@
 - Four lane-specific breakable walls with health feedback, route-following wave enemies, nearest-standing-wall fallback, and breach effects.
 - Restart resets leftover click/touch movement targets.
 - Shop weapon purchase verified to apply attack bonus and update equipped/disabled states.
-- Latest Live Pages workflow #60 succeeded; live checks verified paused shop close, zoom in to 125%, and outside-click map close.
+- Latest Live Pages workflow #62 succeeded; live checks verified paused shop close, map zoom and outside-click close, and the deployed E-skill return-to-defense guidance.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
 - Tree danger warning now targets 60% tree health (previously 25%) to give earlier return-to-defense feedback.
 

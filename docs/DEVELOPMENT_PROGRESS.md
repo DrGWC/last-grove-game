@@ -41,8 +41,8 @@
 - Added three dependency-free Node regression tests: E/F trigger at the 1,200-unit boundary during a siege, do not trigger at 1,201 units even with a damaged tree and nearby threats, and stay idle when there is no siege or tree damage. All 3 passed. Inline script syntax check and `git diff --check` passed.
 - Browser local run verified the new skill labels and hover descriptions. A prior local pressure sample before this change showed tree health recovering globally while the hero was away; the new anti-global-heal behavior has not yet been observed in a full multi-wave browser run.
 - The 60% warning still awaits a live visual trigger; the most recent run recovered above the threshold before reaching it.
-- Prior GitHub Pages deployment #61 for `11f2516` completed successfully. This code change is not deployed yet.
+- GitHub Pages workflow #62 for `de6f661` completed successfully. A fresh online page loaded the `回防自动` status and E-skill hover guidance; the original paused test run was kept intact.
 
 ### Active time estimate
 
-- Add about 7 minutes of focused code and verification this cycle, plus 2 minutes 45 seconds of deliberate play observation. Idle time is not counted. The 10-hour mission remains active and incomplete.
+- Add about 11 minutes of focused code, regression, and deployment checks across this cycle, plus roughly 3 minutes 45 seconds of deliberate game observation. Idle time is not counted. The 10-hour mission remains active and incomplete.
