@@ -34,6 +34,17 @@
 - At the start of this cycle the active goal timer showed about 55 minutes elapsed across the thread, including conversation and wait time.
 - This cycle has accumulated about 22 minutes of focused implementation and verification (estimate; waiting for game time is excluded). The 10-hour mission is not complete; count active work separately from idle time.
 
+## 2026-10-21 — Wall attacker target priority and 4,000-unit warning sample
+
+- Online at `?v=100ca96-radius4000`, wave 1 showed the persistent danger banner by 0:33 while tree HP was 10,000/10,000, hero HP 94/100, and north wall 34%. At 1:00, north and south walls were broken but tree HP remained full. The hero was away during the sample; no return waypoint was issued, so the response window remains unmeasured.
+- This showed that wall pressure is the useful early-playtest signal: the previous “over 100 seconds early” judgment used first tree damage, even though gates take damage much earlier. Future warning comparisons must record warning onset, wall HP, wall breach, and player distance together.
+- Added local active-wall target priority: wave enemies within 260 units of their assigned wall receive a 0.55 score multiplier, stacking with the existing 0.65 multiplier for enemies within 450 units of the tree. Jungle creatures do not get either defensive weight.
+- Added dependency-free target-score regression cases, including broken-wall exclusion. Combined `node --test tests/*.test.js`: 12 passed; inline script parse and `git diff --check` passed. Live target selection and balance remain to be verified before publishing this local change.
+- Current deployed commit remains `100ca96`; Pages deployment #73 succeeded. The wall-targeting change is currently uncommitted and not yet deployed.
+- Local browser playtest: guarding the north wall through wave 1 ended at 0:31 with 4 kills and 98% north-wall HP. By 1:31 in wave 2, the hero was on the east lane with 6 kills; east wall, tree, and hero HP were all full. This sample does not isolate the effect of the targeting multiplier.
+- Found a false-positive UX case during that run: the “立即回防” banner remained on while the hero was within auto-attack range of east-lane enemies. Added a coverage check so the alert is suppressed/cleared during an active intercept when tree HP is above 90%; it still remains for low tree HP. Added matching tests; 12 passed. The alert refinement itself has not yet been browser-verified.
+- Current source contains local, unpublished wall priority + alert coverage changes and updated docs. No new commit or deployment has been made after `100ca96` yet.
+
 ## 2026-10-21 — Keep tree-defense skills local to the defense
 
 - A pressure run exposed a strategic flaw: automatic E restored the Ancient Tree from anywhere, and the F shield could also cover the tree globally. This let the player remain away while the core skills silently handled defense.

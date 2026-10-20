@@ -10,7 +10,9 @@
 - Shop weapon purchase verified to apply attack bonus and update equipped/disabled states.
 - Latest Live Pages workflow #62 succeeded; live checks verified paused shop close, map zoom and outside-click close, and the deployed E-skill return-to-defense guidance.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
-- Tree danger warning is being moved earlier: if a wave enemy comes within 4,000 world units while the hero is away, show the persistent return warning; retain 90%/75% HP fallback thresholds. A wave-1 away run verified an early warning and successful return. Wave 2 showed the 2,500-unit warning still leaves too little return time; 2,500 fired too late in wave 2 and 5,000 fired over 100 seconds before wave-1 tree damage; a 4,000 candidate needs a live timing check. Tree resin and E recovered the run after it fell to 2,886 HP.
+- Tree danger warning uses a 4,000-unit approach threshold while the hero is away and retains 90%/75% HP fallbacks. Live wave-1 sampling saw the warning by 0:33 when the north wall was at 34%; both north and south walls were broken by 1:00, with tree health still full. The sample did not include a return order, so its response value remains unproven. Earlier 2,500-unit warning was too late in wave 2; compare warning-to-wall-breach timing before further radius tuning.
+- Local candidate improves auto-targeting of wave enemies actively attacking their assigned standing wall (0.55 score multiplier inside 260 units), stacking with the existing near-tree multiplier. The bonus stops when the wall breaks. Automated numeric tests pass; live target-acquisition verification is pending.
+- Local candidate suppresses the “return home” banner while a wave enemy is already within the hero's auto-attack range plus 100 units; an active interception clears the latch only if tree HP is above 90%. Twelve automated tests pass. Verify banner behavior in a fresh browser run.
 
 ## Active
 
@@ -19,7 +21,8 @@
 - Test jungle travel and camp combat during waves; assess travel/return timing and rewards.
 - Observe ranged enemy behavior after walls break or enemies retarget; tune only after more runs.
 - Test equipment pause restoration on Pages (local regression already covers it).
-- Validate tree-threat target selection in a live wave before tuning its priority multiplier.
+- Validate wall-threat target selection in a live wave before tuning its priority multiplier.
+- Verify the coverage-aware return banner when the hero is defending at a wall, and ensure low tree HP still keeps the alert active.
 - Test F after unlocking it in a live siege; only its Node boundary test has run so far.
 
 ## Next

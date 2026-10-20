@@ -1,7 +1,7 @@
 # Codex continuation checkpoint
 
 - Repository: `DrGWC/last-grove-game`, branch `main`.
-- Current deployed game-code commit: `973f0b4` (pre-breach return warning); Pages deployment #70 / run `39482545696` succeeded.
+- Current deployed game-code commit: `100ca96` (4,000-unit pre-breach return-warning candidate); Pages run #73 / run `39484330114` succeeded.
 - Source remains a single-file browser game in `index.html`; GitHub Pages deploys from `.github/workflows/deploy-pages.yml`.
 
 ## Current behavior
@@ -9,7 +9,7 @@
 - Mobile/desktop map waypoint selection closes the map and moves the hero; outside click closes without changing destination. Map zoom and translucent full-screen presentation remain live.
 - Shop and equipment are separate overlays; they pause while open, preserve inherited pause state, and close with outside click. The live shop showed separate weapon/gear, potion, and skill-book lists. A staff purchase changed gold from 32 to 14, attack from 1 to 2, and marked the weapon equipped while unaffordable replacements were disabled.
 - E root/heal and F tree shield require the hero within 1,200 world units of the tree. Five dependency-free Node tests cover those boundaries, the away alert threshold, and warning persistence; all pass.
-- Tree alert starts when a non-jungle wave enemy comes within 4,000 world units while the hero is more than 1,200 away; tree-HP fallbacks remain 90% away / 75% nearby. The badge latches until the hero returns within 1,200, tree is above 90%, and nearby wave threats are gone.
+- Tree alert starts when a non-jungle wave enemy comes within 4,000 world units while the hero is more than 1,200 away; tree-HP fallbacks remain 90% away / 75% nearby. The badge latches until the hero returns within 1,200, tree is above 90%, and nearby wave threats are gone. During a live wave-1 sample, it was visible by 0:33 with north wall at 34%; at 1:00 the north and south walls were broken while tree remained full. No return order was issued, so the alert's response window is unknown.
 
 ## Latest verification
 
@@ -24,7 +24,7 @@
 1. Measure alert timing and survival through wave 2+; wave-1 alert and return behavior are now confirmed online.
 2. Sample live tree HP and hero distance more frequently around an away-from-base warning; make a deliberate return attempt.
 3. Continue through wave 3 and, if practical, wave 4 boss; test F after unlocking it.
-4. Test target selection when an ordinary enemy and a tree threat are both eligible, and check map waypoint movement on narrow mobile layouts.
+4. Test target selection when a wave enemy attacking a wall competes with an ordinary target; the local candidate now gives active wall attackers added priority.
 5. Continue reviewing shop prices/gear slots and upgrade clarity from actual play, changing balance only with evidence.
 
 ## Time accounting
@@ -40,3 +40,11 @@ The longer autonomous mission is still active and incomplete. Track actual imple
 
 - At 3:03 during wave 2, the published 2,500-unit warning was visible at tree 8,671/10,000. A map return was ordered, but it took about 35 seconds for the hero to reach the tree; tree HP fell to 2,886. Buying the 12-gold Ancient Tree Resin raised it to 6,018, then local E/defense pushed it to 8,418 by 4:33. This proves the consumable and return skills can recover the run, but the proximity warning came too late to save the tree unaided.
 - The 5,000-unit build warned at 0:19 on wave 1 with tree full and all walls intact—more than 100 seconds before the first measured tree damage. That is too early. The current local candidate uses 4,000 units as a compromise between the over-early 5,000 trigger and the late 2,500 trigger. Test live timing before retaining it.
+
+## Current uncommitted development candidate
+
+- Increased wall-attacker target priority: non-jungle enemies within 260 world units of their assigned standing wall receive a 0.55 score multiplier; this stacks with the existing near-tree target bonus. Broken gates no longer receive the priority, and jungle enemies are excluded.
+- Added `tests/auto-targeting.test.js`; five cases cover wall distance and break state, priority boundary, jungle exclusion, stacked tree/wall urgency, and elite/boss modifiers. Combined suite now has 12 passing cases, including interception-aware alert tests; inline script syntax and `git diff --check` pass.
+- Browser run before the alert refinement cleared wave 1 at 0:31 with 4 kills and north wall 98% while the hero guarded that lane; wave 2 sample by 1:31 showed 6 kills, east wall/tree/hero at full while the hero was on the east approach. The earlier banner incorrectly remained visible despite the hero actively attacking enemies in range.
+- New local logic suppresses the “return” warning when a non-jungle wave enemy is within hero auto-attack range +100; an active interception clears an existing warning only if tree HP is above 90%. This refinement passes unit tests but requires fresh browser verification before publish.
+- Next: verify the updated banner while defending at a wall and with low tree HP; then commit and publish if stable.
