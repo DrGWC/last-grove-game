@@ -275,3 +275,5 @@
 - Fresh cache-busted production run at 0:55 in wave 1 displayed `最近营地：西南 · 5.2 km · 威胁：南侧 · 656 m`; tree was 10,000/10,000, hero 100/100, 3 kills, and 4/4 enemies spawned. This confirms the live hint appears at the right time. Narrow-screen fit remains untested.
 
 - Continued the same cache-busted production run into wave 2 at game time 2:31. All 5 enemies had spawned, the threat hint updated to east · 3.4 km, tree stayed at 10,000, hero at 100, and intermission repair restored north/south walls to 25%. The tab is kept available for the next playtest.
+
+- Later in the same live run, at wave 2 / game time 3:43, the transparent expanded map still showed the world underneath. The hint had updated to north · 527 m; tree 9,900, hero 100, and west wall 61% with the other three gates breached. Paused the run at this checkpoint to preserve it for continuation.

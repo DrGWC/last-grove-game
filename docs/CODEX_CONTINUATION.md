@@ -210,3 +210,5 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Next: inspect narrow-screen layout, continue a production run to later waves and test a threat intercept; capture a Haste choice if random level-up options offer it. Damage-number candidate remains unpublished pending visual QA. Keep the 10-hour mission open; count only focused work/playtest time.
 
 - Active production run continuation: tab 47, `https://drgwc.github.io/last-grove-game/?v=2d73cb-hint`, now at wave 2 / 5 of 5, game time 2:31; tree 10,000, hero 100, walls north/east/south/west 25/100/25/100, 4 kills, hint east · 3.4 km. Keep this run if continuing from the browser; it is in wave 2.
+
+- Most recent browser state: production run tab 47 is paused at wave 2 / game time 3:43. HUD: tree 9,900, hero 100, kills 6, wall health N/E/S/W = 0/0/0/61, hint north · 527 m. Expanded map remained translucent with the world beneath; Escape closed map by pausing the run. Resume with the `继续守护` button if continuing browser play.
