@@ -12,6 +12,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 - Character death costs `level × 10` gold and respawns the character.
 - Live check: after wave 1 and four kills, the player had 40 gold; buying 藤木法杖 cost 18 and increased attack from 1 to 2.
 - 2026-10-21 live check: 藤木法杖 (18) raised attack 1 → 2; 疾风短靴 (16) raised move speed 235 → 265. After wave 2, one northeast camp raised gold 38 → 56 and XP 10% → 50%, but reduced hero HP to 20/100. Two life potions (8 each) and two Ancient Tree resins (12 each) restored hero and tree to full, leaving 16 gold. This is one successful sample; camp risk and reward scaling need more runs.
+- Presentation note: when both notices are active, the persistent defense badge now sits below the short toast to prevent overlap. This changes no warning timing or combat values.
 
 ## Automatic skills
 

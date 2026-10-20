@@ -15,6 +15,7 @@
 - Published `4926efc` suppresses the “return home” banner while a wave enemy is already within the hero's auto-attack range plus 100 units; an active interception clears the latch only if tree HP is above 90%. Twelve automated tests pass. Verify banner behavior during live combat.
 - Live follow-up through wave 2 verified the camp risk/reward loop: one camp cleared (8 → 7), gold 38 → 56, XP 10% → 50%, while hero HP fell to 20/100. Two 8-gold potions and two 12-gold tree resins restored hero/tree to full; 16 gold remained. Wave 2 was cleared at ~3,531 tree HP before blessing/E recovery.
 - Live gear check confirmed staff attack 1 → 2 for 18 gold and boots movement speed 235 → 265 for 16 gold. In this sample, remaining wall integrity delayed pressure; once walls were all broken with the hero away, tree damage accelerated sharply.
+- Local browser playtest reproduced overlapping short combat toasts and the persistent defense banner. The banner now sits below the toast (52px on desktop, 46px at narrow widths); the local screenshot confirmed readable separation.
 
 ## Active
 

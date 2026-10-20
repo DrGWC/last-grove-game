@@ -123,3 +123,9 @@
 - Candidate expands the pre-breach radius to 4,000 units; six automated cases were updated to cover the new boundary. Test deployment timing in a later wave before accepting the tuning.
 
 - Live evaluation of the 5,000-unit setting: warning appeared at wave-1 0:19 with tree at 10,000 and all walls at 100%; the first observed tree damage was after 2:00, so the warning was over 100 seconds ahead of damage. The player returned and wave 1 stayed alive, but the interruption is too early. 2,500 was too late in wave 2; set the next candidate to 4,000 and retest.
+
+## 2026-10-21 — Separate stacked combat and defense alerts
+
+- A local wave-2 screenshot showed the short combat toast and persistent “立即回防” badge occupying the same top-center position, making both harder to read.
+- Moved the persistent badge to 52px from the arena top (46px on narrow mobile screens), leaving the short toast at its original position. Local browser playtest at 1:34 visibly showed the yellow wave warning above the red persistent badge with clear spacing.
+- Re-ran the game script syntax check and `node --test tests/*.test.js` (12 passed); `git diff --check` passed. This is a presentation-only change; no balance or trigger thresholds changed.
