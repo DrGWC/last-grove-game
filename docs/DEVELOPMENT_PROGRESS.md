@@ -12,6 +12,7 @@
 - Live shop check: 藤木法杖 cost 18 from 40 gold, equipped successfully, and raised attack from 1 to 2; unaffordable replacements were disabled.
 - Map controls live check: zoom button changed 100% to 125%; clicking outside closed the map. Prior live waypoint check confirmed click-to-move.
 - Added a candidate combat targeting weight for non-jungle enemies within 450 world units of the tree, so urgent tree threats can outrank an equally close ordinary target. Elite and boss multipliers remain. Validation is pending before publishing.
+- Candidate deployment playtest: wave 1 cleared at 1:59 with 4 kills, tree full, and both north/south walls broken. Bought 藤木法杖 for 18 of 40 gold; attack rose to 2. During wave 2, a map waypoint trip left the tree exposed; all walls fell and tree HP reached 3,958/10,000 by 3:59, while the hero stayed at 100 HP and kills reached 9. The existing 25% warning did not fire in time; this exposed a need for an earlier, one-time return-to-defense warning at 60%. The run survived into 66 seconds of wave-2 preparation.
 
 ### Validation
 
@@ -29,4 +30,4 @@
 ## Time accounting
 
 - At the start of this cycle the active goal timer showed about 55 minutes elapsed across the thread, including conversation and wait time.
-- This cycle has accumulated about 12 minutes of focused implementation and verification (estimate). The 10-hour mission is not complete; count active work separately from idle time.
+- This cycle has accumulated about 19 minutes of focused implementation and verification (estimate). The 10-hour mission is not complete; count active work separately from idle time.

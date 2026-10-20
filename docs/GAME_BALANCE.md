@@ -24,6 +24,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 
 - Wave enemies within 450 world units of the tree receive a 0.65 priority multiplier for hero auto-attacks. Bosses and elites retain distance-score multipliers of 1.5 and 1.35 respectively.
 - This is a candidate defensive weighting to help the hero intercept active tree threats. It needs live wave validation before balance conclusions; jungle enemies do not receive the tree-threat weight.
+- Tree danger warning candidate: trigger once at 60% of max tree HP (previously 25%), so the player gets a useful return-to-defense cue before the tree is near failure.
 
 ## Grove walls
 

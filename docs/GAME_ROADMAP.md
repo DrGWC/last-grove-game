@@ -10,6 +10,7 @@
 - Shop weapon purchase verified to apply attack bonus and update equipped/disabled states.
 - Live Pages workflow #55 succeeded; live checks verified paused shop close, zoom in to 125%, and outside-click map close.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
+- Tree danger warning now targets 60% tree health (previously 25%) to give earlier return-to-defense feedback.
 
 ## Active
 
@@ -19,6 +20,7 @@
 - Observe ranged enemy behavior after walls break or enemies retarget; tune only after more runs.
 - Test equipment pause restoration on Pages (local regression already covers it).
 - Validate tree-threat target selection in a live wave before tuning its priority multiplier.
+- Confirm the earlier tree danger warning fires once at the intended threshold in a live wave.
 
 ## Next
 
