@@ -50,3 +50,6 @@
 
 - Live `4236616` shop-dismissal check: outside click closed the shop and left the hero by the tree after 10 seconds. Clean run cleared wave 2 at 3:45 and wave 3 at 5:50 with the hero guarding the tree.
 - Fourth-wave boss trip is currently too costly: a southeast map waypoint at 6:11 was followed by tree defeat at 6:39. Candidate keeps wave-four tree damage at 25%, then raises it to 50% on waves 5–6 and 100% from wave 7; automated boundaries pass. Deploy and repeat the boss trip before deciding further tuning.
+
+- New online comparison shows wave 3 can destroy the tree by 4:56–6:13 under two different early builds, even with tree resin. Current 25% wave-three pressure is too steep for early progression. Candidate lowers waves 3–4 to the 10% opening tier, then ramps through 25% waves 5–6, 50% waves 7–8, and full pressure at wave 9. Validate with a camp-upgraded run before finalizing.
+- Jungle playtest: map waypoint reached the southwest camp during the 75-second wave-two preparation; camp cleared and rewarded currency, but the hero died during the fight and respawned at the tree. Improve camp danger readability and make first camp difficulty/reward more forgiving after the new tree curve is verified.

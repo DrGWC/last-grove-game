@@ -159,3 +159,9 @@
 - Clean stationary run cleared wave 2 by 3:45 (9 kills, tree 8,280), then cleared wave 3 by 5:50 (15 kills, tree 9,836). This supports the 0.25 wave-three damage scale when the hero remains near the defense.
 - On wave 4, a map waypoint toward the southeast boss was issued at 6:11. The tree fell and the run ended at 6:39 with 15 kills. Leaving the tree to pursue the boss during the 100%-damage wave gave only a 28-second window.
 - Local candidate now holds wave-four tree damage at 25% (matching wave 3), then ramps to 50% on waves 5–6 and 100% from wave 7. This should allow a boss trip while retaining stronger late pressure. Updated boundary test; 20/20 tests, inline JS syntax, and `git diff --check` pass. Candidate not yet deployed or live-tested.
+
+## 2026-10-21 — Live wave-three balance comparison
+
+- Published `9a75c81` (Pages workflow #84, success). Live start screen loaded from the cache-busted URL. First run bought 藤木法杖, 疾风短靴, 树皮护身衣; waves 1 and 2 cleared, but without a jungle trip wave 3 destroyed the tree at 6:13 with 13 kills after two resin purchases.
+- Second run followed the intended wave-two jungle route. The hero reached the southwest camp, cleared it, and earned its reward, but died during the camp fight (level 1, 10-gold penalty) and respawned beside the tree. Bought 林风箭; wave 3 still destroyed the tree at 4:56 with 12 kills. This run spent less time defending and started wave 3 underpowered, so it does not isolate skill efficacy, but it confirms the current 25% wave-three damage scale is too punishing for an ordinary run.
+- Candidate scale is revised to 10% through wave 4, 25% on waves 5–6, 50% on waves 7–8, and full damage from wave 9. Updated wave-boundary tests; candidate awaits the test suite and live comparison before it is treated as balanced.

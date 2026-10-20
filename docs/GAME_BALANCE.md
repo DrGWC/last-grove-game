@@ -68,3 +68,7 @@ The live wave-three sample destroyed the tree by 5:35 after all walls had fallen
 
 - Clean wave-three online sample after the shop click-through fix cleared at 5:50 with tree 9,836/10,000 and 15 kills while hero stayed near the tree. This suggests the prior wave-three losses were caused by leaving defense and the stray click path, rather than the 25% multiplier alone.
 - Wave-four boss trip sample: player clicked the southeast cave marker at 6:11; the tree was destroyed by 6:39 with 15 kills. Candidate now extends 25% damage reduction through wave 4 so the boss adventure has a return window, then ramps to 50% for waves 5–6 and full damage from wave 7. Needs live comparison.
+
+## Revised early-wave tree damage candidate (2026-10-21)
+
+A live no-jungle build with a staff, boots and shirt lost the tree in wave 3 at 6:13 despite two 2,500-HP resin purchases. A second run cleared one jungle camp and unlocked 林风箭 but still lost the tree in wave 3 at 4:56; it began wave 3 with fewer kills and its camp fight caused a hero death. These samples show the previous 25% wave-three multiplier is not forgiving enough for early progression, though player route and build differ. New candidate: 10% through wave 4, 25% waves 5–6, 50% waves 7–8, full damage wave 9 onward. Treat as provisional until an upgraded camp route survives the first boss cycle.
