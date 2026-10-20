@@ -291,3 +291,12 @@
 - Bought tree resin at 9,300 HP: 12 gold restored the tree to 10,000 and disabled the resin button at full health. Later a life potion cost 8 and restored hero HP 36→81 (+45).
 - Wave 4 announced the southeast boss den. Its charge telegraph showed a gold danger circle and an explicit dodge prompt. Defeat at 13:39 granted +40 gold, +1 attack, and 1,500 tree healing. A second Haste blessing changed attack speed 2.1→2.6/s. Hero fell to 15 HP on the excursion; the return warning routed the hero toward the tree, where the hero later recovered to full.
 - Live checkpoint: wave 4 at 14:51, 7/7 spawned, 22 kills, tree 9,780/10,000, hero 160/160, all walls broken, gold 32. Approx. 12 focused minutes added; the one-hour observed-playtest and 10-hour mission remain incomplete.
+
+
+## 2026-10-21 — Production waves 4–6 and attack-rate correction
+
+- Continued production run `?v=2d73cb-hint` through wave 6. Wave 4 cleared at 17:44 (tree 10,000; 26 kills), wave 5 at 18:54 (tree 10,000; 31 kills), and wave 6 at 20:03 (tree 7,498; hero 160; 40 kills). The wave-4 boss was defeated earlier in the run. Purchased the 林风箭 skillbook for 26 gold; automatic firing showed its hit/stun toast.
+- A crossbow replacement preview showed 3.1→5.3 attacks/s, but the live HUD later showed 6.9/s with stacked Haste. Combat was clamped at 5.3/s, so displayed and actual cadence diverged; the firing loop also applied Haste twice.
+- Fixed combat, HUD, shop loadout, and gear preview to share a capped effective attack interval, and removed duplicate Haste scaling. Added regression tests for Haste and over-fast weapon replacement. Tests: 46/46; inline JS syntax and `git diff --check` pass.
+- Deployed as `aa7b5d38964eaeeff289c415c431bd8555e387f8`; GitHub Pages workflow #97 succeeded. Cache-busted production smoke test loaded and started with the expected 1.8 attacks/s. Exact crossbow + stacked-Haste scenario still needs live recheck.
+- Saved production run tab 47 remains at wave 7 / 21:02 with level-up choices open. Approx. 30 focused minutes added; waiting and game clock excluded. The one-hour playtest and 10-hour mission remain incomplete.
