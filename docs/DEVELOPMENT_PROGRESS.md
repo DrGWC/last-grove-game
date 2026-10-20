@@ -152,3 +152,10 @@
 - Bought 藤木法杖 for 18 and 疾风短靴 for 16 during wave-two prep; the shop reflected attack 1→2 (then 3 with a damage blessing) and speed 205→235. The outside click used to close the shop also hit the game canvas and redirected the hero. Added propagation blocking plus three handler tests to prevent this click-through.
 - Continued the deployed wave-three sample: tree 9,917 at 5:25; 6,679 at 5:48; 4,029 at 6:12. Two tree resins restored it to 8,829. The run ended at 7:23 with 13 kills and tree destroyed. This sample is confounded by the shop-close click-through moving the hero; do not retune wave-three damage until a clean run tests the fix.
 - Local validation after the outside-click fix: 20/20 automated tests, inline JS syntax, and `git diff --check` pass. This candidate has not been committed/deployed yet.
+
+## 2026-10-21 — Deployed outside-click fix and fourth-wave boss window
+
+- GitHub Pages commit `4236616` (workflow #83) loaded in a fresh browser run. Opening the shop and clicking outside closed it; after 10 game seconds, the hero remained beside the tree and had not been redirected. This verifies the click-through fix live.
+- Clean stationary run cleared wave 2 by 3:45 (9 kills, tree 8,280), then cleared wave 3 by 5:50 (15 kills, tree 9,836). This supports the 0.25 wave-three damage scale when the hero remains near the defense.
+- On wave 4, a map waypoint toward the southeast boss was issued at 6:11. The tree fell and the run ended at 6:39 with 15 kills. Leaving the tree to pursue the boss during the 100%-damage wave gave only a 28-second window.
+- Local candidate now holds wave-four tree damage at 25% (matching wave 3), then ramps to 50% on waves 5–6 and 100% from wave 7. This should allow a boss trip while retaining stronger late pressure. Updated boundary test; 20/20 tests, inline JS syntax, and `git diff --check` pass. Candidate not yet deployed or live-tested.

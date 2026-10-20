@@ -122,11 +122,14 @@ test('return warning cannot issue movement after the run ends', () => {
   assert.equal(sandbox.moveTarget, null);
 });
 
-test('tree damage ramps through wave three, then returns to full strength', () => {
+test('tree damage eases through the fourth-wave boss, then ramps up', () => {
   const scaleSource = functionSource('treeDamageScale', 'updateWallHud');
   const scale = wave => vm.runInNewContext(`${scaleSource}; treeDamageScale(${wave})`, {});
   assert.equal(scale(1), 0.1);
   assert.equal(scale(2), 0.1);
   assert.equal(scale(3), 0.25);
-  assert.equal(scale(4), 1);
+  assert.equal(scale(4), 0.25);
+  assert.equal(scale(5), 0.5);
+  assert.equal(scale(6), 0.5);
+  assert.equal(scale(7), 1);
 });

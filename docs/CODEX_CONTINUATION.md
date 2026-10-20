@@ -90,3 +90,9 @@ The longer autonomous mission is still active and incomplete. Track actual imple
 - A local working change adds `dismissPanelsOnOutsidePointerDown()` to prevent outside shop/equipment dismiss clicks from also triggering canvas movement. `tests/panel-dismissal.test.js` adds three cases. Validation: 20/20 tests, inline JS syntax, `git diff --check`.
 - Wave-three at the deployed 0.25 tree damage scale reached 6,679 HP at 5:48 and 4,029 at 6:12; two resins raised it to 8,829; defeat at 7:23 with 13 kills. The run is confounded by shop-close click-through redirecting the hero. Fix and publish first, then repeat a clean wave-three run before tuning balance.
 - Current uncommitted files: `index.html`, `tests/panel-dismissal.test.js`, and the four development/roadmap/balance/continuation docs. Commit/deploy, then test outside-click close without movement, continue through wave 3 and inspect wave 4 boss when feasible.
+
+## 2026-10-21 — Boss-wave timing candidate
+
+- Latest verified commit `4236616` deployed in Pages workflow #83. Fresh live check confirmed clicking outside the shop closes it without moving the hero over the following 10 game seconds.
+- Clean stationary online run cleared wave 2 at 3:45 (tree 8,280/10,000, 9 kills), wave 3 at 5:50 (tree 9,836/10,000, 15 kills). A southeast boss waypoint during wave 4 at 6:11 led to tree defeat at 6:39 (15 kills). This makes boss exploration under full wave-four tree damage impractical.
+- Current local candidate changes `treeDamageScale`: waves 1–2 = 0.10; waves 3–4 = 0.25; waves 5–6 = 0.50; wave 7+ = 1.0. The boundary test, 20/20 tests, inline JS syntax, and `git diff --check` pass. Candidate has not yet been committed or deployed. Next: publish, verify Pages, then repeat the wave-four boss route and measure tree survival and boss encounter.
