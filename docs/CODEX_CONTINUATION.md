@@ -42,8 +42,9 @@
 
 ## 2026-10-21 continuation update — local tree-defense skill range
 
-- New local code change: E root/heal and F tree shield now trigger only within 1,200 world units of the Ancient Tree. `syncSkills()` labels ready E/F as `回防自动` and adds hover guidance. `tests/tree-defense-skills.test.js` exercises the within-range boundary, outside-range siege, and no-threat cases.
-- Validation: all 3 Node tests passed; inline game JS syntax and `git diff --check` passed. Local browser showed the new status and hover descriptions. The away-from-tree no-heal behavior still needs a multi-wave browser observation.
-- Repo baseline before this edit: branch `main`, deployed code `6c7ce50` (Pages workflow #60); documentation-only `11f2516` (#61) also deployed successfully. These new code/docs changes are not yet committed or deployed.
-- Next: commit and deploy this focused change; verify E/F do not fire remotely while hero is outside 1,200 units, return to base, then verify E recovery at range. Keep a run alive long enough to confirm whether the 60% tree alert appears. Continue with mobile/map and wave-3/4 checks afterward.
-- Mission remains in progress. This update adds roughly 7 minutes of focused development and 2m45s of active game observation, excluding idle waits.
+- Latest branch/deployed commit: `de6f661` on `main`; GitHub Pages workflow #62 succeeded. Local commit `f8c425e` has been synchronized to the remote Git-generated commit.
+- E root/heal and F tree shield trigger only within 1,200 world units of the Ancient Tree. `syncSkills()` labels ready E/F as `回防自动` and adds hover guidance. `tests/tree-defense-skills.test.js` covers the within-range boundary, outside-range siege, and no-threat cases.
+- Validation: all 3 Node tests passed; inline game JS syntax and `git diff --check` passed. Local and fresh online browser pages show the new status and hover descriptions. A multi-wave away-from-tree test with a damaged Ancient Tree remains unverified.
+- Next: verify E/F do not fire remotely while the hero is outside 1,200 units and restore E recovery after returning. Then keep a run alive long enough to see if the 60% tree warning visibly fires. Continue with mobile/map and wave-3/4 checks afterward.
+- Mission remains in progress. This cycle adds about 11 focused minutes plus roughly 3m45s of deliberate game observation, excluding idle waits.
+
