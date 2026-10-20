@@ -75,6 +75,16 @@
  .arena-wrap>.minimap-panel #minimap{width:58px;height:58px}
 }
 </style>
+
+<style>
+/* Fill the available viewport with the playing arena */
+.app{height:100svh;min-height:100svh}
+.arena-wrap{height:auto;min-height:0;flex:1 1 auto}
+@media(max-height:520px){
+ .app{min-height:100svh}
+ .arena-wrap{min-height:180px}
+}
+</style>
 </head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="logo">🌳</div><div><h1>最后的林地</h1><p>古树守卫 · 生存挑战</p></div></div><div class="stats"><div class="pill">波次 <b id="wave">1</b></div><div class="pill">本波 <b id="waveProgress">0 / 4</b></div><div class="pill">⏱ <b id="time">0:00</b></div></div></header>
