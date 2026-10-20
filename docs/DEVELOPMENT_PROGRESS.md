@@ -254,3 +254,10 @@
 
 - Production playtesting showed that selecting `明亮灵灵` left the HUD at 1.8 attacks/second. Added its missing effect: divide the attack interval by 1.2, respecting the existing 0.19-second floor. Added shared blessing application logic and automated coverage for all blessing outcomes.
 - Local verification: selected Haste at level 2 in wave 2; the effect toast appeared and HUD rate rose from 1.8 to 2.1 attacks/second. HUD values are rounded to one decimal. Full suite 41/41 passed; inline script syntax and `git diff --check` passed. About 10 focused minutes in this resumed cycle; idle time excluded. Production verification pending.
+
+
+## 2026-10-21 — Haste fix deployed; production playtest resumed
+
+- Isolated Haste fix published as `117a8624735fbae57b74d45d1092b3a5e078f858`; GitHub Pages workflow #90 succeeded. Cache-busted post-deploy page loaded and entered gameplay.
+- Live wave-one run cleared at 1:54 with the tree at 10,000. Wave two began at 2:55 and showed 3,000 wall HP repaired. Its first level-up was Speed, not Haste; local visual Haste verification remains the only confirmed selection.
+- At wave two / 7:05, the run had 8 kills, tree about 9,600, and all gates broken. One ranged threat remained visible at the north lane, outside the stationary hero's attack radius. Moving north to intercept coincided with kill 9, full tree health, and wave-two preparation by 7:58. Treat this as a UX/targeting observation, not a balance result.

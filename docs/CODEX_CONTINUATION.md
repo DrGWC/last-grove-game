@@ -186,3 +186,11 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Isolated fix: Haste now applies through shared blessing logic; its interval is divided by 1.2 and capped at 0.19 seconds. Added tests. Local suite: 41/41; inline JavaScript syntax and whitespace checks pass.
 - Local visual QA: wave 2, game time 4:05, choosing `明亮灵灵` displayed its effect toast and changed the HUD from 1.8 to 2.1 attacks/second (one-decimal display). Tree 9,022/10,000, hero 140/140, 8 kills, four walls breached.
 - Next: verify Pages deployment and test the production effect if practical. Continue studying wall recovery and later-wave defense; keep floating damage labels unpublished pending visual QA. About 10 focused minutes added this cycle; the 10-hour mission remains incomplete; do not count idle time.
+
+
+## Latest checkpoint — 2026-10-21, Haste release and production sample
+
+- Production `main` is `117a8624735fbae57b74d45d1092b3a5e078f858` (`Fix attack-speed blessing effect`); GitHub Pages workflow #90 succeeded. Cache-busted URL `https://drgwc.github.io/last-grove-game/?v=117a862-postdeploy` loaded a fresh playable run. Haste's actual production selection is not yet verified because the first level-up randomly offered Speed; the local run already confirmed Haste increases the HUD from 1.8 to 2.1/s.
+- Post-deploy run: wave 1 cleared at 1:54 with tree 10,000; wave 2 began at 2:55 with a 3,000 HP wall-repair toast. By 7:05 wave 2 was still active, with 8 kills, tree around 9,600, all gates breached, and a ranged enemy on the north lane outside the stationary hero's attack radius. After moving north, the run reached 9 kills and wave-two preparation by 7:58 with tree 10,000. This shows a manual-intercept guidance gap, not enough evidence to retune balance.
+- Next: add a compact direction/distance hint for the remaining wave threat when all enemies have spawned and no target is within auto-attack range; test with focused unit cases and a new run. Keep the damage-number candidate unpublished until visual QA. Continue observed runs; no idle time counts toward the attached 10-hour mission.
+- Local checkout has experimental changes beyond the production release; do not push local `main` wholesale. Update branch refs before cherry-picking/syncing.

@@ -116,3 +116,8 @@ Production check: a live run reached wave 2 with north and south gates broken. T
 ## Attack-speed blessing correction (2026-10-21)
 
 `明亮灵灵` divides the attack interval by 1.2, matching its stated +20% attacks-per-second bonus, capped by the 0.19-second minimum. Previously the choice was recorded but did not change combat rate. Local HUD confirmation changed the displayed rate from 1.8 to 2.1/s; the HUD rounds to one decimal. Production confirmation pending.
+
+
+## Ranged threat and wave pacing observation (2026-10-21)
+
+In a post-deploy wave-two run, all gates were breached and one ranged enemy remained outside the hero's 270-unit auto-attack radius while firing from the tree lane. The wave persisted until the player moved north to intercept; the run then recorded a ninth kill and entered preparation with the tree restored to full. This suggests a player-guidance gap. Do not reduce enemy health or siege pressure based on this single run; first communicate threat direction/distance and repeat the observation.
