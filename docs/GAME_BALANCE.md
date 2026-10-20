@@ -121,3 +121,8 @@ Production check: a live run reached wave 2 with north and south gates broken. T
 ## Ranged threat and wave pacing observation (2026-10-21)
 
 In a post-deploy wave-two run, all gates were breached and one ranged enemy remained outside the hero's 270-unit auto-attack radius while firing from the tree lane. The wave persisted until the player moved north to intercept; the run then recorded a ninth kill and entered preparation with the tree restored to full. This suggests a player-guidance gap. Do not reduce enemy health or siege pressure based on this single run; first communicate threat direction/distance and repeat the observation.
+
+
+## Threat distance guidance (2026-10-21)
+
+When all wave enemies have spawned, show the nearest non-jungle wave threat's compass direction and distance only if it is outside the hero's auto-attack range. This informs the player about distant siege pressure without changing enemy movement, attack range, hero auto-targeting, or wave balance. Local desktop display is verified; narrow-screen fit remains to be checked.

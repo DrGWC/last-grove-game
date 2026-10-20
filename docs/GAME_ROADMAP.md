@@ -101,3 +101,8 @@
 
 - Haste effect fix deployed in `117a862`; Pages workflow #90 succeeded. Local HUD verified the effect, but the first post-deploy level-up randomly offered Speed instead.
 - New playtest note: wave two remained active with one distant ranged enemy while the hero stayed at the tree. Moving toward the visible north-lane threat ended the wave. Improve enemy-distance/intercept feedback so players know when to move out and engage; preserve manual interception as a gameplay choice.
+
+
+## 2026-10-21 update — distant-threat guidance
+
+- Local candidate displays the nearest out-of-range wave threat's direction and distance after all enemies spawn. It is gold-highlighted beside the camp hint, while interception remains a player choice. Three focused tests added; 44/44 pass and local desktop play shows the hint. Check narrow-screen fit after publishing.

@@ -261,3 +261,9 @@
 - Isolated Haste fix published as `117a8624735fbae57b74d45d1092b3a5e078f858`; GitHub Pages workflow #90 succeeded. Cache-busted post-deploy page loaded and entered gameplay.
 - Live wave-one run cleared at 1:54 with the tree at 10,000. Wave two began at 2:55 and showed 3,000 wall HP repaired. Its first level-up was Speed, not Haste; local visual Haste verification remains the only confirmed selection.
 - At wave two / 7:05, the run had 8 kills, tree about 9,600, and all gates broken. One ranged threat remained visible at the north lane, outside the stationary hero's attack radius. Moving north to intercept coincided with kill 9, full tree health, and wave-two preparation by 7:58. Treat this as a UX/targeting observation, not a balance result.
+
+
+## 2026-10-21 — Direction and distance hint for distant wave threats
+
+- Added a gold-highlighted direction/distance hint beside the nearest-camp status once all wave enemies are spawned and the nearest non-jungle threat is outside the hero's attack range. The hint does not alter combat or enemy movement; players choose whether to intercept.
+- Three tests cover compass direction/distance, in-range/empty cases, and jungle filtering. Full suite passes 44/44; inline script syntax and whitespace checks pass. Local desktop play showed `最近营地：西南 · 5.2 km · 威胁：南侧 · 663 m`. Narrow-screen visual confirmation remains pending.

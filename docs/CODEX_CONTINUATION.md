@@ -194,3 +194,10 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Post-deploy run: wave 1 cleared at 1:54 with tree 10,000; wave 2 began at 2:55 with a 3,000 HP wall-repair toast. By 7:05 wave 2 was still active, with 8 kills, tree around 9,600, all gates breached, and a ranged enemy on the north lane outside the stationary hero's attack radius. After moving north, the run reached 9 kills and wave-two preparation by 7:58 with tree 10,000. This shows a manual-intercept guidance gap, not enough evidence to retune balance.
 - Next: add a compact direction/distance hint for the remaining wave threat when all enemies have spawned and no target is within auto-attack range; test with focused unit cases and a new run. Keep the damage-number candidate unpublished until visual QA. Continue observed runs; no idle time counts toward the attached 10-hour mission.
 - Local checkout has experimental changes beyond the production release; do not push local `main` wholesale. Update branch refs before cherry-picking/syncing.
+
+
+## Resume checkpoint — 2026-10-21, distant-threat hint candidate
+
+- Local repo commit `d5555e1` adds `nearestThreatHint()` to the camp-status line when every wave enemy has spawned and the nearest non-jungle enemy is outside auto-attack range. It reports compass direction and distance, gold-highlighted; no AI/stat changes. Local screenshot confirmed at wave 1 / 0:55.
+- Added `tests/threat-hint.test.js`; full local suite 44/44; inline script parse and `git diff --check` pass. Phone-width visual QA is still pending.
+- Production base is `4cc83adf90318b7daaab0f9c1cac39308d372be0`. Publish only the isolated hint patch, new test, and four docs on this base. After Pages success, verify a cache-busted page and continue threat-interception playtests. Do not push local `main` wholesale because it has experimental damage-feedback and warning changes.
