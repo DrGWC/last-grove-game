@@ -180,13 +180,19 @@ Local build run reached wave 3. Wave 1 repair toast: 1,500. Wave 2 clear at 4:03
 Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tree 10,000 and north/south walls at 0%; wave 2 began at 2:18 with toast `城墙修复 3000`, north/south at 25%, east/west at 100%. Shop preview also appeared in published smoke test. Live playtest is active at wave 2; continue observing threat behavior and complete one-hour playtest.
 
 
-## Resume checkpoint — 2026-10-21, Haste verified locally
+## Current candidate — upgrade effect fix
 
-- Published base: `57c37f5e2b21ab88bc4c571fcfbe5506239a36d6` (documentation update atop stable game commit `2a2b94c`). Local `main` has 13 additional commits and experimental changes; do not publish that branch wholesale.
-- Isolated fix: Haste now applies through shared blessing logic; its interval is divided by 1.2 and capped at 0.19 seconds. Added tests. Local suite: 41/41; inline JavaScript syntax and whitespace checks pass.
-- Local visual QA: wave 2, game time 4:05, choosing `明亮灵灵` displayed its effect toast and changed the HUD from 1.8 to 2.1 attacks/second (one-decimal display). Tree 9,022/10,000, hero 140/140, 8 kills, four walls breached.
-- Next: verify Pages deployment and test the production effect if practical. Continue studying wall recovery and later-wave defense; keep floating damage labels unpublished pending visual QA. About 10 focused minutes added this cycle; the 10-hour mission remains incomplete; do not count idle time.
+- Production `2a2b94c` run has reached wave 2, game time about 5:24, with 5/5 spawned, tree 9,700/10,000, hero 100/100, 8 kills, and three walls at 0% while west remains 100%. The player is near the tree; continue observing. The deployed run showed 1.8 attacks/s after selecting `明亮灵灵`, exposing an inert upgrade.
+- Local working copy adds `applyBlessing(id)` and correct haste math (`fireRate / 1.2`, lower-bounded at .19); it leaves other blessing stacking semantics intact. Tests now pass 41/41, inline script syntax and diff check pass. Not yet committed, visually verified, or deployed.
+- Next: test the local upgrade HUD during a level-up, commit and update docs, then publish this isolated fix and verify Pages. Continue the live run and log wave 2 repair results; mobile shop QA and damage popup capture remain open.
 
+## Resume checkpoint — 2026-10-21, local Haste verification
+
+- Repo: `/Users/gohweichyn/Documents/Codex/2026-10-19/i/project/last-grove-game`, branch `main`; working tree was clean before this documentation update. Local HEAD `217390a` is 13 commits ahead of fetched `origin/main` (`57c37f5`). Do not push local `main` wholesale: it includes independent experimental changes. Published game baseline remains `2a2b94c`; docs-only remote commit `57c37f5` is current origin/main.
+- Commit `217390a` fixes the inert Haste level-up with `applyBlessing(id)` and adds tests. Full suite: 41/41; inline script syntax and `git diff --check` pass.
+- Visual QA in a local run: wave 2, game time 4:05, level-up offered Haste; selection displayed `明亮灵灵 已生效` and HUD attack rate rose from 1.8 to 2.1/s (one-decimal rounding). Tree was 9,022/10,000, hero 140/140, kills 8, all four walls breached. This does not yet verify production.
+- Next: publish only the Haste change (plus test and docs) on top of `57c37f5` through GitHub Git Data API using its exact parent SHA; ensure the `index.html` blob is full-length. Verify Pages workflow and the cache-busted live build. Continue observing wall recovery and late-wave defense. Keep floating damage numbers unpublished until their visual QA is captured.
+- About 10 focused minutes were added this resumed cycle, including the local playtest. The attached 10-hour mission remains incomplete; do not count idle time.
 
 ## Latest checkpoint — 2026-10-21, Haste release and production sample
 
@@ -195,13 +201,11 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Next: add a compact direction/distance hint for the remaining wave threat when all enemies have spawned and no target is within auto-attack range; test with focused unit cases and a new run. Keep the damage-number candidate unpublished until visual QA. Continue observed runs; no idle time counts toward the attached 10-hour mission.
 - Local checkout has experimental changes beyond the production release; do not push local `main` wholesale. Update branch refs before cherry-picking/syncing.
 
+## Local candidate — distant-threat guidance (2026-10-21)
 
-## Resume checkpoint — 2026-10-21, distant-threat hint candidate
-
-- Local repo commit `d5555e1` adds `nearestThreatHint()` to the camp-status line when every wave enemy has spawned and the nearest non-jungle enemy is outside auto-attack range. It reports compass direction and distance, gold-highlighted; no AI/stat changes. Local screenshot confirmed at wave 1 / 0:55.
-- Added `tests/threat-hint.test.js`; full local suite 44/44; inline script parse and `git diff --check` pass. Phone-width visual QA is still pending.
-- Production base is `4cc83adf90318b7daaab0f9c1cac39308d372be0`. Publish only the isolated hint patch, new test, and four docs on this base. After Pages success, verify a cache-busted page and continue threat-interception playtests. Do not push local `main` wholesale because it has experimental damage-feedback and warning changes.
-
+- Working tree adds `nearestThreatHint()` and appends its output to the camp status when the wave has spawned all enemies and the nearest non-jungle threat lies outside auto-attack range. It reports compass direction and meters/kilometers; gold color differentiates it. No gameplay stats or AI behavior change.
+- Added `tests/threat-hint.test.js` covering direction/distance, empty/in-range cases, and jungle filtering. Full suite 44/44, inline JS syntax, and `git diff --check` pass. Local screenshot verified the text at desktop width during wave 1; narrow screen not yet checked.
+- Next: publish only the hint patch, its new test, and current docs based on remote `4cc83ad`; verify Pages and a fresh run. Then seek a way to exercise the layout at phone width. The local branch contains other unverified changes; do not push it wholesale.
 
 ## Latest release checkpoint — 2026-10-21, threat hint live
 
@@ -212,3 +216,12 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Active production run continuation: tab 47, `https://drgwc.github.io/last-grove-game/?v=2d73cb-hint`, now at wave 2 / 5 of 5, game time 2:31; tree 10,000, hero 100, walls north/east/south/west 25/100/25/100, 4 kills, hint east · 3.4 km. Keep this run if continuing from the browser; it is in wave 2.
 
 - Most recent browser state: production run tab 47 is paused at wave 2 / game time 3:43. HUD: tree 9,900, hero 100, kills 6, wall health N/E/S/W = 0/0/0/61, hint north · 527 m. Expanded map remained translucent with the world beneath; Escape closed map by pausing the run. Resume with the `继续守护` button if continuing browser play.
+
+## Latest production checkpoint — shop/equipment and wave-four boss
+
+- Repo: `/Users/gohweichyn/Documents/Codex/2026-10-19/i/project/last-grove-game`; branch `main`, local tree was clean before this documentation update; local main remains ahead 19 and behind 1 relative to origin. Do not push local main wholesale. Published gameplay HEAD remains `2d73cb36d8fd4b9232ed8321764f9340cdf8848b`; Pages workflow #92 succeeded.
+- Live tab 47 (`https://drgwc.github.io/last-grove-game/?v=2d73cb-hint`) remains active at wave 4, game time around 14:51, 7/7 spawned, 22 kills, tree 9,780/10,000, hero 160/160, all walls broken, gold 32. Continue from this tab; do not reload.
+- Production verification in this run: Haste 1.8→2.1/s, then 2.1→2.6/s; staff/armor/boots purchases and replacement math; equipment loadout panel; resin 9,300→10,000 and disabled at full; potion HP 36→81. The three gear slots and one-weapon replacement rule display correctly.
+- Wave 2 cleared at 6:00 after north-lane intercept, tree 9,900, 9 kills. Wave 3 cleared at 9:46 with tree 8,800, 15 kills. Wave 4 boss announcement routed southeast; charge-circle cue appeared; boss defeated at 13:39 for +40 gold, +1 attack, +1,500 tree HP. Hero fell to 15 HP on the detour; return warning worked and hero later recovered to full. Treat balance evidence as provisional.
+- Approx. 12 focused minutes of production observation and interaction added this cycle. The one-hour observed playtest and 10-hour mission remain active and incomplete. Count honestly; do not count unattended game time.
+- Next: continue this run into wave 5 and check post-boss sustainability; watch return-warning timing. Shop/equipment actions had no reproduced defect, so avoid adjusting prices/effects without further evidence. Narrow-screen shop QA remains open.

@@ -250,11 +250,17 @@
 - Deployed build also passed a fresh-cache start-screen smoke test and showed the gear comparison preview before purchase. Pages workflow #88 succeeded.
 
 
-## 2026-10-21 — Fixed and verified the Haste blessing
+## 2026-10-21 — Fixed missing attack-speed blessing effect
 
-- Production playtesting showed that selecting `明亮灵灵` left the HUD at 1.8 attacks/second. Added its missing effect: divide the attack interval by 1.2, respecting the existing 0.19-second floor. Added shared blessing application logic and automated coverage for all blessing outcomes.
-- Local verification: selected Haste at level 2 in wave 2; the effect toast appeared and HUD rate rose from 1.8 to 2.1 attacks/second. HUD values are rounded to one decimal. Full suite 41/41 passed; inline script syntax and `git diff --check` passed. About 10 focused minutes in this resumed cycle; idle time excluded. Production verification pending.
+- Production playtest reached wave 2, level 2. After selecting `明亮灵灵` (attack speed +20%), the HUD still showed 1.8 attacks/second. Code inspection confirmed the upgrade handler never changed `hero.fireRate`; the blessing had been recorded but its promised effect was missing.
+- Added shared `applyBlessing(id)` logic for all blessing choices and implemented haste as `fireRate / 1.2`, capped at the existing 0.19-second minimum. That yields the promised +20% attacks per second rather than +25%. Speed, damage, tree heal and vitality remain applied; magnet and thorns continue to use their existing stack counters.
+- Added four tests for blessing stat changes, caps, and stacking. Full suite passes 41/41; inline JS syntax and `git diff --check` pass. Local browser visual verification of the changed attack-speed stat and production deployment are pending.
 
+## 2026-10-21 — Haste upgrade verified locally
+
+- Re-ran the complete suite: 41/41 passed. Inline JavaScript syntax and `git diff --check` passed.
+- Local playtest reached level 2 during wave 2 at 4:05. Selecting `明亮灵灵` showed `明亮灵灵 已生效` and raised the HUD from 1.8 to 2.1 attacks/second. The HUD rounds to one decimal; implementation divides the attack interval by 1.2, a true +20% attacks-per-second effect.
+- At selection: tree 9,022/10,000, hero 140/140, 8 kills, all four walls breached. Production verification remains pending. About 10 focused minutes added in this cycle; unattended time not counted.
 
 ## 2026-10-21 — Haste fix deployed; production playtest resumed
 
@@ -262,12 +268,11 @@
 - Live wave-one run cleared at 1:54 with the tree at 10,000. Wave two began at 2:55 and showed 3,000 wall HP repaired. Its first level-up was Speed, not Haste; local visual Haste verification remains the only confirmed selection.
 - At wave two / 7:05, the run had 8 kills, tree about 9,600, and all gates broken. One ranged threat remained visible at the north lane, outside the stationary hero's attack radius. Moving north to intercept coincided with kill 9, full tree health, and wave-two preparation by 7:58. Treat this as a UX/targeting observation, not a balance result.
 
-
 ## 2026-10-21 — Direction and distance hint for distant wave threats
 
-- Added a gold-highlighted direction/distance hint beside the nearest-camp status once all wave enemies are spawned and the nearest non-jungle threat is outside the hero's attack range. The hint does not alter combat or enemy movement; players choose whether to intercept.
-- Three tests cover compass direction/distance, in-range/empty cases, and jungle filtering. Full suite passes 44/44; inline script syntax and whitespace checks pass. Local desktop play showed `最近营地：西南 · 5.2 km · 威胁：南侧 · 663 m`. Narrow-screen visual confirmation remains pending.
-
+- Added `nearestThreatHint()` and display beside the existing nearest-camp status after all wave enemies have spawned. The hint selects the nearest non-jungle enemy outside the hero's attack range, gives compass direction and metric distance, and uses gold emphasis. It disappears when there is no out-of-range wave threat. The hero still must choose whether to intercept.
+- Added three unit cases for direction/distance, in-range/empty cases, and ignoring jungle creatures. Full suite passes 44/44; inline JavaScript syntax and `git diff --check` pass.
+- Local screenshot at wave 1 / 0:55 showed `最近营地：西南 · 5.2 km · 威胁：南侧 · 663 m` beside the HUD, legible at the tested desktop size. Narrow-screen visual confirmation is still pending. About 8 focused minutes added to this work cycle; no idle time counted.
 
 ## 2026-10-21 — Threat direction hint deployed and live-verified
 
@@ -277,3 +282,12 @@
 - Continued the same cache-busted production run into wave 2 at game time 2:31. All 5 enemies had spawned, the threat hint updated to east · 3.4 km, tree stayed at 10,000, hero at 100, and intermission repair restored north/south walls to 25%. The tab is kept available for the next playtest.
 
 - Later in the same live run, at wave 2 / game time 3:43, the transparent expanded map still showed the world underneath. The hint had updated to north · 527 m; tree 9,900, hero 100, and west wall 61% with the other three gates breached. Paused the run at this checkpoint to preserve it for continuation.
+
+## 2026-10-21 — Production shop, gear, and boss playtest
+
+- Resumed the published `2d73cb` run at wave 2 / 3:53. Equipment panel confirmed staff + armor, empty boots, and attack 2, 1.8 attacks/s, move 205, HP 160. Production Haste selection at 4:00 changed 1.8→2.1 attacks/s.
+- Moving to the north threat cleared wave 2 at 6:00 with tree 9,900 and 9 kills. Wave 3 began with the hero away from the tree; tree fell to 8,800 before wave clear at 9:46. The tree return route then helped stabilize the run; a single sample cannot isolate each skill's contribution.
+- Purchased staff (18), armor (24), and boots (16) across the intermission/shop. Replacement previews respected existing bonuses; boot purchase changed move 205→235 and gold 30→14. Unaffordable items became disabled.
+- Bought tree resin at 9,300 HP: 12 gold restored the tree to 10,000 and disabled the resin button at full health. Later a life potion cost 8 and restored hero HP 36→81 (+45).
+- Wave 4 announced the southeast boss den. Its charge telegraph showed a gold danger circle and an explicit dodge prompt. Defeat at 13:39 granted +40 gold, +1 attack, and 1,500 tree healing. A second Haste blessing changed attack speed 2.1→2.6/s. Hero fell to 15 HP on the excursion; the return warning routed the hero toward the tree, where the hero later recovered to full.
+- Live checkpoint: wave 4 at 14:51, 7/7 spawned, 22 kills, tree 9,780/10,000, hero 160/160, all walls broken, gold 32. Approx. 12 focused minutes added; the one-hour observed-playtest and 10-hour mission remain incomplete.

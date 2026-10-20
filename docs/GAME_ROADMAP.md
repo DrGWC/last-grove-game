@@ -92,20 +92,22 @@
 - Production verification complete: live `2a2b94c` run confirmed the wave-one clear restores 3,000 HP across the two breached gates (25% each). The toast and wall HUD matched at 2:18; tree was full. Continue later-wave and mobile QA.
 
 
+- Fixed locally: level-up haste blessing now raises actual attacks per second by 20% (interval divided by 1.2); automated coverage validates all blessing effects. Production bug was observed directly: the 1.8/s stat stayed unchanged after selecting the upgrade. Verify local HUD then deploy and confirm the stat changes live.
+
 ## 2026-10-21 update — Haste fix
 
-- Haste now changes the attack interval to deliver its stated +20% attacks per second. Automated tests pass, and a local wave-two level-up showed the rate changing from 1.8 to 2.1/s. Publish and confirm on Pages; continue late-wave defense testing.
-
+- Local fix and browser verification complete: choosing `明亮灵灵` in a level-up changed the HUD from 1.8 to 2.1 attacks/second and showed the active toast. Automated suite 41/41 passes. Publish this isolated fix and confirm on Pages; continue testing mid/late-wave defense recovery.
 
 ## 2026-10-21 update — release and ranged-threat playtest
 
 - Haste effect fix deployed in `117a862`; Pages workflow #90 succeeded. Local HUD verified the effect, but the first post-deploy level-up randomly offered Speed instead.
 - New playtest note: wave two remained active with one distant ranged enemy while the hero stayed at the tree. Moving toward the visible north-lane threat ended the wave. Improve enemy-distance/intercept feedback so players know when to move out and engage; preserve manual interception as a gameplay choice.
 
+## 2026-10-21 update — distant-threat guidance candidate
 
-## 2026-10-21 update — distant-threat guidance
-
-- Local candidate displays the nearest out-of-range wave threat's direction and distance after all enemies spawn. It is gold-highlighted beside the camp hint, while interception remains a player choice. Three focused tests added; 44/44 pass and local desktop play shows the hint. Check narrow-screen fit after publishing.
-
+- Local candidate displays the nearest out-of-range wave threat's direction and distance after all enemies spawn. It is gold-highlighted beside the camp hint, while interception remains a player choice. Three focused tests added; 44/44 pass and local desktop play shows the hint. Check narrow-screen fit, then publish and verify Pages.
 
 - Threat direction/distance hint published in `2d73cb3`; Pages workflow #92 succeeded. Fresh production run verified the 656 m south-threat hint at 0:55 while the tree was full. Next: check phone-width line wrapping/readability, then continue late-wave manual-intercept tests.
+
+- Latest production session verified the shop's gear comparisons, three equipment slots, and health-potion/tree-resin affordability and max-health behavior. Wave 4 boss was beatable, with a visible charge telegraph and meaningful reward. Continue beyond wave 4 and check shop layout at narrow widths.
+- Current run stays active at wave 4 / 14:51 (22 kills, tree 9,780, hero 160, 32 gold). Continue late-wave pressure sampling before changing balance.

@@ -115,17 +115,23 @@ Production check: a live run reached wave 2 with north and south gates broken. T
 
 ## Attack-speed blessing correction (2026-10-21)
 
-`明亮灵灵` divides the attack interval by 1.2, matching its stated +20% attacks-per-second bonus, capped by the 0.19-second minimum. Previously the choice was recorded but did not change combat rate. Local HUD confirmation changed the displayed rate from 1.8 to 2.1/s; the HUD rounds to one decimal. Production confirmation pending.
+`明亮灵灵` now changes the attack interval from `fireRate` to `max(0.19, fireRate / 1.2)`, matching its stated +20% attacks-per-second bonus. The old handler only incremented the blessing counter and never modified attack interval. At the 0.19-second floor, further stacks cannot increase attack speed.
 
+Local playtest confirmed that the Haste blessing changes the displayed rate from 1.8 to 2.1 attacks/second. The HUD displays one decimal, while combat uses the underlying interval divided by 1.2. Production confirmation is pending.
 
 ## Ranged threat and wave pacing observation (2026-10-21)
 
 In a post-deploy wave-two run, all gates were breached and one ranged enemy remained outside the hero's 270-unit auto-attack radius while firing from the tree lane. The wave persisted until the player moved north to intercept; the run then recorded a ninth kill and entered preparation with the tree restored to full. This suggests a player-guidance gap. Do not reduce enemy health or siege pressure based on this single run; first communicate threat direction/distance and repeat the observation.
 
+## Threat distance guidance candidate (2026-10-21)
 
-## Threat distance guidance (2026-10-21)
-
-When all wave enemies have spawned, show the nearest non-jungle wave threat's compass direction and distance only if it is outside the hero's auto-attack range. This informs the player about distant siege pressure without changing enemy movement, attack range, hero auto-targeting, or wave balance. Local desktop display is verified; narrow-screen fit remains to be checked.
-
+When all wave enemies have spawned, show the nearest non-jungle wave threat's compass direction and distance only if it is outside the hero's auto-attack range. This informs the player about distant siege pressure without changing enemy movement, attack range, hero auto-targeting, or wave balance. Local desktop display is verified; narrow-screen fit and production behavior remain to be checked.
 
 Production verification for the threat hint: wave 1 at 0:55 showed the nearest out-of-range enemy as south, 656 m away, while the tree was full. The display does not change attack distance or balance. Phone-size legibility still needs QA.
+
+## Production shop and boss sample (2026-10-21)
+
+- Live gear values behaved as described: staff +1 attack (18 gold), armor +60 max HP (24), boots +30 movement (16). Replacement previews used current gear and Haste stacks; the shop disabled items the player could not afford.
+- Tree resin cost 12 and restored 2,500 HP, capped at 10,000; its button disabled at full. Life potion cost 8 and restored 45 HP (36→81 in the sample). The shop pause allowed purchases during active danger.
+- Wave 4 boss defeated at 13:39 after a golden-circle charge cue; reward was 40 gold, +1 attack, and 1,500 tree healing. Hero reached 15 HP on the excursion, then returned and recovered. This supports keeping the boss as a risk/reward detour; do not retune from one sample. Charge cue was readable at the tested desktop screenshot size.
+- The same run ended wave 3 at tree 8,800 despite eventual clearing; wave 4 boss healing restored tree health. More runs are needed to evaluate sustainability rather than this single successful boss clear.
