@@ -129,3 +129,4 @@
 - A local wave-2 screenshot showed the short combat toast and persistent “立即回防” badge occupying the same top-center position, making both harder to read.
 - Moved the persistent badge to 52px from the arena top (46px on narrow mobile screens), leaving the short toast at its original position. Local browser playtest at 1:34 visibly showed the yellow wave warning above the red persistent badge with clear spacing.
 - Re-ran the game script syntax check and `node --test tests/*.test.js` (12 passed); `git diff --check` passed. This is a presentation-only change; no balance or trigger thresholds changed.
+- A post-publish check caught that the GitHub blob upload had captured a truncated command output, briefly publishing an incomplete `index.html`. Restored the full 80,133-byte source from the prior verified commit and re-applied the three-line CSS change. The correction is pending publication and must be verified by checking the live page, not only the workflow result.
