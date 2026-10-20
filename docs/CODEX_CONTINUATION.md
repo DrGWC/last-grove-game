@@ -1,7 +1,7 @@
 # Codex continuation checkpoint
 
 - Repository: `DrGWC/last-grove-game`, branch `main`.
-- Latest game-code deployment: `de6f661` (`Keep tree defense skills within guarding range`), GitHub Pages workflow #62 succeeded. Documentation updates on `main` through #64 also deployed successfully; #63 was cancelled by the Pages concurrency rule when #64 replaced it. Local `main` matches `origin/main`.
+- Latest game-code deployment: `72c3378` (`Keep tree return warning visible earlier`), GitHub Pages workflow #66 succeeded. The prior implementation deployed as `de6f661` (#62); documentation updates through #65 also deployed. Local `main` matches `origin/main`.
 - Source is a single-file browser game in `index.html`; Pages deploys from `.github/workflows/deploy-pages.yml`.
 - Local validation server: `python3 -m http.server 8765` (exec session 77532).
 
@@ -9,7 +9,7 @@
 
 - Map waypoint selection closes the map, moves the hero, and sets a destination marker; outside click closes without changing the destination. Map zoom and the translucent full-screen map are live.
 - Shop/equipment overlays preserve the pause state they inherit. Auto-targeting gives extra weight to non-jungle enemies within 450 units of the tree while retaining elite/boss value. Numeric score cases passed; live acquisition choice still needs direct observation.
-- The tree warning currently triggers at 75% max HP: a one-shot toast plus a pinned danger badge that stays until the tree recovers above 75%. The earlier 60% threshold proved late in the away-from-base stress sample.
+- The tree warning currently triggers at 75% max HP: a one-shot toast plus a pinned danger badge that stays until the tree recovers above 75%; it hides on run end/restart. The earlier 60% threshold proved late in the away-from-base stress sample.
 - E root/heal and F tree shield now trigger only while the hero is within 1,200 world units of the Ancient Tree. Their ready label is `回防自动`, and hover guidance explains their defense role.
 
 ## Verification
@@ -39,4 +39,4 @@
 - Added a fixed alert badge at the top of the arena. It is hidden above 75% tree HP, remains visible through ordinary play until the tree heals above 75%, and is hidden on run end/restart. The one-shot toast still calls attention to the threshold crossing.
 - Four dependency-free Node tests now cover the E/F defense range and warning threshold boundary; all passed. Local visual pressure run at 75% showed the red badge at 1,808/10,000 tree HP around 2:09 and the Ancient Tree fell shortly after. Because the observation was one minute apart, the exact time from 75% crossing to failure is unknown; the badge is now clearly visible but return timing still needs finer live sampling.
 - The earlier 60% run showed tree HP falling to 479 and defeat at 2:16. Do not claim that the current alert guarantees enough return time from distant jungle camps.
-- Pending: commit/deploy this banner and 75% threshold update, then measure alert-to-failure timing in shorter observation intervals and test a return waypoint.
+- The 75% badge and threshold are deployed in `72c3378` (#66). A fresh online smoke page confirmed it stays hidden at full tree HP and showed the E-defense hover guidance; that online run was paused at 0:03. Still measure alert-to-failure timing in shorter intervals and test a return waypoint. The live online warning trigger itself is not yet verified.

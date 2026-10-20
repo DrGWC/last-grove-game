@@ -10,7 +10,7 @@
 - Shop weapon purchase verified to apply attack bonus and update equipped/disabled states.
 - Latest Live Pages workflow #62 succeeded; live checks verified paused shop close, map zoom and outside-click close, and the deployed E-skill return-to-defense guidance.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
-- Tree danger warning was raised from 25% to 60%, then moved to 75% with a persistent badge after a stress run showed the 60% alert too late; measure whether a return waypoint can save the tree.
+- Tree danger warning was raised from 25% to 60%, then moved to 75% with a persistent badge after stress runs showed the 60% alert was late. Code is deployed in Pages #66; measure whether a return waypoint can save the tree.
 
 ## Active
 
