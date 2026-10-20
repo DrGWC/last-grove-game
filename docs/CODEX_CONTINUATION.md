@@ -49,3 +49,17 @@ The longer autonomous mission is still active and incomplete. Track actual imple
 - Published logic suppresses the “return” warning when a non-jungle wave enemy is within hero auto-attack range +100; an active interception clears an existing warning only if tree HP is above 90%. The changed live page loaded these helpers and started normally. Observing the banner change during live combat remains pending.
 - The game remains at wave 1 start in the preserved live test tab at `?v=4926efc-wall-defense`.
 - Next: verify the updated banner while defending at a wall and with low tree HP; directly observe target selection among competing enemies; then continue wave 3 / boss test.
+
+## Latest live playtest checkpoint — 2026-10-21
+
+- Tested the same deployed page through wave 2 and one intermission camp. Wave 1 clear: tree 10,000; east wall 12%, other three walls broken; 4 kills; 40 gold. Purchased 藤木法杖 (18: attack 1 → 2) and 疾风短靴 (16: speed 235 → 265).
+- Wave 2 cleared at 5:45 with 9 kills, all walls broken, tree about 3,531/10,000 before level-up tree-heal blessing and nearby E recovery. With walls broken and the hero away, tree pressure accelerated; by the time the tree was near 5,000, returning from the lane was urgent. This is one sample; avoid balance changes until reproduced.
+- During the 75-second preparation, the northeast camp was cleared: camps 8 → 7, gold 38 → 56, XP 10% → 50%, hero HP 100 → 20. Two life potions and two tree resins restored hero/tree to 100/100 and 10,000/10,000; 16 gold remained. Shop inventory and equipped stats matched the purchases after closing the overlay.
+- Validation re-run: `/Users/gohweichyn/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test tests/*.test.js` — 12 passed; `git diff --check` passed. No game source changed in this test-only iteration.
+- Visual observation: the return warning can remain visible while the hero is at a gate if enemies are still outside auto-attack range; it appears actionable in that case, though the warning can visually overlap wave announcements. Review alert layering/wording. Browser console logs remain inaccessible.
+- Current live tab: `https://drgwc.github.io/last-grove-game/?v=4926efc-wall-defense` is paused in the shop-safe intermission state just after the camp check. Latest code commit remains `4926efc`; latest repository commit at start of this checkpoint was docs-only `d8321e2`. Deployment workflow #75 succeeded.
+- Next: commit updated notes; continue through wave 3 to see if current gear/camp recovery is sustainable; use live alert behavior and enemy placement to verify whether target scoring changes actual interception. Then test mobile map waypoint selection and continue toward the wave-4 boss.
+
+### Active time accounting
+
+- Approx. 6 minutes of focused browser playtest, observation, and validation for this follow-up; do not count game-time waits. The autonomous 10-hour mission remains active and incomplete.

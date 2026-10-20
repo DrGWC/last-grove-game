@@ -45,6 +45,21 @@
 - Found a false-positive UX case during that run: the “立即回防” banner remained on while the hero was within auto-attack range of east-lane enemies. Added a coverage check so the alert is suppressed/cleared during an active intercept when tree HP is above 90%; it still remains for low tree HP. Added matching tests; 12 passed. The alert refinement itself has not yet been browser-verified.
 - The online follow-up confirms the deployed source includes `activeWallDistance` and `hasHeroDefenseTarget`; the initial live HUD showed all four walls at 100%, tree at 10,000 HP, and a fresh wave ready. Browser console logs were unavailable. Live selection of a competing target and the alert-suppression case still need an observed scenario.
 
+## 2026-10-21 — Live wave-2 return and jungle economy check
+
+- Continued the deployed `?v=4926efc-wall-defense` run from 1:42 through the wave-2 break and first camp. Wave 1 cleared at the end of this sample with tree at 10,000, all walls except east broken (east at 12%), 4 kills, and 40 gold. The wave-1 bonus and kill/camp rewards leave meaningful preparation purchases.
+- Bought 藤木法杖 (18 gold): attack changed 1 → 2. Bought 疾风短靴 (16 gold): move speed changed 235 → 265. Shop displayed the weapon as equipped, disabled unaffordable replacements, and left 6 gold.
+- The east-side wave-2 defense kept its wall at 12% for the first sampled 17 seconds while the hero stayed at the gate. After the hero left to pursue red enemy markers, east wall fell to 0%; by 5:31, the tree was at 5,716/10,000. This shows wall pressure alone does not finish the wave, but a broken wall plus distant hero creates a short, sharp core-damage window.
+- Wave 2 cleared at 5:45 with the tree around 3,531/10,000, hero at 100/100, 9 kills, and all four walls broken. A level-2 blessing restored 2,000 tree HP; automatic E added further healing while back near the tree.
+- Sent the hero to the northeast camp during the 75-second intermission. The camp count changed 8 → 7, gold rose 38 → 56, experience advanced 10% → 50%, and the hero was reduced to 20/100 HP. This directly verifies the intended wave → jungle risk/reward loop.
+- In the separate pause-safe shop check, two life potions (8 each) and two tree resins (12 each) were bought. On closing the shop, HUD confirmed hero 100/100 and tree 10,000/10,000; 16 gold remained. Purchase state was applied immediately, while the paused HUD refreshed on resume.
+- Browser screenshots confirmed the active game and overlays visually. Full suite re-run: `node --test tests/*.test.js` — 12 passed. `git diff --check` passed. No source code changed in this playtest iteration; browser console logs remain unavailable.
+- Observed UX issue to investigate: the persistent return warning appears while the hero is at an outer gate with no enemy in auto-attack range. It may be accurate when attackers have passed the broken gate, but the badge can overlap wave notices; review visual priority and alert wording before changing trigger behavior.
+
+### Active time estimate
+
+- This follow-up used roughly 6 minutes of focused live play, observation, and validation; game-time waits were brief and are not counted as active development time. The 10-hour mission remains incomplete.
+
 ## 2026-10-21 — Keep tree-defense skills local to the defense
 
 - A pressure run exposed a strategic flaw: automatic E restored the Ancient Tree from anywhere, and the F shield could also cover the tree globally. This let the player remain away while the core skills silently handled defense.

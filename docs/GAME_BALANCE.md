@@ -11,6 +11,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 - The ancient tree has 10,000 HP.
 - Character death costs `level × 10` gold and respawns the character.
 - Live check: after wave 1 and four kills, the player had 40 gold; buying 藤木法杖 cost 18 and increased attack from 1 to 2.
+- 2026-10-21 live check: 藤木法杖 (18) raised attack 1 → 2; 疾风短靴 (16) raised move speed 235 → 265. After wave 2, one northeast camp raised gold 38 → 56 and XP 10% → 50%, but reduced hero HP to 20/100. Two life potions (8 each) and two Ancient Tree resins (12 each) restored hero and tree to full, leaving 16 gold. This is one successful sample; camp risk and reward scaling need more runs.
 
 ## Automatic skills
 
@@ -36,6 +37,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 - If an enemy is far from a broken assigned gate, it reassigns to the nearest standing wall; close attackers can enter through the breach.
 - Live wave test: north and south walls were broken by 1:36 in wave 1. All four were down by 3:28 in wave 2. Tree fell temporarily to 9,693 and recovered to full via E by 4:02; run cleared wave 2 at 9 kills.
 - Latest equipped live run: by 5:59 all four walls had fallen, but the tree remained at 10,000 HP, the player had 132/140 HP, and kills had reached 8. In the earlier away-from-tree run, tree reached 3,958 HP at wave-2 end; hero HP remained 100. Character and combat rolls materially changed tree pressure across the two samples.
+- New live wave-2 run cleared with all walls broken and tree around 3,531/10,000 before a 2,000-HP level-up blessing and automatic E recovery. During one interval with the hero away and gates broken, tree health fell from 5,716 to roughly 3,500 in about 15 seconds; this indicates a very short post-breach response window. Do not retune enemy damage from this single run, but prioritize testing a clearer breach alert and rapid return path.
 - A prior local test with one wall broken showed later attackers damaging the south wall to 85% while the tree stayed full. More tests needed to explain why later live runs lost all four walls faster; keep HP/damage provisional.
 - Live map waypoint check moved the nearest-camp HUD from 5.2 km to 4.2 km over roughly six game seconds; this verifies destination travel responds, but camp-clear and safe return timing still need evaluation.
 - Candidate online run at `?v=100ca96-radius4000`: banner was visible by wave-1 0:33, tree remained 10,000 HP, hero had 94 HP, and north wall was 34%; at 1:00 north and south walls were both broken, tree still had 10,000 HP. This is an observed sample only; warning onset and exact first wall-contact time were not captured.
