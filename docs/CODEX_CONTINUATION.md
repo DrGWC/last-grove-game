@@ -1,42 +1,32 @@
 # Codex continuation checkpoint
 
 - Repository: `DrGWC/last-grove-game`, branch `main`.
-- Latest game-code deployment: `72c3378` (`Keep tree return warning visible earlier`), GitHub Pages workflow #66 succeeded. The prior implementation deployed as `de6f661` (#62); documentation updates through #65 also deployed. Local `main` matches `origin/main`.
-- Source is a single-file browser game in `index.html`; Pages deploys from `.github/workflows/deploy-pages.yml`.
-- Local validation server: `python3 -m http.server 8765` (exec session 77532).
+- Current game-code commit before this checkpoint: `0b7aa36` (away-from-tree 90% warning); Pages deployment #68 succeeded. Current uncommitted change keeps that warning latched through return until tree HP recovers above 90%.
+- Source remains a single-file browser game in `index.html`; GitHub Pages deploys from `.github/workflows/deploy-pages.yml`.
 
 ## Current behavior
 
-- Map waypoint selection closes the map, moves the hero, and sets a destination marker; outside click closes without changing the destination. Map zoom and the translucent full-screen map are live.
-- Shop/equipment overlays preserve the pause state they inherit. Auto-targeting gives extra weight to non-jungle enemies within 450 units of the tree while retaining elite/boss value. Numeric score cases passed; live acquisition choice still needs direct observation.
-- The tree warning currently triggers at 75% max HP: a one-shot toast plus a pinned danger badge that stays until the tree recovers above 75%; it hides on run end/restart. The earlier 60% threshold proved late in the away-from-base stress sample.
-- E root/heal and F tree shield now trigger only while the hero is within 1,200 world units of the Ancient Tree. Their ready label is `回防自动`, and hover guidance explains their defense role.
+- Mobile/desktop map waypoint selection closes the map and moves the hero; outside click closes without changing destination. Map zoom and translucent full-screen presentation remain live.
+- Shop and equipment are separate overlays; they pause while open, preserve inherited pause state, and close with outside click. The live shop showed separate weapon/gear, potion, and skill-book lists. A staff purchase changed gold from 32 to 14, attack from 1 to 2, and marked the weapon equipped while unaffordable replacements were disabled.
+- E root/heal and F tree shield require the hero within 1,200 world units of the tree. Five dependency-free Node tests cover those boundaries, the away alert threshold, and warning persistence; all pass.
+- Tree alert starts at 90% max HP while hero is more than 1,200 units away, and at 75% while nearby. The current local change keeps an activated alert visible until tree HP rises above 90%, avoiding it disappearing immediately when the hero returns and the threshold drops to 75%.
 
-## Verification
+## Latest verification
 
-- Pages workflows #62 (`de6f661`) and #64 (`6ff0c9f`) succeeded. #63 was superseded/cancelled; the final #64 deploy is successful.
-- `node --test tests/tree-defense-skills.test.js`: 3 passed (at-range siege, outside-range siege, and no-threat case).
-- Inline game script syntax check and `git diff --check` passed.
-- Fresh online build `?v=de6f661-defense-range` loaded the new E status and hover title. Browser run at 1:17 was paused with tree 10,000/10,000; this was a load/UI smoke check, not the warning scenario.
-- Local multi-wave pressure run directly showed the 60% alert at 4,299/10,000 HP (timer 5:19) while the hero was away. All four walls were broken. After selecting a return waypoint, tree HP rose from 2,383 at 5:51 to 3,134 at 5:56 and E showed cooldown, consistent with the heal firing after the hero returned within range. The player then chose Ancient Tree Breath, raising tree HP to 5,134, and paused the run at 6:00. F range is covered by the Node trigger test, not by a live unlock-and-siege test.
-- Prior live checks verified shop pause preservation and map zoom/outside-click dismissal. Mobile edge behavior and live target selection are still unverified.
+- Commit `0b7aa36` Pages workflow #68 succeeded.
+- Online wave-1 playtest at `?v=0b7aa36-away-warning`: hero waypointed away (camp-distance display changed); at 1:44 wave 1 cleared with tree full and 4 kills. Wave 2 ended at 5 kills and tree full by 3:04; the hero had respawned near the tree after losing HP, so this did not validate a fully-away alert threshold.
+- A separate online run on the preceding build showed the toast and pinned badge by 1:50 at 7,163/10,000 tree HP, with all walls broken. Sampling interval missed the exact crossing and hero distance, so do not claim that run proves the away 90% trigger or that a waypoint can save the tree.
+- On the current live shop: staff purchase applied correctly, shop tabs were distinct, current slot/attributes updated, and disabled purchase buttons explained affordability. Potion tab showed “已满” for full health/tree; skill-book tab showed learned Q/E and locked R/F.
+- Local automated validation after the current uncommitted latch change: `node --test tests/tree-defense-skills.test.js` — 5 passed; inline script syntax check and `git diff --check` passed.
 
-## Next steps
+## Next work
 
-1. Observe live auto-target choice when both a tree threat and a closer non-threat are within range.
-2. Verify map destination selection near the world edges and on narrow touch layouts.
-3. Continue a live run through wave 3 and, if feasible, the wave-4 boss; check the return trip after jungle rewards.
-4. Test F after unlocking it; then test ranged enemy aim and restart-state reset after death.
-5. Reassess wall durability and wave pacing after more runs; do not retune from one sample.
+1. Deploy the warning-latch fix, then verify its visible state from danger through return/recovery.
+2. Sample live tree HP and hero distance more frequently around an away-from-base warning; make a deliberate return attempt.
+3. Continue through wave 3 and, if practical, wave 4 boss; test F after unlocking it.
+4. Test target selection when an ordinary enemy and a tree threat are both eligible, and check map waypoint movement on narrow mobile layouts.
+5. Continue reviewing shop prices/gear slots and upgrade clarity from actual play, changing balance only with evidence.
 
-## Time tracking
+## Time accounting
 
-- The mission is still active and incomplete. Keep measured game-play time separate from development time and exclude idle waits. This cycle adds about 16 minutes focused implementation/verification and roughly 7 minutes 35 seconds of deliberate browser play observation (estimates).
-
-
-## Persistent warning follow-up — local pressure test
-
-- Added a fixed alert badge at the top of the arena. It is hidden above 75% tree HP, remains visible through ordinary play until the tree heals above 75%, and is hidden on run end/restart. The one-shot toast still calls attention to the threshold crossing.
-- Four dependency-free Node tests now cover the E/F defense range and warning threshold boundary; all passed. Local visual pressure run at 75% showed the red badge at 1,808/10,000 tree HP around 2:09 and the Ancient Tree fell shortly after. Because the observation was one minute apart, the exact time from 75% crossing to failure is unknown; the badge is now clearly visible but return timing still needs finer live sampling.
-- The earlier 60% run showed tree HP falling to 479 and defeat at 2:16. Do not claim that the current alert guarantees enough return time from distant jungle camps.
-- The 75% badge and threshold are deployed in `72c3378` (#66). A fresh online smoke page confirmed it stays hidden at full tree HP and showed the E-defense hover guidance; that online run was paused at 0:03. Still measure alert-to-failure timing in shorter intervals and test a return waypoint. The live online warning trigger itself is not yet verified.
+The longer autonomous mission is still active and incomplete. Track actual implementation/testing separately from game-running time; exclude idle waits and do not report the requested duration as complete prematurely.

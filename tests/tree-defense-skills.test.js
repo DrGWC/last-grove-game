@@ -13,6 +13,7 @@ function functionSource(name, nextName) {
   return html.slice(start, end);
 }
 const dangerSource = functionSource('isTreeInDanger', 'withinTreeGuardRange');
+const warningSource = functionSource('isTreeWarningActive', 'withinTreeGuardRange');
 const guardSource = functionSource('withinTreeGuardRange', 'castSkill');
 const skillsSource = functionSource('autoSkills', 'killEnemy');
 
@@ -60,4 +61,14 @@ test('tree danger uses an earlier threshold while the hero is away', () => {
   assert.equal(check(9000, 1201), true);
   assert.equal(check(4299, 1201), true);
   assert.equal(check(0, 1201), true);
+});
+
+
+test('tree warning stays visible through return and clears after recovery', () => {
+  const check = (hp, heroX, wasActive) => vm.runInNewContext(`${dangerSource}; ${warningSource}; isTreeWarningActive(tree, hero, wasActive)`, {tree:{x:0,y:0,hp,maxHp:10000},hero:{x:heroX,y:0},wasActive});
+  assert.equal(check(9000, 5000, false), true);
+  assert.equal(check(8000, 0, true), true);
+  assert.equal(check(9000, 0, true), true);
+  assert.equal(check(9001, 0, true), false);
+  assert.equal(check(8000, 0, false), false);
 });

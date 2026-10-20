@@ -65,3 +65,12 @@
 - Four Node tests passed, including 75% threshold boundary. Inline script syntax and `git diff --check` passed. Screenshot review confirmed the persistent banner is centered at the arena top and remains readable alongside the map and pause controls.
 - Code commit `72c3378` and Pages workflow #66 deployed the 75% banner. Fresh online smoke page confirmed the banner is hidden at full tree health and E hover guidance is present; run paused at 0:03. The online warning trigger itself still needs validation. Measure warning-to-failure with shorter intervals and test whether a return waypoint saves the tree before tuning again.
 - Adds about 5 minutes focused implementation and verification and about 2 minutes deliberate pressure-test observation for this sub-cycle. The latest cycle total is roughly 30 focused minutes and 15m30s of game observation.
+
+## 2026-10-21 — Earlier away alert and return-safe banner
+
+- Published `0b7aa36` (#68) uses 90% tree HP warning while the hero is farther than 1,200 units, and 75% when nearby. Five Node tests pass for E/F locality, threshold boundaries, and alert latching.
+- The online run showed wave 1 clearing at 1:44 with tree full (4 kills), then wave 2 reaching 5 kills and tree still full at 3:04. The hero had taken damage and later fired E, indicating it returned/respawned near the tree; this run does not isolate the away threshold.
+- A prior live pressure run displayed the alert by 1:50 at 7,163/10,000 HP after all walls broke. We missed the exact threshold crossing and did not measure a successful retreat, so the 90% live-away trigger and save window remain open questions.
+- Shop live review confirmed weapon/gear, potion, and skill-book tabs are distinct. Buying 藤木法杖 from 32 gold left 14, changed attack from 1 to 2, and marked the slot equipped; insufficient purchases were disabled. Potion stock correctly showed 已满; Q/E showed 已掌握 in skill books.
+- Found a UI-state edge case: because the danger threshold lowers from 90% to 75% when the hero returns, the alert could disappear at (for example) 80% without any recovery. Added a warning latch that persists until the tree heals above 90%; the five-test suite verifies it.
+- The latch change is currently local and uncommitted in this checkpoint. Publish after final validation, then verify the badge remains visible through the range change and clears only after recovery.

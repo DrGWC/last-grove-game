@@ -24,7 +24,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 
 - Wave enemies within 450 world units of the tree receive a 0.65 priority multiplier for hero auto-attacks. Bosses and elites retain distance-score multipliers of 1.5 and 1.35 respectively.
 - This defensive weighting helps the hero intercept active tree threats. The score logic passed numeric checks, but it needs live validation when an eligible target is within range; jungle enemies do not receive the tree-threat weight.
-- Tree danger alert currently triggers at 75% max tree HP and stays pinned over the playfield until tree HP recovers above 75%. A short one-shot toast appears at first trigger. The earlier 60% threshold was reached too close to failure during an away-from-base stress run; the latest 75% run showed the persistent badge at 1,808 HP but still lost the tree before the next observation. Earlier warning gives more lead time, but long-range recovery is not proven.
+- Tree danger warning triggers at 90% max HP while the hero is more than 1,200 world units away, and 75% while nearby. Once activated, the warning is designed to stay visible until tree HP recovers above 90%, so returning across the defense-range boundary does not hide it prematurely. Five Node tests cover threshold and latch boundaries. Live Pages has shown the warning at 7,163/10,000 HP, but the hero distance/crossing time were not sampled closely enough to prove the away threshold; a return waypoint has not yet saved the tree in a measured live test.
 
 ## Grove walls
 
@@ -48,5 +48,5 @@ Values here are current implementation starting points. Treat the new wall / ski
 
 ## Ancient Tree skill range
 
-- Automatic E healing/root and F protection trigger only when the hero is within 1,200 world units of the Ancient Tree. This stops global off-screen healing from erasing the cost of leaving the defense zone and gives the 75% return warning a gameplay purpose. Test three boundary/siege cases with `node --test tests/tree-defense-skills.test.js` before changing this range.
-- This is a first-pass range, not final balance. Check how long the player needs to return from the nearest camps and whether the 75% warning arrives early enough during a real wave.
+- Automatic E healing/root and F protection trigger only when the hero is within 1,200 world units of the Ancient Tree. This stops global off-screen healing from erasing the cost of leaving the defense zone and gives the return warning a gameplay purpose. Test three boundary/siege cases with `node --test tests/tree-defense-skills.test.js` before changing this range.
+- This is a first-pass range, not final balance. Check how long the player needs to return from the nearest camps and whether the 90% away / 75% nearby warning arrives early enough during a real wave.
