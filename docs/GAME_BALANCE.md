@@ -23,8 +23,8 @@ Values here are current implementation starting points. Treat the new wall / ski
 ## Automatic targeting
 
 - Wave enemies within 450 world units of the tree receive a 0.65 priority multiplier for hero auto-attacks. Bosses and elites retain distance-score multipliers of 1.5 and 1.35 respectively.
-- This is a candidate defensive weighting to help the hero intercept active tree threats. It needs live wave validation before balance conclusions; jungle enemies do not receive the tree-threat weight.
-- Tree danger warning candidate: trigger once at 60% of max tree HP (previously 25%), so the player gets a useful return-to-defense cue before the tree is near failure.
+- This defensive weighting helps the hero intercept active tree threats. The score logic passed numeric checks, but it needs live validation when an eligible target is within range; jungle enemies do not receive the tree-threat weight.
+- Tree danger warning triggers once at 60% of max tree HP (previously 25%), to give a return-to-defense cue before the tree is near failure. The latest run kept the tree at full HP, so the new visual alert has not yet been observed in play.
 
 ## Grove walls
 
@@ -34,6 +34,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 - Ranged attacks target their lane wall while it remains standing.
 - If an enemy is far from a broken assigned gate, it reassigns to the nearest standing wall; close attackers can enter through the breach.
 - Live wave test: north and south walls were broken by 1:36 in wave 1. All four were down by 3:28 in wave 2. Tree fell temporarily to 9,693 and recovered to full via E by 4:02; run cleared wave 2 at 9 kills.
+- Latest equipped live run: by 5:59 all four walls had fallen, but the tree remained at 10,000 HP, the player had 132/140 HP, and kills had reached 8. In the earlier away-from-tree run, tree reached 3,958 HP at wave-2 end; hero HP remained 100. Character and combat rolls materially changed tree pressure across the two samples.
 - A prior local test with one wall broken showed later attackers damaging the south wall to 85% while the tree stayed full. More tests needed to explain why later live runs lost all four walls faster; keep HP/damage provisional.
 - Live map waypoint check moved the nearest-camp HUD from 5.2 km to 4.2 km over roughly six game seconds; this verifies destination travel responds, but camp-clear and safe return timing still need evaluation.
 
