@@ -111,3 +111,9 @@
 
 - Latest production session verified the shop's gear comparisons, three equipment slots, and health-potion/tree-resin affordability and max-health behavior. Wave 4 boss was beatable, with a visible charge telegraph and meaningful reward. Continue beyond wave 4 and check shop layout at narrow widths.
 - Current run stays active at wave 4 / 14:51 (22 kills, tree 9,780, hero 160, 32 gold). Continue late-wave pressure sampling before changing balance.
+
+
+## Completed — attack-rate consistency (2026-10-21)
+
+- Unified combat cooldown, HUD, shop loadout, and weapon replacement preview around the 0.19-second minimum attack interval. Removed duplicate Haste scaling and added regression tests.
+- Still to verify: crossbow with stacked Haste in the deployed game; continue mobile shop review and later-wave balance sampling.
