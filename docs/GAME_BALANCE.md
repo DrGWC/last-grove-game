@@ -45,3 +45,8 @@ Values here are current implementation starting points. Treat the new wall / ski
 - Do Q/E auto-trigger thresholds save the player / tree at useful moments without firing wastefully?
 - Does the map waypoint feature make camp trips practical within preparation windows?
 - Are gate HP bars and breach visuals obvious on mobile?
+
+## Ancient Tree skill range
+
+- Automatic E healing/root and F protection trigger only when the hero is within 1,200 world units of the Ancient Tree. This stops global off-screen healing from erasing the cost of leaving the defense zone and gives the 60% return warning a gameplay purpose. Test three boundary/siege cases with `node --test tests/tree-defense-skills.test.js` before changing this range.
+- This is a first-pass range, not final balance. Check how long the player needs to return from the nearest camps and whether the warning arrives early enough during a real wave.

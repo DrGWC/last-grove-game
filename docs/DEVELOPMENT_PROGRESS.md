@@ -33,3 +33,16 @@
 
 - At the start of this cycle the active goal timer showed about 55 minutes elapsed across the thread, including conversation and wait time.
 - This cycle has accumulated about 22 minutes of focused implementation and verification (estimate; waiting for game time is excluded). The 10-hour mission is not complete; count active work separately from idle time.
+
+## 2026-10-21 — Keep tree-defense skills local to the defense
+
+- A pressure run exposed a strategic flaw: automatic E restored the Ancient Tree from anywhere, and the F shield could also cover the tree globally. This let the player remain away while the core skills silently handled defense.
+- E and F now require the hero to be within 1,200 world units of the Ancient Tree, both in their automatic trigger and at skill-cast entry. Their ready-state label says `回防自动`, with hover text explaining the defense-range requirement.
+- Added three dependency-free Node regression tests: E/F trigger at the 1,200-unit boundary during a siege, do not trigger at 1,201 units even with a damaged tree and nearby threats, and stay idle when there is no siege or tree damage. All 3 passed. Inline script syntax check and `git diff --check` passed.
+- Browser local run verified the new skill labels and hover descriptions. A prior local pressure sample before this change showed tree health recovering globally while the hero was away; the new anti-global-heal behavior has not yet been observed in a full multi-wave browser run.
+- The 60% warning still awaits a live visual trigger; the most recent run recovered above the threshold before reaching it.
+- Prior GitHub Pages deployment #61 for `11f2516` completed successfully. This code change is not deployed yet.
+
+### Active time estimate
+
+- Add about 7 minutes of focused code and verification this cycle, plus 2 minutes 45 seconds of deliberate play observation. Idle time is not counted. The 10-hour mission remains active and incomplete.

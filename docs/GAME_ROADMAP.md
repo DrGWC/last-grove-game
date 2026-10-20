@@ -29,3 +29,5 @@
 3. Improve upgrade variety and build synergies while keeping choices readable.
 4. Re-check mobile layout, touch input, map interaction, and long-run performance.
 5. Add a lightweight smoke-test harness if it fits the single-file architecture without adding dependencies.
+
+- Automatic E/F tree healing and shielding now require the hero to be in the 1,200-unit defense area; add browser verification under siege and tune travel/return timing based on that run.
