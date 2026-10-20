@@ -47,3 +47,30 @@ test('elite and boss threat bonuses combine with defensive targeting', () => {
   assertScore(score({ elite: true, wallId: 0 }, 270, 900, 100), 110);
   assertScore(score({ boss: true, wallId: 0 }, 270, 900, 100), 99);
 });
+
+const rangedMoveStart = html.indexOf('function moveRangedEnemyToTreeRange(');
+const rangedMoveEnd = html.indexOf('function treeDamageScale(', rangedMoveStart);
+assert.notEqual(rangedMoveStart, -1, 'missing ranged enemy approach helper');
+assert.notEqual(rangedMoveEnd, -1, 'missing ranged enemy helper boundary');
+const rangedMoveSource = html.slice(rangedMoveStart, rangedMoveEnd);
+
+test('ranged enemies approach the tree until inside attack range after a breach', () => {
+  const enemy = { x: 0, y: 0, speed: 100, attackRange: 300 };
+  const movedIntoRange = vm.runInNewContext(
+    `${rangedMoveSource}; moveRangedEnemyToTreeRange(enemy, tree, 1)`,
+    { enemy, tree: { x: 400, y: 0 } },
+  );
+  assert.equal(movedIntoRange, false);
+  assert.equal(enemy.x, 100);
+  assert.equal(enemy.y, 0);
+});
+
+test('ranged enemies stop moving and can attack inside range', () => {
+  const enemy = { x: 0, y: 0, speed: 100, attackRange: 300 };
+  const inRange = vm.runInNewContext(
+    `${rangedMoveSource}; moveRangedEnemyToTreeRange(enemy, tree, 1)`,
+    { enemy, tree: { x: 300, y: 0 } },
+  );
+  assert.equal(inRange, true);
+  assert.equal(enemy.x, 0);
+});

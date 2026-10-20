@@ -60,3 +60,6 @@ Values here are current implementation starting points. Treat the new wall / ski
 ## Wave-three breach ramp (candidate)
 
 The live wave-three sample destroyed the tree by 5:35 after all walls had fallen, despite the player clicking the return warning at 5:16 from roughly 2.8 km away. Waves 1–2 use a 0.10 tree damage multiplier; wave 3 now uses 0.25; wave 4+ uses 1.0. This stages the threat while retaining full damage for the later boss cycle. Re-test wave 3 with the published candidate before treating this as final balance.
+
+- Return-warning CTA was clicked online in wave 2 from about 542 units from the northwest camp; the hero returned near the tree in about 26 game seconds with full HP and the tree still full. The observation supports the control but is only one low-pressure sample.
+- Separate wave-stall defect: ranged enemies at breached gates could stop outside attack range, preventing them from reaching the tree and stalling the wave. A local candidate makes them approach into range. This is an AI correctness fix; the wave-three damage multiplier remains a balance candidate until a fresh deployed run reaches wave 3.

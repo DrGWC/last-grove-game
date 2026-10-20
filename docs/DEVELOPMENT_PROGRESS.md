@@ -139,3 +139,9 @@
 - Added a staged tree damage multiplier: waves 1–2 remain at 10%; wave 3 uses 25%; wave 4 onward uses 100%. This preserves the sharper late-game threat while giving the wave-three return path more time. Fifteen automated tests cover the stage boundaries and return target; inline JavaScript syntax, tests, and `git diff --check` pass. The wave-three multiplier is a candidate tuning and needs a deployed survival comparison before further adjustment.
 
 - Commit `f5a8303` deployed successfully in GitHub Pages workflow #80. Cache-busted live page loaded the normal start screen. The current wave-three multiplier remains an unverified balance candidate pending a fresh run.
+
+## 2026-10-21 — Live return control and ranged breach stall
+
+- Deployed version `f5a8303` live return warning was clicked in wave 2 from the northwest lane, with the nearest jungle camp at 542 m. The button immediately showed the return-route toast; 26 seconds later the HUD showed the hero back near the tree (nearest camp 5.2 km), hero HP 100, tree full, and wave combat continued. This confirms the CTA works online; it is not a survival guarantee under every threat level.
+- The run then exposed a wave stall: at 5:43, wave 2 still displayed 5/5 and a ranged enemy remained at the west breach, stationary and outside its tree attack range. Code inspection found that the post-breach ranged branch did not move enemies toward the tree if they were out of attack range.
+- Added `moveRangedEnemyToTreeRange()`: breached-lane ranged enemies now advance until inside attack range, then stop to fire. Two automated tests cover approach and in-range behavior. Combined suite passes 17/17; inline JS syntax and `git diff --check` pass. This AI fix is not yet committed or deployed in this checkpoint.

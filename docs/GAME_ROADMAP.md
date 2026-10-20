@@ -40,3 +40,6 @@
 
 - The persistent tree-danger badge is now an “立即回防” button that sends the hero to a safe point beside the tree. Click-to-return was manually observed in a local wave-3 run; the same run still lost the tree 19 seconds later, so route timing and the wave-three damage ramp need another deployed comparison.
 - Candidate tree damage ramp is 10% on waves 1–2, 25% on wave 3, then 100% from wave 4. Fifteen automated cases pass; live survivability after this tuning is not yet verified.
+
+- Online return-button playtest succeeded: from the northwest camp approach, clicking the warning routed the hero back near the tree in about 26 game seconds; the tree stayed full during the return. Continue to test later waves under active siege.
+- Fixed locally a wave-stall case where a ranged enemy at a broken lane gate stood still outside tree attack range. New tests pass for movement into range; deploy and verify the wave now clears.
