@@ -1,6 +1,6 @@
 # Game balance notes
 
-Values here are current implementation starting points. Treat the new wall / skill values as provisional until tested in a deployed run.
+Values here are current implementation starting points. Treat the new wall / skill values as provisional until tested in additional deployed runs.
 
 ## Run economy and progression
 
@@ -10,6 +10,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 - Later clear rewards: at least 6 gold, scaling by wave.
 - The ancient tree has 10,000 HP.
 - Character death costs `level × 10` gold and respawns the character.
+- Live check: after wave 1 and four kills, the player had 40 gold; buying 藤木法杖 cost 18 and increased attack from 1 to 2.
 
 ## Automatic skills
 
@@ -25,15 +26,14 @@ Values here are current implementation starting points. Treat the new wall / ski
 - Starting durability: 6,000 HP per section.
 - Melee wall damage uses enemy DPS × 20 per second.
 - Ranged attacks target their lane wall while it remains standing.
-- After a lane wall reaches zero HP, its attackers can continue to the ancient tree.
-
-- When an enemy’s assigned wall is broken and it remains more than 700 world units from that breach, it reassigns to the nearest standing wall. Near the broken gate, it enters instead.
-- Wave enemies now follow the route waypoints to their assigned wall. A destroyed breach alerts once, with a toast and burst effect.
-- Local first-wave test: north wall broke, enemies redirected toward the closest intact south wall (85% remained at 0:53), and the tree stayed full. More runs are needed before changing the 6,000 HP / DPS × 20 values. In another exploratory run, leaving the tree during wave 3 led to failure at 5:34 with 9 kills; confirm this risk after buying early gear before tuning values.
+- If an enemy is far from a broken assigned gate, it reassigns to the nearest standing wall; close attackers can enter through the breach.
+- Live wave test: north and south walls were broken by 1:36 in wave 1. All four were down by 3:28 in wave 2. Tree fell temporarily to 9,693 and recovered to full via E by 4:02; run cleared wave 2 at 9 kills.
+- A prior local test with one wall broken showed later attackers damaging the south wall to 85% while the tree stayed full. More tests needed to explain why later live runs lost all four walls faster; keep HP/damage provisional.
 
 ## Follow-up tuning questions
 
 - Does a single wave destroy a gate too quickly or too slowly?
-- Can the hero reliably clear a wave before the gate falls when staying near the tree?
+- Can the hero reliably clear waves before gates fall when staying near the tree?
 - Do Q/E auto-trigger thresholds save the player / tree at useful moments without firing wastefully?
+- Does the map waypoint feature make camp trips practical within preparation windows?
 - Are gate HP bars and breach visuals obvious on mobile?

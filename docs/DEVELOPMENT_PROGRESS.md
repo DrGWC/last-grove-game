@@ -1,6 +1,6 @@
 # Development progress
 
-## 2026-10-20 — UI, automatic skills, wall defense, and first-wave playtest
+## 2026-10-20 — UI, automatic skills, wall defense, and live playtests
 
 - Published shop and equipment outside-click dismissal; both overlays pause gameplay while open.
 - Published the expanded translucent map; the arena remains visible behind it and clicking outside map tools closes it.
@@ -10,26 +10,26 @@
 - Added one-time breach toast and burst feedback for melee/ranged wall destruction.
 - Fixed run restart retaining the previous mouse or touch movement target; fresh runs now reset joystick state too.
 - Added fallback targeting: if an assigned wall is already broken and an enemy is still more than 700 world units from that breach, it switches to the nearest standing wall. Enemies already near the breach can enter the grove.
-- Live Pages verification on `5bf7466`: HUD showed all four walls, no MP, Q/E automatic statuses, and E auto-cast; north wall took damage and broke during the first wave. The tree stayed at 10,000 HP through the 30-second preparation interval.
-- Live UI verification: shop opens above the game without covering the bottom-left HUD, click outside closed it; equipment click-outside close worked; map showed the arena beneath it and closed on outside click.
-- Local first-wave smoke play on the route-following build: at simulated 0:56, wave 1 was cleared, all 4 enemies defeated, tree at 10,000/10,000, north wall broken.
+- Latest deployed source at start of this cycle: `054e6cc` (`Reset movement state on restart`); Pages workflow `39470753104` succeeded.
+- Live second-wave run: wave 1 ended at 2:02 with 4 kills and tree at 10,000 HP. North and south walls had broken by 1:36. By 3:28 all four walls were down; tree briefly fell to 9,693, then automatic E restored it to 10,000 by 4:02. Wave 2 ended with 9 total kills.
+- Live shop check: buying 藤木法杖 at 40 gold cost 18, equipped it, and raised attack from 1 to 2. The shop rerendered the equipped state and correctly disabled unaffordable replacements.
+- Local exploration test exposed friction in long trips to camps: the nearest camp starts 5.2 km away. The expanded map now accepts a destination tap/click, marks it, closes, and starts click-to-move; a local test moved the nearest-camp readout from 5.2 km to 4.2 km. Clicking outside the map still closes it without setting a new destination. A narrow-screen title size adjustment keeps the map controls legible.
 
 ### Validation
 
-- Bundled Node `--check` on the single inline game script: passed after latest source edit.
+- Bundled Node `--check` for the inline game script: passed after map navigation change.
 - `git diff --check`: passed.
+- Local browser test: map destination selection closed the map and began travel; click-outside closed the map; game continued updating wall health and the nearest-camp indicator.
+- Live browser test: shop purchase and wave/wall/automatic-skill feedback verified. Browser console logs are unavailable in this tab; no runtime error was observed in the visible UI.
 - No package manifest or pre-existing automated test suite is present.
-- Route-following/fallback, breach alert, and restart-state reset are in the current local candidate; redeploy and verify the latest source on Pages before calling the new edits live-tested.
 
 ### Observations and tuning
 
-- Stationary auto-combat can clear the first wave without tree damage, while allowing one gate to break. That gives the defense system a useful first breaching event; verify it remains fair in wave 2 before tuning durability.
-- Local follow-up at simulated 0:53 confirmed the north gate had broken and a later wave enemy attacked the south gate instead (south at 85%); tree remained at 10,000/10,000, player 90/100, 3 kills.
-- Another stationary local run cleared waves 1 and 2 with 9 total kills; tree recovered from 83.5% to 99.5% under automatic E healing. The third wave then overwhelmed the tree while the hero explored (5:34, 9 kills).
-- Wall breach toast and burst are implemented; visually verify after a wall breaks in the next live run.
-- A restart bug was reproduced: a previous click-to-move target carried into a new run. The source now clears it and touch-stick state on `fresh()`; the correction is awaiting deployment.
-- Prior play tests showed exploration exposes the tree and that the first two wave rewards/preparation periods are the intended shop/jungle loop.
+- The first two waves can be cleared while stationary after buying the starter weapon; in the latest live run all walls were lost before wave 2 ended, but automatic E restored the tree to full. This leaves a clear wall-repair / defense-upgrade design opportunity, but current samples are too small to alter durability yet.
+- A prior exploratory run without early equipment failed at 5:34 while the hero was away from the tree. Test again with early gear and map navigation before rebalancing travel or tree damage.
+- Live breach alerts were visible in the accessibility tree for north, south, and east walls. Confirm their visual prominence on a narrow mobile viewport in a later check.
 
 ## Time accounting
 
-- This session has involved source audit, implementation, local and live browser checks, and deployment/docs work. The Codex thread elapsed counter read about 38m at the latest checkpoint; elapsed thread time is not identical to productive coding time. Do not report a 10-hour completion. Continue keeping concrete activity and idle time distinct.
+- The active goal timer showed about 55 minutes elapsed across the thread at the start of this cycle; that includes conversation and wait time, so it is not equivalent to productive development time.
+- This cycle was about 6 minutes of focused implementation and verification. The 10-hour mission target is not complete; continue with measured active work and keep idle time separate.

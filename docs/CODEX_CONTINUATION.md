@@ -2,37 +2,35 @@
 
 - Repository: `DrGWC/last-grove-game`
 - Branch: `main`
-- Current remote base before latest local candidate: `aa671b3` (`Add route-based wall AI and breach warning`)
+- Deployed remote base before current local candidate: `054e6cc8b5d05ab967d8d29954d8e816a2441240` (`Reset movement state on restart`).
 - Source: single-file browser game in `index.html`; GitHub Pages deploys on pushes to `main` via `.github/workflows/deploy-pages.yml`.
 - Local validation server: `python3 -m http.server 8765` (shell session 77532; stop when done).
 
 ## Current local candidate
 
-- Enemy road waypoint following; far-breach fallback to nearest standing wall at >700 units.
-- One-time toast and burst on wall destruction.
-- Restart clears old click-to-move and touch joystick state; a previous run’s move target had caused new runs to walk unexpectedly.
-- Shop/outside close, equipment/outside close, translucent map and outside dismissal were visually verified in a previous live run.
+- Adds waypoint selection on the expanded map: clicking its canvas maps the click to world coordinates, sets `moveTarget`, closes the map, and shows a small target marker before closing. Clicking map blank space still closes without selecting a destination.
+- Adds smaller map title text below 420px to help avoid crowding the zoom tools.
+- Prior deployed source includes road-following enemy routes, nearest standing wall fallback, one-time breach feedback, and restart movement-state reset.
 
 ## Verification
 
-- Local wall test at simulated 0:53: north gate broken; enemies attacked the south gate to 85%; tree 10,000/10,000, hero 90/100, 3 kills.
-- A stationary run cleared the first two waves with 9 kills; tree was restored to 99.5% after wave two. An exploratory wave-three run failed at 5:34 with 9 kills while the hero was away from the tree.
-- The restart target-retention bug was reproduced; the reset fix is written but not yet tested via a second death/restart cycle.
-- Bundled Node syntax check and `git diff --check` passed before this newest reset edit. Re-run both before publishing.
-- Previous Pages deployment for `aa671b3` succeeded; current reset edit and doc refresh still need commit/deploy/live check.
-- No package manifest or pre-existing test runner was present.
+- Node syntax check and `git diff --check` pass for the local map-navigation candidate.
+- Local browser verified map click closes it, then hero moves toward the chosen world position; nearest-camp hint changed from 5.2 km to 4.2 km. Clicking outside closes map. Full mobile viewport and world-edge/zoom cases remain untested.
+- Live site `?v=054e6cc-live` verified: wave 1 clear at 2:02, wave 2 clear by 4:02, all four walls fell but the tree recovered to full using E. Staff purchase correctly raised attack from 1 to 2 and reduced gold from 40 to 22.
+- Pages run `39470753104` for `054e6cc` succeeded. The map-waypoint candidate has not yet been deployed.
+- Browser console log capability was unavailable; no runtime error appeared in visible UI.
+- No package manifest or test runner exists.
 
-## Next actions
+## Next steps
 
-1. Re-run Node syntax check and `git diff --check`.
-2. Commit/publish latest reset fix and docs, verify Pages succeeds.
-3. Refresh live site, verify source is intact and start a new run. Confirm hero remains at spawn after a fresh start, observe a wall break warning, then check shop/map outside-close behavior.
-4. Play waves 1–3 with an early weapon purchase, and repeat narrow-screen/mobile checks.
-5. Continue the 10-hour target only as actual work time allows; the mission is not complete.
+1. Re-run syntax/diff checks after final changes.
+2. Commit and publish the map waypoint feature plus refreshed docs; verify GitHub Pages deploy.
+3. Refresh live game and test map waypoint, click-outside close, zoom, narrow mobile layout, and fresh-run movement reset.
+4. Continue a geared live run through wave 3 and, if possible, boss wave 4; check jungle travel and return timing.
+5. Continue the 10-hour mission only for actual work time. Goal timer was about 55 minutes across the thread at start of this cycle; it includes nonproductive waiting and is not a claim of 55 minutes coding.
 
 ## Known caveats
 
-- Wall durability/damage and auto-skill thresholds remain provisional.
-- Third-wave survival while exploring is not yet balanced; confirm after buying gear before tuning.
-- Breach alert and restart fix are not yet live-verified.
-- No automated test runner was present.
+- Wall durability/damage and auto-skill thresholds remain provisional; latest live sample lost all walls by end of wave 2 while the tree remained healthy.
+- Exploration while leaving the tree can still expose it; repeat previous failed wave-3 exploration with early gear.
+- Ranged behavior after a broken wall and map waypoints at mobile sizes/map edges are not verified.
