@@ -7,6 +7,8 @@
 - Published direct start without a skill-pick gate, automatic Q/E, shop-unlocked automatic R/F, and removal of mana and its potion.
 - Published four durable lane walls with health bars, breakable visuals, and ranged enemies targeting the wall.
 - Added route waypoint following for wave enemies so they follow the painted roads instead of cutting diagonally to the gate.
+- Added one-time breach toast and burst feedback for melee/ranged wall destruction.
+- Fixed run restart retaining the previous mouse or touch movement target; fresh runs now reset joystick state too.
 - Added fallback targeting: if an assigned wall is already broken and an enemy is still more than 700 world units from that breach, it switches to the nearest standing wall. Enemies already near the breach can enter the grove.
 - Live Pages verification on `5bf7466`: HUD showed all four walls, no MP, Q/E automatic statuses, and E auto-cast; north wall took damage and broke during the first wave. The tree stayed at 10,000 HP through the 30-second preparation interval.
 - Live UI verification: shop opens above the game without covering the bottom-left HUD, click outside closed it; equipment click-outside close worked; map showed the arena beneath it and closed on outside click.
@@ -17,13 +19,15 @@
 - Bundled Node `--check` on the single inline game script: passed after latest source edit.
 - `git diff --check`: passed.
 - No package manifest or pre-existing automated test suite is present.
-- The route-following/fallback and breach-alert code is now included in the local candidate; redeploy and verify the latest source on Pages before calling it live-tested.
+- Route-following/fallback, breach alert, and restart-state reset are in the current local candidate; redeploy and verify the latest source on Pages before calling the new edits live-tested.
 
 ### Observations and tuning
 
 - Stationary auto-combat can clear the first wave without tree damage, while allowing one gate to break. That gives the defense system a useful first breaching event; verify it remains fair in wave 2 before tuning durability.
-- Local follow-up at simulated 0:53 confirmed the north gate had broken and a later wave enemy attacked the south gate instead (south at 85%); tree remained at 10,000/10,000, player 90/100, 3 kills. This verifies the far-breach fallback on the local build.
-- Added a one-time breach toast and particle burst for melee and ranged wall destruction; verify its readability in the next online run.
+- Local follow-up at simulated 0:53 confirmed the north gate had broken and a later wave enemy attacked the south gate instead (south at 85%); tree remained at 10,000/10,000, player 90/100, 3 kills.
+- Another stationary local run cleared waves 1 and 2 with 9 total kills; tree recovered from 83.5% to 99.5% under automatic E healing. The third wave then overwhelmed the tree while the hero explored (5:34, 9 kills).
+- Wall breach toast and burst are implemented; visually verify after a wall breaks in the next live run.
+- A restart bug was reproduced: a previous click-to-move target carried into a new run. The source now clears it and touch-stick state on `fresh()`; the correction is awaiting deployment.
 - Prior play tests showed exploration exposes the tree and that the first two wave rewards/preparation periods are the intended shop/jungle loop.
 
 ## Time accounting

@@ -7,11 +7,12 @@
 - Direct start flow without a skill-selection gate; Q/E auto-use, R/F auto-use after shop unlock, no MP.
 - Four lane-specific breakable wall sections with per-side health feedback.
 - Wave enemies follow route waypoints and retarget the nearest standing wall when their assigned wall is broken before they reach its breach.
+- One-time wall breach toast/particles; game restart clears leftover click and touch movement state.
 - Four-lane wave routes, jungle camps, shop equipment slots, and nearest-camp HUD compass.
 
 ## Active
 
-- Deploy and verify the latest route-following, fallback-wall, and one-time breach warning on GitHub Pages.
+- Deploy and verify the latest route-following, fallback-wall, breach warning, and restart-state fix on GitHub Pages.
 - Observe the first two waves with the new wall behavior; tune wall durability, wall damage, and automatic-skill triggers only from additional play evidence.
 - Check narrow-screen/mobile layout and input after the new wall HUD.
 
