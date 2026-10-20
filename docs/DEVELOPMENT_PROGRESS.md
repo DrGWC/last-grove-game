@@ -273,3 +273,5 @@
 
 - Published isolated release `2d73cb36d8fd4b9232ed8321764f9340cdf8848b`; GitHub Pages workflow #92 succeeded. The source change includes only the threat hint, its test, and mission docs.
 - Fresh cache-busted production run at 0:55 in wave 1 displayed `最近营地：西南 · 5.2 km · 威胁：南侧 · 656 m`; tree was 10,000/10,000, hero 100/100, 3 kills, and 4/4 enemies spawned. This confirms the live hint appears at the right time. Narrow-screen fit remains untested.
+
+- Continued the same cache-busted production run into wave 2 at game time 2:31. All 5 enemies had spawned, the threat hint updated to east · 3.4 km, tree stayed at 10,000, hero at 100, and intermission repair restored north/south walls to 25%. The tab is kept available for the next playtest.
