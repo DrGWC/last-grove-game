@@ -11,6 +11,8 @@
 
 .hud-layout .bottom{margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
 .stick.active{display:block!important;position:fixed;left:0;top:0;bottom:auto;z-index:10;pointer-events:none;touch-action:none;transform:translate(-50%,-50%)}.app:has(.arena-wrap.playing){touch-action:none}@media(pointer:coarse){.arena-wrap.playing>.stick{display:none}}
+
+@media(max-width:650px){.app{gap:6px;padding:7px 8px 10px}.arena-wrap{height:52vh;min-height:280px}.hud-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}.card{padding:8px 10px;border-radius:14px}.hero-bars{grid-template-columns:1fr 1fr;gap:5px 8px;margin-top:7px}.stat-title{font-size:9px}.bar{height:7px;margin-top:6px}.xpbar{margin-top:6px}.hud-layout .bottom{margin-top:5px;padding-top:5px;gap:5px}.bottom .objective{font-size:9px;flex:1 1 100%}.dock{gap:5px}.dock button{padding:6px 7px;font-size:10px}.bottom>.skills-row{display:flex}.skills-row{gap:4px}.skill{min-width:0;padding:5px 6px}.skill b{font-size:9px}.skill small{font-size:8px}.pill{padding:5px 6px;font-size:9px}.minimap-panel{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:58px;padding:5px 9px}.minimap-panel h2{margin:0;font-size:10px}.minimap-panel #minimap{width:76px;height:50px;aspect-ratio:1.52}.controls{display:none}}@media(max-height:700px) and (max-width:650px){.arena-wrap{height:48vh;min-height:250px}}
 </style></head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="logo">🌳</div><div><h1>最后的林地</h1><p>古树守卫 · 生存挑战</p></div></div><div class="stats"><div class="pill">波次 <b id="wave">1</b></div><div class="pill">本波 <b id="waveProgress">0 / 4</b></div><div class="pill">⏱ <b id="time">0:00</b></div></div></header>
