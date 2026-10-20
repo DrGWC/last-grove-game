@@ -135,3 +135,9 @@ Production verification for the threat hint: wave 1 at 0:55 showed the nearest o
 - Tree resin cost 12 and restored 2,500 HP, capped at 10,000; its button disabled at full. Life potion cost 8 and restored 45 HP (36→81 in the sample). The shop pause allowed purchases during active danger.
 - Wave 4 boss defeated at 13:39 after a golden-circle charge cue; reward was 40 gold, +1 attack, and 1,500 tree healing. Hero reached 15 HP on the excursion, then returned and recovered. This supports keeping the boss as a risk/reward detour; do not retune from one sample. Charge cue was readable at the tested desktop screenshot size.
 - The same run ended wave 3 at tree 8,800 despite eventual clearing; wave 4 boss healing restored tree health. More runs are needed to evaluate sustainability rather than this single successful boss clear.
+
+
+## 2026-10-21 — Effective attack-rate cap
+
+- Combat uses a 0.19-second minimum attack interval (5.3 attacks/s). Haste grants +20% attacks/s by dividing the base interval by 1.2 and must not be applied again in the firing loop.
+- HUD, loadout, and gear replacement preview must all report the same capped rate used by combat. A 6.9/s HUD versus 5.3/s effective cadence was observed with crossbow/Haste. Fix deployed in `aa7b5d3`; recheck the full late-run combination before changing item balance.
