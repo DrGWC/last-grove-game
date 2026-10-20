@@ -11,6 +11,7 @@
 - Live second-wave run: wave 1 ended at 2:02 with 4 kills and tree at 10,000 HP. North/south walls broke by 1:36; all four walls were down by 3:28. The tree briefly fell to 9,693 and automatic E healed it to 10,000 by 4:02. Wave 2 ended with 9 kills.
 - Live shop check: 藤木法杖 cost 18 from 40 gold, equipped successfully, and raised attack from 1 to 2; unaffordable replacements were disabled.
 - Map controls live check: zoom button changed 100% to 125%; clicking outside closed the map. Prior live waypoint check confirmed click-to-move.
+- Added a candidate combat targeting weight for non-jungle enemies within 450 world units of the tree, so urgent tree threats can outrank an equally close ordinary target. Elite and boss multipliers remain. Validation is pending before publishing.
 
 ### Validation
 

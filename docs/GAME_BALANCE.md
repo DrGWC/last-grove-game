@@ -20,6 +20,11 @@ Values here are current implementation starting points. Treat the new wall / ski
 - F: 24-second cooldown; shop unlock; triggers when the tree is threatened by a group or the hero is surrounded.
 - Skills have cooldowns but no MP cost.
 
+## Automatic targeting
+
+- Wave enemies within 450 world units of the tree receive a 0.65 priority multiplier for hero auto-attacks. Bosses and elites retain distance-score multipliers of 1.5 and 1.35 respectively.
+- This is a candidate defensive weighting to help the hero intercept active tree threats. It needs live wave validation before balance conclusions; jungle enemies do not receive the tree-threat weight.
+
 ## Grove walls
 
 - Four sections correspond to north, east, south, and west wave lanes.

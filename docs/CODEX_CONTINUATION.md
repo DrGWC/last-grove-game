@@ -11,6 +11,7 @@
 - Expanded map waypoint selection translates map clicks to world destinations, closes the map, and displays a target marker. Clicking outside closes without changing the destination.
 - Shop/equipment overlays restore the pause state they inherited; closing a panel during active gameplay resumes normally.
 - Enemy road following, nearest-standing-wall fallback, breach feedback, and run-restart movement reset.
+- Latest local candidate: auto-targeting adds priority to non-jungle enemies within 450 units of the tree while retaining elite/boss weighting; this must be validated before publication.
 
 ## Verification
 
@@ -24,9 +25,10 @@
 ## Next steps
 
 1. Verify map zoom, click-outside close, and destination selection on narrow mobile widths and near map/world edges.
-2. Continue a geared live run through wave 3 and, if possible, boss wave 4; check jungle travel and return timing.
-3. Re-test restart-state reset after a death; assess ranged enemies after a wall breaks.
-4. Keep improving only with active work and accurate time tracking. The thread goal timer previously showed about 55 minutes across coding, conversation, and wait time; that is not 55 minutes of coding. The 10-hour mission remains incomplete.
+2. Validate the tree-threat auto-target priority in local and live combat, then check off whether it should remain.
+3. Continue a geared live run through wave 3 and, if possible, boss wave 4; check jungle travel and return timing.
+4. Re-test restart-state reset after a death; assess ranged enemies after a wall breaks.
+5. Keep improving only with active work and accurate time tracking. The thread goal timer previously showed about 55 minutes across coding, conversation, and wait time; that is not 55 minutes of coding. The 10-hour mission remains incomplete.
 
 ## Known caveats
 
