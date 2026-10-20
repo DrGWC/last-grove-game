@@ -201,3 +201,10 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Local repo commit `d5555e1` adds `nearestThreatHint()` to the camp-status line when every wave enemy has spawned and the nearest non-jungle enemy is outside auto-attack range. It reports compass direction and distance, gold-highlighted; no AI/stat changes. Local screenshot confirmed at wave 1 / 0:55.
 - Added `tests/threat-hint.test.js`; full local suite 44/44; inline script parse and `git diff --check` pass. Phone-width visual QA is still pending.
 - Production base is `4cc83adf90318b7daaab0f9c1cac39308d372be0`. Publish only the isolated hint patch, new test, and four docs on this base. After Pages success, verify a cache-busted page and continue threat-interception playtests. Do not push local `main` wholesale because it has experimental damage-feedback and warning changes.
+
+
+## Latest release checkpoint — 2026-10-21, threat hint live
+
+- Production commit `2d73cb36d8fd4b9232ed8321764f9340cdf8848b`; Pages workflow #92 succeeded. Fresh cache-busted production run `?v=2d73cb-hint` visually and accessibly showed `威胁：南侧 · 656 m` at wave 1 / 0:55, with 3 kills, hero 100/100, tree 10,000/10,000. Haste code is also on this production branch, but live selection has not yet been confirmed; the local HUD did confirm 1.8→2.1 after choosing Haste.
+- Local suite currently 44/44 after the threat hint; inline script syntax and `git diff --check` pass. Phone-width hint wrapping is not yet verified.
+- Next: inspect narrow-screen layout, continue a production run to later waves and test a threat intercept; capture a Haste choice if random level-up options offer it. Damage-number candidate remains unpublished pending visual QA. Keep the 10-hour mission open; count only focused work/playtest time.

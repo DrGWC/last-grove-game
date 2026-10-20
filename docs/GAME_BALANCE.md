@@ -126,3 +126,6 @@ In a post-deploy wave-two run, all gates were breached and one ranged enemy rema
 ## Threat distance guidance (2026-10-21)
 
 When all wave enemies have spawned, show the nearest non-jungle wave threat's compass direction and distance only if it is outside the hero's auto-attack range. This informs the player about distant siege pressure without changing enemy movement, attack range, hero auto-targeting, or wave balance. Local desktop display is verified; narrow-screen fit remains to be checked.
+
+
+Production verification for the threat hint: wave 1 at 0:55 showed the nearest out-of-range enemy as south, 656 m away, while the tree was full. The display does not change attack distance or balance. Phone-size legibility still needs QA.

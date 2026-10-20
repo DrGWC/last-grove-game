@@ -106,3 +106,6 @@
 ## 2026-10-21 update — distant-threat guidance
 
 - Local candidate displays the nearest out-of-range wave threat's direction and distance after all enemies spawn. It is gold-highlighted beside the camp hint, while interception remains a player choice. Three focused tests added; 44/44 pass and local desktop play shows the hint. Check narrow-screen fit after publishing.
+
+
+- Threat direction/distance hint published in `2d73cb3`; Pages workflow #92 succeeded. Fresh production run verified the 656 m south-threat hint at 0:55 while the tree was full. Next: check phone-width line wrapping/readability, then continue late-wave manual-intercept tests.
