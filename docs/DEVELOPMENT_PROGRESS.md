@@ -176,3 +176,75 @@
 - Wave 3 pressure test: after returning to the tree, the walls were all broken; one resin raised tree HP from 2,544 to 5,044, then automatic E and subsequent combat held it around 4,000–5,000 through 6:22. Four wave-3 enemies were killed; two remained alive for roughly 90 seconds, with kills holding at 13. A screenshot showed a ranged enemy about 322 units from the hero, near the 330-unit attack boundary.
 - That observation exposed a projectile reach mismatch: normal shots expired after 0.75 seconds (~307 units at 410 speed), shorter than the rabbit's 330-unit attack range. Added `projectileLifetime()` to size projectile flight time from attack range, speed, and target radius (0.8–1.8 second clamp), plus three numeric tests. Current validation passes 26/26; inline JavaScript parse and `git diff --check` pass. Projectile candidate is not yet published.
 - Continued the same online run: after moving about 80 world units toward the edge-of-range enemy, wave 3 cleared by 7:48 with 15 kills, level 2 · 70%, hero 82 HP, and tree 4,125 HP. During wave 4 the boss appeared at 8:09; a map waypoint reached the cave, and after the hero died/respawned, the boss followed toward the tree. At 9:04 wave 4 remained active, kills 19, tree 9,204/10,000, hero 46/100. Boss result still pending.
+
+## 2026-10-21 — Live camp, gear, and fourth-wave boss run
+
+- Tested published build `d032f3c` online with 熊: wave 1 cleared at 1:51; wave 2 cleared at 3:31 with 9 kills and tree at about 8,800/10,000. Bought 种子连弩 for 28 gold; attack speed changed from 1.8 to 2.6/s and range increased by 50. Buying 树皮护身衣 for 24 changed max/current HP from 140/132 to 200/192.
+- Cleared one southwest camp during wave-two preparation: camp count 8→7, +16 gold, +4 XP, and hero HP 132→112. Bought a life potion and tree resin for 20 gold total; both health bars returned to full.
+- Wave 3 cleared at 5:34 with 17 kills, tree 10,000/10,000, and hero 132/140. The pre-breach defense warning appeared at full tree health while the hero was away; its return button brought the hero close enough to defend before the wave ended.
+- Wave-four cave boss was defeated by 6:26 after selecting its map marker. Reward verified: +40 gold, +1 attack (from 3 to 4), and 1,500 tree HP. The boss did damage the hero during its telegraphed attack. Added two automated skill books (林风箭 26, 古树护盾 28); both activated automatically during the ensuing siege. Wave 4 cleared at 7:13 with 25 kills and tree at 7,431 after a resin purchase and E healing.
+- Wave 5 reached 5/8 spawned at 7:33 with hero full and tree 8,231. This run verifies early progression, a camp, equipment, and the wave-four boss; it does not establish late-wave balance.
+- Added a local combat-feedback candidate: short floating damage values for basic attacks and skills, incoming contact/boss hits, with a 36-entry cap. Automated suite passes 29/29, inline JS parses, and `git diff --check` passes. The local game loaded and progressed through wave 2, but the browser screenshots did not capture a hit popup; do not claim its visual appearance is verified yet. Keep this candidate unpublished until a screenshot shows the feedback clearly.
+- Approximately 35 focused minutes have been spent on this resumed development cycle; do not count the full mission target as complete. The 10-hour assignment remains active.
+
+- Continued the same published run through wave 8. Wave 6 cleared at 10:15 with 42 kills, tree 7,432/10,000 after one resin, and hero 220/220. Wave 7 cleared at 11:19 with 52 kills and tree 9,832/10,000. The auto E skill visibly kept repairing the tree through both waves.
+- Wave 8 boss was defeated at 11:50 for +40 gold, +1 attack and +1,500 tree HP; the tree showed 10,000 and hero 180/220. Took the +1 attack/skill damage blessing (attack rose from 5 to 7 counting the boss reward), and the hero remained in the southeast area. A return warning was visible while threats approached the tree, but I did not activate it in time. Tree fell from 5,761 at 12:04 to 0 by 12:10; run ended with 53 kills. I then bought resin at 1,884 tree HP, raising it to 4,121, but the remaining wave enemies completed the siege before the hero returned. This is not a balance conclusion: the experiment omitted the intended warning response. Repeat with an immediate return on warning before changing wave damage.
+- Observed the large map at 125% zoom with the boss marker and transparent game underneath. Clicking the boss marker closed the map; the hero traveled southeast and killed the boss during wave 8. Shop tabs (gear and potions) remained distinct; at 87 gold the potion was correctly disabled when hero HP was full while tree resin remained purchasable. Resin cost 12 and restored 2,500 tree HP.
+- Local combat-feedback change is committed as `98ad590` and passes 29/29 tests, inline JS syntax check, and `git diff --check`. Screenshots of local play still did not capture a damage number; keep the commit local until a real hit popup is visually confirmed. The current deployed page remains `d032f3c`.
+- Estimated focused work in this resumed cycle: about 65 minutes. The requested 10-hour mission remains incomplete. Do not count the browser's unattended time as development.
+
+## 2026-10-21 — Breached-lane return timing and readable damage feedback
+
+- Continued published `d032f3c` run. Wave 2 cleared at 2:32 with tree at 10,000, 9 kills, and +16 wave gold. Bought 种子连弩 (28): attack rose to 4 and attack speed to 2.6/s; bought 树皮护身衣 (24): max HP rose 100→160; bought 疾风短靴 (16): movement speed rose 205→235. These three equipment slots applied independently; 4 gold remained.
+- Cleared an eastern jungle camp during the 75-second intermission: camp count 8→7, +18 gold, +4 XP, hero HP 150→126. The expanded map stayed translucent with the arena visible and allowed a camp waypoint.
+- Wave 3 demonstrated a critical response window issue: with all four walls already broken and the hero about 2.9 km away, the return warning appeared at tree HP 9,587. After clicking it, tree HP fell to 2,262 in about 13 game seconds and reached zero before the hero could return. This is one run, but the warning arrives too late when wall coverage is already gone.
+- Added a local warning rule: when all walls are broken, a non-jungle wave enemy has spawned, and the hero is away without an active intercept, warn immediately; remain quiet during intermission. Added coverage tests. Full suite: 31/31; inline JavaScript syntax and `git diff --check` pass. Browser smoke test loaded the candidate start screen; the new wave warning has not yet been visually observed in-browser.
+- Damage labels now counter-scale against camera zoom and use a consistent 16 CSS-pixel font with a 3-pixel outline. Added zoom-scale regression coverage. The local gameplay screenshots still did not capture an unmistakable live popup; visual legibility, especially on mobile, remains unverified and this code stays unpublished.
+- Local changes are not yet committed or deployed. Remote Pages remains on `d032f3c`; the current local branch already contains two commits ahead of origin. Next: verify the breached-lane warning on the local build, capture a clear damage number at normal zoom, then commit and publish only after visual QA.
+- Focused work added in this continuation: approximately 25 minutes; the 10-hour mission remains incomplete. Browser game time was not counted as working time.
+
+
+## 2026-10-21 — Shop gear replacement previews
+
+- Continued the published `d032f3c` Bear run. Waves 1 and 2 cleared at 1:25 and 3:17; tree remained at 10,000 HP, hero at 132/140, and wave rewards brought gold to 38. Bought 藤木法杖, 树皮护身衣, and 疾风短靴 across the run; the shirt raised max HP from 100 to 200. At 3:45 the wave-three preparation countdown was active, with 14 gold and all three equipment slots filled.
+- Implemented a pre-purchase replacement comparison in the gear shop. It calculates the resulting attack, attacks per second, range, movement speed, max HP, armor, or regeneration after removing the currently equipped item in that slot. This answers the key choice question before spending run currency.
+- Added tests for weapon replacement math and armor/boot gains. Full suite passes 33/33. Desktop UI comparison was visually checked in the local candidate shop after opening and after a staff purchase; mobile layout remains to be checked.
+- Local shop comparison is not yet committed or published.
+- Focused work in this continuation: approximately 20 minutes including review and playtest; broader mission remains active and incomplete.
+
+
+## 2026-10-21 — Wave-four defense failure and wall repair recovery
+
+- Continued the live `d032f3c` run. The wave-three warning was clicked at 4:46 while the tree showed 10,000 HP; by 5:27 the hero was back near the center and the tree showed 9,271. Wave three then cleared, but by 5:53 the tree was at 4,630 despite the hero near the tree. A 2,500-point tree resin bought during preparation raised it to 7,930.
+- In wave 4, the hero visited the southeast boss waypoint. At 7:03 the hero had 16/200 HP and the tree 4,740; two potions restored 90 total HP and resin helped restore the tree, but after clicking the return warning at 7:12, the tree still fell at 7:20 with 17 kills. The all-broken-wall state plus boss detour overwhelms this early build; the wave-four boss victory was not verified.
+- Added between-wave repair: when a wave actually advances after clearing, each wall restores 25% of its maximum HP (including a breached wall), capped at full. The transition toast reports the repaired total. This gives the outer defense ring a recoverable strategic role rather than leaving every gate permanently broken after the first breach.
+- Added four wall-repair tests (broken/damaged/full walls, invalid input, and transition hookup). Full suite passes 37/37; inline script syntax and `git diff --check` pass. Local browser run verified the transition toast `城墙修复 1500`; the HUD reported north 25% restored, with east at 18% after the new wave had already damaged it. Tree stayed full at 10,000 during wave 2 at 1:57. The repair is visually verified locally, but late-wave balance and production deployment remain unverified.
+- Local equipment preview commit: `09e3f47 Preview gear stats before shop purchases`. Wall repair is the current uncommitted candidate.
+- Focused time in this resumed continuation: approximately 30 minutes; the broader 10-hour mission remains incomplete. Do not count unattended time or game clock as development time.
+
+
+## 2026-10-21 — Local intermission repair verification
+
+- Started a fresh local build and observed wave 1 clear into wave 2. The transition toast showed `城墙修复 1500`; HUD wall health confirmed north at 25%, while east was already down to 18% during wave 2. Ancient Tree remained 10,000/10,000 at game time 1:57, wave 2 with 5/5 spawned. This verifies that repair occurs on advancement and the rebuilt wall can take damage in the next wave.
+- Wave repair is now visually verified on the local desktop viewport. Mobile, later transitions, and whether 25% is enough after all walls break still need playtesting.
+
+
+## 2026-10-21 — Second intermission repair and early-wave follow-up
+
+- Continued the local candidate from wave 1 through the wave-two intermission. Wave 1 transition toast displayed `城墙修复 1500` (one wall had taken damage). Wave 2 cleared at 4:03 with the tree at 9,942/10,000, hero at 100/100, and 9 kills. At the wave 3 transition, toast displayed `城墙修复 6000` and the HUD showed all four walls restored to 25%. This confirms the repair also revives every breached gate, not just damaged walls.
+- Wave 3 was underway at 4:53 with 6/6 enemies spawned, tree at 9,942, walls each 25%, hero level 2. Combat damage popup was not captured in these screenshots.
+- The repair has now been visually confirmed at two wave transitions on desktop. Mobile fit and later-wave balance are still pending; keep local candidate unpublished until those checks are done.
+
+
+## 2026-10-21 — Verified shop and wall update deployed
+
+- Published isolated changes as GitHub commit `2a2b94cb923c6d91ea3092c2160a526e3e3a651c` on `main`: gear replacement stat previews plus 25% wall repair on each wave advance. Kept the unverified damage-number candidate out of this production update.
+- GitHub Pages workflow #88 completed successfully. Cache-busted live smoke test (`?v=2a2b94c`) loaded the game and showed the gear comparisons in the shop, including attack/attack-speed/range for weapon replacement and health/speed for armor and boots.
+- The local playtest had already verified repair at two transitions and survived through the fourth-wave boss with the hero returning to defend. The live deployed wall-repair intermission remains to be observed.
+
+
+## 2026-10-21 — Deployed wall repair confirmed in live wave two
+
+- Fresh published run `2a2b94c` started as 小鹿. Wave 1 was still alive at 0:57 with tree 10,000, north wall 0%, east 100%, south 75%, west 100%. At 1:52 wave 1 had cleared, tree remained full, and north/south gates were breached.
+- At 2:18, the live transition toast displayed `城墙修复 3000`; HUD showed north and south restored to 25%, east/west still full, tree 10,000. This confirms production wall repair executes and reports the correct recovered total.
+- Deployed build also passed a fresh-cache start-screen smoke test and showed the gear comparison preview before purchase. Pages workflow #88 succeeded.

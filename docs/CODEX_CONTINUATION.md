@@ -112,3 +112,69 @@ The longer autonomous mission is still active and incomplete. Track actual imple
 - Latest online wave-eight run defeated the second boss, then lost the tree at 11:27 with 52 kills. At 11:16 the HUD showed tree 9,936/10,000, hero 32/160, level 4, and wave 8 with 11/11 spawned. Because the next observation was already the defeat screen, the exact cause and transition time are unknown; do not assume wave 9 had started.
 - Resume priority: publish the tested projectile-lifetime candidate, verify Pages, and start a clean run to see whether the edge-of-range enemy is killed without player movement. Current `98aac7a` run cleared wave 3 by 7:48 after the hero moved closer to an enemy at the 330-unit attack edge. Wave 4 boss appeared 8:09; hero went to its cave, died and respawned, then the boss followed toward the tree. At 9:04 wave 4 was still active with 19 kills, tree 9,204, hero 46 HP; boss outcome pending.
 - Focused work in this resumed cycle is approximately 20 minutes so far; the attached 10-hour mission remains incomplete. Do not count idle time as work or claim the target has been met.
+
+## Current checkpoint — 2026-10-21, damage-feedback candidate
+
+- Published base remains `d032f3c8257f465bb92799332fa257456f65c177`, Pages workflow #85 succeeded. Local branch `main` was clean before this candidate; native push is unavailable, so publish through the GitHub MCP Git Data API and verify the Pages workflow before synchronizing the checkout.
+- Fresh cache-busted online run: waves 1–8 observed. Wave 1 clear at 1:51; wave 2 clear at 3:31; camp cleared in intermission; wave 3 clear at 5:34 with full tree; wave-four ancient-cave boss reward verified at 6:26; wave 4 clear at 7:13 after F/R unlocks, tree resin, and E/F auto-protection. Wave 6 clear at 10:15 (42 kills, tree 7,432 after resin); wave 7 clear at 11:19 (52 kills, tree 9,832); wave-eight boss defeated at 11:50, then run ended at 12:10 after a missed return warning. See the newest entry in `docs/DEVELOPMENT_PROGRESS.md`; repeat wave 8 with immediate return response before changing its balance.
+- Local candidate adds capped floating damage values (`damageNumberLabel`, `floatDamage`, 1.05-second life) to weapon hits, Q/E/R/F damage and hero contact/boss damage. Values now render above the characters and particles, with a 38px world-space font so the labels stay readable at the game's reduced zoom. `tests/damage-numbers.test.js` covers rounding, safe labels, and the 36-entry limit. Full tests: 29/29; inline JavaScript syntax and `git diff --check` pass.
+- Local browser candidate loaded and ran through wave 2; combat and health state changed normally, but captured frames missed the short popup window. Do not claim visual legibility verified or publish until a screenshot captures an actual damage number and checks overlap.
+- Estimated focused work in this resumed cycle: about 65 minutes; the attached 10-hour mission is incomplete. No idle time should be counted.
+- Local commit `98ad590` contains combat damage feedback, but do not publish until a screenshot confirms a real popup is visible and legible at normal and mobile scales. Validation at commit: 29/29 Node tests; inline JavaScript syntax; `git diff --check`.
+- Resume: (1) capture a local screenshot of a floating hit; (2) check the number remains clear above the actor at desktop and mobile scales; (3) run the full tests and inline syntax check; (4) publish through GitHub MCP Git Data API only after the visual check; (5) confirm Actions Pages success and load the cache-busted online build; (6) continue a fresh playtest into wave 8 and click the return warning immediately, then log the tree HP and remaining enemy count before deciding whether to retune late-wave damage.
+
+## Latest checkpoint — 2026-10-21, breached-lane warning and readable labels
+
+- Repository: `/Users/gohweichyn/Documents/Codex/2026-10-19/i/project/last-grove-game`, branch `main`; remote `origin/main` is `d032f3c8257f465bb92799332fa257456f65c177`; local main is two commits ahead (`98ad590`, `66b4e0c`) plus uncommitted changes in `index.html`, `tests/damage-numbers.test.js`, `tests/tree-defense-skills.test.js`, and the mission docs.
+- Latest published game remains `d032f3c`; Pages was not updated during this continuation.
+- Published game live playthrough verified crossbow (attack 4, attack speed 2.6/s), shirt (max HP 160), boots (speed 235), and a jungle camp reward (+18 gold, +4 XP). Expanded map showed the arena behind its translucent overlay and a camp waypoint worked.
+- The run lost the tree in wave 3. All four walls were down; at 9,587 tree HP and about 2.9 km away, the return warning arrived too late. The hero began the return route but the tree was destroyed before they got back.
+- Local candidate warns on the first active wave enemy after all four walls are down if the hero is far away and not already intercepting. It stays quiet during a no-wave intermission. Added regression cases in `tests/tree-defense-skills.test.js`.
+- Local damage labels now counter-scale against camera zoom (16px font, 3px outline) so phone zoom does not shrink numbers. Added inverse-scale test in `tests/damage-numbers.test.js`. Local screenshots still lack an unmistakable live popup; treat visual legibility as unverified and do not publish yet.
+- Validation: bundled Node `--test tests/*.test.js` — 31/31 pass; inline JavaScript syntax passes; `git diff --check` passes. Local browser loads updated start screen; the new warning's active-wave state and popup rendering remain to be captured.
+- Next: run local wave 3 with all walls down and hero away to verify warning starts at wave spawn; capture a clear floating damage number; test narrow viewport if available; review and commit. Publish only after visual QA, then verify the Pages workflow and cache-busted page. Continue a new online run and respond immediately to warning.
+- Estimated focused time this continuation: about 25 minutes; accumulated focused development estimate about 90 minutes. Do not count unattended game time. The 10-hour mission is incomplete.
+
+
+## Current checkpoint — 2026-10-21, shop previews and active playtest
+
+- Repo: `/Users/gohweichyn/Documents/Codex/2026-10-19/i/project/last-grove-game`, branch `main`; origin remains `d032f3c8257f465bb92799332fa257456f65c177`. Before the shop preview commit, local main was three commits ahead of origin (`98ad590`, `66b4e0c`, `e99220b`).
+- Working changes: `index.html` includes post-replacement stat previews; `tests/shop-comparison.test.js` covers weapons, armor, and boots. Full test suite passes 33/33. Desktop shop layout was visually checked in the local candidate. Run syntax and diff checks again, commit this validated work, then review mobile fit.
+- Do not publish the earlier tree warning/damage label candidates yet; damage popup visual confirmation is still pending.
+- Official published tab 42 remains on `d032f3c`, same Bear run: waves 1 and 2 cleared (1:25, 3:17), tree 10,000, hero 132/140, 9 kills, 14 gold after gear purchases. Wave 3 is active by game time 4:19 with 0/6 spawned. Expanded map is translucent, with the world visible beneath; map closed on waypoint click, but the exact target route has not been verified. Continue this live run and react to defense warnings.
+- Current mission: user-provided 10-hour development assignment. Focused time in this resumed continuation is estimated at ~20 minutes; previous logs estimate about 90 minutes accumulated. Do not count unattended game time. Mission remains active.
+- Next: (1) check inline script syntax and `git diff --check`; (2) commit gear preview and documentation; (3) inspect local mobile shop; (4) continue published run and log defense/camp outcomes; (5) verify visual warning/damage feedback candidates; (6) publish only stable verified changes and confirm Pages.
+
+
+## Latest checkpoint — 2026-10-21, wall repair candidate
+
+- Local branch `main`; latest commit `09e3f47 Preview gear stats before shop purchases`. Remote is still `d032f3c8257f465bb92799332fa257456f65c177`; the equipment preview commit and prior local commits have not been published.
+- Uncommitted work: `index.html` adds a 25%-max-HP repair to all four walls on a cleared-wave transition; `tests/wall-repair.test.js` covers repair amount, cap, invalid inputs, and transition hookup. Full tests pass 37/37, inline JS syntax and diff checks pass. Local browser wave transition visibly displayed `城墙修复 1500`; north wall was 25%, east was 18% after wave-two damage, and tree was full at 1:57. This candidate is committed as `3d4f964`; still needs late-wave balance review before publishing.
+- Live published run lost the tree at 7:20 on wave 4 with 17 kills. Tree was 4,740, hero 16/200 at 7:03 after a southeast boss waypoint. Purchased two health potions and resin; clicked return at 7:12 but the tree fell before the hero could arrive. Wave-four boss not defeated. This is evidence that all walls staying at 0% leaves no recovery window; test the repair candidate before making more damage changes.
+- The official game tab is now on its defeat screen; do not reload the live game if preserving this record is useful. Candidate browser tab 41 remains the local build with the gear shop open.
+- Next: reload localhost candidate, test shop and touch-width layout if a viewport tool is available; verify repair toast in an intermission (advance two waves or add a deterministic browser fixture); continue wave-two/three local test to assess sustained defense; then run tests, publish only verified stable candidates, and confirm the Pages workflow. Continue the one-hour observed playtest and update the four docs.
+- Time: approximately 30 focused minutes in this resumed continuation, estimated from active work only. The broader 10-hour development objective remains active and incomplete.
+
+
+## Verification update — 2026-10-21
+
+The local run confirmed the wave repair transition in the HUD and toast. Candidate commit `3d4f964` is visually checked in the desktop view. Full objective remains active; do not imply the published website contains this change.
+
+
+### Latest playtest update
+
+Local build run reached wave 3. Wave 1 repair toast: 1,500. Wave 2 clear at 4:03: tree 9,942, hero 100, 9 kills. Wave 3 transition at 4:34: `城墙修复 6000`; all four wall bars confirmed 25% each. At 4:53, wave 3 6/6 spawned, tree 9,942, walls 25% each. This visually verifies repeatable wall restoration. Need continue long enough to assess wave 3, then late-wave recovery; capture an actual damage popup before publishing damage feedback.
+
+
+## Deployment checkpoint — 2026-10-21
+
+- GitHub `main` is now `2a2b94cb923c6d91ea3092c2160a526e3e3a651c` (short `2a2b94c`). GitHub Pages workflow #88 succeeded. Published production includes the gear replacement previews and 25% wall repair; damage-label code was intentionally not part of the deploy.
+- Cache-busted live smoke tab confirmed game loads and shop comparisons render: staff attack +1, bow/crossbow speed and range, armor HP, boots movement. This tab is a fresh run with shop open; close it to continue the deployed intermission test.
+- Local `main` has merged the deployed stable commit and retains subsequent local warning/damage candidates and docs. Keep those unverified candidates off production until QA.
+- Local wall-repair run: wave 2 cleared at 4:03 with tree 9,942 and all gates broken; wave-three transition toast displayed repair 6,000, restoring each gate to 25%. Wave-four boss was defeated at 5:55 for 40 gold, +1 attack, and +1,500 tree health; after choosing speed and using the immediate return warning, the run was still alive at 6:54 with tree 9,670. This is a promising single sample, not a balance guarantee.
+- Next: continue the published run through at least wave 2 to confirm the live repair toast; verify mobile shop fit; test combat-popup legibility and warning behavior on the local build; update time logs.
+
+
+### Live repair confirmation
+
+Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tree 10,000 and north/south walls at 0%; wave 2 began at 2:18 with toast `城墙修复 3000`, north/south at 25%, east/west at 100%. Shop preview also appeared in published smoke test. Live playtest is active at wave 2; continue observing threat behavior and complete one-hour playtest.

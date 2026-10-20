@@ -19,6 +19,8 @@
 
 ## Active
 
+- Verify the local all-walls-broken return warning in a live wave; the published run lost the tree before a distant hero could return.
+- Capture and review floating damage values at real gameplay scale and mobile-like zoom before publishing; the label now holds a 16px screen size, but visual QA remains pending.
 - Continue live playtests beyond wave 2, including wave 3 and the every-fourth-wave boss.
 - Verify map destination selection at narrow mobile widths and near world edges.
 - Test jungle travel and camp combat during active waves; intermission camp timing/rewards are verified once, but safe return timing and mobile targeting remain unverified.
@@ -57,3 +59,34 @@
 - XP pickup candidate now homes from at least 320 units or weapon range +60, with 360 units/second attraction. Tests pass; verify its level-up pace in a live run.
 - Isolate the wave-eight wipe seen at 11:27 (52 kills, tree 9,936 at 11:16): observe whether remaining wave-eight enemies or wave nine caused it before changing late-game balance.
 - Fix candidate: projectiles now stay alive long enough to cover the player's attack range. The wave-three run showed a ranged enemy at the attack boundary surviving for roughly 90 seconds; verify target hits and wave clear in a deployed run.
+
+- New local candidate: floating damage values distinguish regular hits, boss/skill hits, and damage received; cap 36 active labels to bound rendering work. Node suite passes, but a browser screenshot has not yet captured a damage value, so keep it pending visual verification before publishing.
+- Fresh Pages run at `d032f3c` cleared waves 1–4 and the wave-four cave boss with a camp-upgraded build. Wave 5 was active at 7:33; continue the survival sample and inspect the next elite.
+- Extended live run cleared wave 7, defeated the wave-eight cave boss, then lost at 12:10 after the player stayed away despite an active return warning. Repeat the late-wave defense with immediate return before changing the wave 7–8 damage multiplier.
+- Candidate `98ad590` is local-only until damage numbers are visually confirmed in a screenshot. Current published build remains `d032f3c`.
+
+
+## 2026-10-21 update
+
+- Completed locally: gear shop now previews resulting stats after replacing an equipped item; 2 new calculation tests, full suite 33/33. Desktop visual check passed; verify mobile shop layout before publishing.
+- Active: continue published run and respond promptly to the tree-defense warning; current run is wave 3. Complete visual QA for the damage label and breached-lane warning candidates before bundling them into a release.
+- Next: mobile UI review, then decide whether the shop comparison text needs a compact layout; continue the one-hour observed playtest and publish only stable, verified changes.
+
+
+## 2026-10-21 update — defense recovery
+
+- Implemented locally: cleared-wave transitions restore 25% max HP to each wall, including breached walls. This gives the ring a partial repair between waves while keeping it vulnerable during active sieges. Automated tests pass for repair caps and the wave transition hook. Local browser run visibly showed `城墙修复 1500`, a north wall at 25%, and normal incoming damage during wave 2. Mobile and late-wave verification remain.
+- Live testing still shows severe pressure after the full ring is breached: the hero returned during wave 3, but the tree fell at 7:20 in wave 4 after a southeast boss detour. The boss outcome was not observed. Repeat with the repaired-wall candidate before changing wave damage or boss difficulty.
+- Latest local shop improvement (`09e3f47`) previews stats before replacing gear; 33 tests passed at its commit.
+
+
+- Further local validation: wave 2 cleared at 4:03 with tree 9,942 and all walls breached; advancing to wave 3 restored all four to 25% (6000 total HP), confirmed by toast and HUD. Continue late-wave playtest; damage popup still needs a clearly captured hit.
+
+
+## Deployment update — 2026-10-21
+
+- Live: gear stat comparisons and between-wave wall repair deployed in commit `2a2b94c`; Pages workflow #88 succeeded. Published shop smoke test confirmed the new comparison text.
+- Still verify wall restoration during a deployed intermission and on mobile. Keep damage labels unpublished until captured clearly in combat.
+
+
+- Production verification complete: live `2a2b94c` run confirmed the wave-one clear restores 3,000 HP across the two breached gates (25% each). The toast and wall HUD matched at 2:18; tree was full. Continue later-wave and mobile QA.

@@ -82,3 +82,32 @@ A live no-jungle build with a staff, boots and shirt lost the tree in wave 3 at 
 
 - Attack projectiles now receive `clamp((attack range + target radius + 10) / projectile speed, 0.8, 1.8)` seconds of flight time. This avoids expiring before a target at the edge of a range bonus can be hit, while bounding each projectile's lifespan.
 - Triggering observation: the wave-three run had a 330-unit hero attack range, but normal shots lived only 0.75 seconds (about 307 units at 410 speed). A ranged enemy remained at approximately the hero's attack boundary while the wave stayed uncleared. Confirm the new projectile hits online before tuning enemy durability or target selection.
+
+## Combat feedback candidate
+
+- Floating damage values are display-only; they do not change attack, skill, boss, or enemy damage. The label pool is capped at 36 and each value lasts about 1.05 seconds to keep the battlefield readable.
+- Verify density and legibility in a real combat screenshot before publishing. Retune only presentation timing/font size if the values overlap enemies or obscure the player.
+- Late-wave observation: a wave-eight run cleared the cave boss, then lost the tree after the player stayed southeast instead of returning when warned. The run is not evidence that the current 50% wave 7–8 multiplier is too high; re-test with a prompt return before tuning.
+- Wave-three 2026-10-21 sample: with all four walls down and the hero 2.9 km from the tree, the return warning began at 9,587/10,000 HP; the tree fell before the hero returned. Local candidate now warns at the first active wave spawn whenever all walls are broken and the hero is not intercepting. No tree damage values changed; live candidate verification remains pending.
+- Combat labels now use inverse camera scaling to preserve 16 CSS-pixel text across zoom levels. Automated math coverage passes; phone-size visual readability remains unverified.
+
+
+## Gear replacement preview (2026-10-21)
+
+Shop previews derive post-purchase stats by subtracting the replaced slot's bonuses and adding the candidate item bonuses. Attack speed is shown as attacks per second (the inverse of the game's `fireRate` interval); the UI clamps the interval to the same 0.19-second minimum used by combat. Health displays the new maximum rather than current HP. This is informational only and does not change item prices or combat values. Automated coverage includes weapon replacement, armor, and boots.
+
+
+## Between-wave wall repair candidate (2026-10-21)
+
+After a wave is cleared and the next wave begins, restore 25% of each wall's maximum HP. This also revives a breached wall at 25%; it never exceeds maximum HP. Repair does not happen during a wave or on a failed run. The goal is to make the defensive ring recoverable after breaches without erasing ongoing siege pressure. A live wave-four sample still lost the tree after all walls were broken and the hero left for the boss. A local browser run verified a 1,500 HP repair toast and 25% restored north wall before wave 2; the wall fell to 18% after wave-two damage. A full late-wave run is still needed to decide whether 25% is sufficient.
+
+
+Follow-up sample: after wave 2, all four walls were broken; wave transition restored 25% each, for 6,000 total HP. This enables a second barrier phase without healing the Ancient Tree itself. Tree was 9,942 at transition, with 9 kills. Need test whether that buffer lasts long enough in wave 3 and beyond.
+
+
+## Deployment status (2026-10-21)
+
+The 25%-per-wall intermission repair is now live in `2a2b94c`. Local observation: 1,500 HP repair after wave 1, then 6,000 total after wave 2 when all four gates were broken. Local wave-four boss run survived through the return trip with tree above 9,000. Confirm those values in the published build before further adjusting repair fraction or wave damage.
+
+
+Production check: a live run reached wave 2 with north and south gates broken. The transition restored each to 25%, 3,000 total HP, while tree stayed at 10,000. This matches the intended recovery rule. Late-wave survivability still needs more samples.
