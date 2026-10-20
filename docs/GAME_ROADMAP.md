@@ -56,3 +56,4 @@
 
 - XP pickup candidate now homes from at least 320 units or weapon range +60, with 360 units/second attraction. Tests pass; verify its level-up pace in a live run.
 - Isolate the wave-eight wipe seen at 11:27 (52 kills, tree 9,936 at 11:16): observe whether remaining wave-eight enemies or wave nine caused it before changing late-game balance.
+- Fix candidate: projectiles now stay alive long enough to cover the player's attack range. The wave-three run showed a ranged enemy at the attack boundary surviving for roughly 90 seconds; verify target hits and wave clear in a deployed run.

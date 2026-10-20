@@ -77,3 +77,8 @@ A live no-jungle build with a staff, boots and shirt lost the tree in wave 3 at 
 
 - XP orbs begin homing at `max(320, hero attack range + 60)` world units. 林地召唤 magnet blessing adds 55 units per stack. Attraction speed is 360 units/second, above the observed 307 movement speed, so an orb homing to a moving hero can catch up.
 - Rationale: the old 95-unit pickup radius was far shorter than the 270-unit baseline attack range and the 450-unit bow range. The wave-eight sample ended at level 4 with 52 kills, but this one run cannot prove missed XP caused the slow progression. Verify XP and level-up timing online before further tuning.
+
+## Projectile reach candidate (2026-10-21)
+
+- Attack projectiles now receive `clamp((attack range + target radius + 10) / projectile speed, 0.8, 1.8)` seconds of flight time. This avoids expiring before a target at the edge of a range bonus can be hit, while bounding each projectile's lifespan.
+- Triggering observation: the wave-three run had a 330-unit hero attack range, but normal shots lived only 0.75 seconds (about 307 units at 410 speed). A ranged enemy remained at approximately the hero's attack boundary while the wave stayed uncleared. Confirm the new projectile hits online before tuning enemy durability or target selection.
