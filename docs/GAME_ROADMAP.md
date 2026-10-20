@@ -37,3 +37,6 @@
 5. Add a lightweight smoke-test harness if it fits the single-file architecture without adding dependencies.
 
 - Automatic E/F tree healing and shielding require the hero to be in the 1,200-unit defense area. The return warning should use enemy proximity plus HP fallbacks and persist until safe; alert-to-failure timing and live return success still need measurement.
+
+- The persistent tree-danger badge is now an “立即回防” button that sends the hero to a safe point beside the tree. Click-to-return was manually observed in a local wave-3 run; the same run still lost the tree 19 seconds later, so route timing and the wave-three damage ramp need another deployed comparison.
+- Candidate tree damage ramp is 10% on waves 1–2, 25% on wave 3, then 100% from wave 4. Fifteen automated cases pass; live survivability after this tuning is not yet verified.

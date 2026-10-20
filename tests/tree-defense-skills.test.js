@@ -91,3 +91,42 @@ test('tree warning stays visible through return until defense is stable', () => 
   assert.equal(check(8000, 1450, true, [{x:1820,y:0,jungle:false}]), true);
   assert.equal(check(8000, 0, false), false);
 });
+
+test('return warning sends the player to a safe point beside the tree', () => {
+  const returnSource = functionSource('setTreeReturnTarget', 'respawnHero');
+  const sandbox = {
+    hero: {},
+    running: true,
+    over: false,
+    tree: { x: 400, y: 500 },
+    world: { h: 1200 },
+    moveTarget: null,
+    $: () => ({}),
+    say: () => {},
+  };
+  assert.equal(vm.runInNewContext(`${returnSource}; setTreeReturnTarget()`, sandbox), true);
+  assert.deepEqual({ ...sandbox.moveTarget }, { x: 400, y: 830 });
+  sandbox.world.h = 700;
+  vm.runInNewContext(`${returnSource}; setTreeReturnTarget()`, sandbox);
+  assert.deepEqual({ ...sandbox.moveTarget }, { x: 400, y: 676 });
+});
+
+test('return warning cannot issue movement after the run ends', () => {
+  const returnSource = functionSource('setTreeReturnTarget', 'respawnHero');
+  const sandbox = {
+    hero: {}, running: false, over: false,
+    tree: { x: 400, y: 500 }, world: { h: 1200 }, moveTarget: null,
+    $: () => ({}), say: () => {},
+  };
+  assert.equal(vm.runInNewContext(`${returnSource}; setTreeReturnTarget()`, sandbox), false);
+  assert.equal(sandbox.moveTarget, null);
+});
+
+test('tree damage ramps through wave three, then returns to full strength', () => {
+  const scaleSource = functionSource('treeDamageScale', 'updateWallHud');
+  const scale = wave => vm.runInNewContext(`${scaleSource}; treeDamageScale(${wave})`, {});
+  assert.equal(scale(1), 0.1);
+  assert.equal(scale(2), 0.1);
+  assert.equal(scale(3), 0.25);
+  assert.equal(scale(4), 1);
+});

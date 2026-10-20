@@ -56,3 +56,7 @@ Values here are current implementation starting points. Treat the new wall / ski
 
 - Automatic E healing/root and F protection trigger only when the hero is within 1,200 world units of the Ancient Tree. This stops global off-screen healing from erasing the cost of leaving the defense zone and gives the return warning a gameplay purpose. Test three boundary/siege cases with `node --test tests/tree-defense-skills.test.js` before changing this range.
 - This is a first-pass range, not final balance. Check how long the player needs to return from the nearest camps and whether the 90% away / 75% nearby warning arrives early enough during a real wave.
+
+## Wave-three breach ramp (candidate)
+
+The live wave-three sample destroyed the tree by 5:35 after all walls had fallen, despite the player clicking the return warning at 5:16 from roughly 2.8 km away. Waves 1–2 use a 0.10 tree damage multiplier; wave 3 now uses 0.25; wave 4+ uses 1.0. This stages the threat while retaining full damage for the later boss cycle. Re-test wave 3 with the published candidate before treating this as final balance.
