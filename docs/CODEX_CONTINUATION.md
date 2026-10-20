@@ -10,10 +10,12 @@
 
 - Expanded map waypoint selection: clicking its canvas maps the click to world coordinates, sets `moveTarget`, closes the map, and shows a small target marker. Clicking map blank space still closes without selecting a destination.
 - Map title text shrinks below 420px to help avoid crowding the zoom tools.
+- Local candidate fixes pause preservation: shop/equipment close returns to paused state if opened during a pause; closing during active play resumes. Local regression verified both panel paths.
 - Enemy road following, nearest standing wall fallback, one-time breach feedback, and restart movement-state reset are deployed.
 
 ## Verification
 
+- Pending local change: paused-state preservation for shop/equipment; Node syntax check and `git diff --check` pass, local UI confirmed no timer advance and pause overlay remains. Active-run shop closes back to gameplay. Needs commit and live deployment.
 - Node syntax check and `git diff --check` pass for the local map-navigation candidate.
 - Local browser verified map click closes it, then hero moves toward the chosen world position; nearest-camp hint changed from 5.2 km to 4.2 km. Clicking outside closes map. Live Pages verified the destination prompt and waypoint selection; the nearest-camp hint moved from 5.2 km to 4.2 km. Full mobile viewport and world-edge/zoom cases remain untested.
 - Live site `?v=054e6cc-live` verified: wave 1 clear at 2:02, wave 2 clear by 4:02, all four walls fell but the tree recovered to full using E. Staff purchase correctly raised attack from 1 to 2 and reduced gold from 40 to 22.
@@ -23,10 +25,11 @@
 
 ## Next steps
 
-1. Continue a geared live run through wave 3 and, if possible, boss wave 4; check jungle travel and return timing.
-2. Verify map zoom, click-outside close, and destination selection at narrow mobile widths and near world edges.
-3. Re-test restart-state reset after a death, and assess ranged enemies after a wall breaks.
-4. Continue the 10-hour mission only for actual work time. Goal timer was about 55 minutes across the thread at the start of the previous cycle; it includes nonproductive waiting and is not a claim of 55 minutes coding.
+1. Commit and publish the local pause-state fix; verify the Pages workflow and exercise shop/equipment open/close while paused and active.
+2. Continue a geared live run through wave 3 and, if possible, boss wave 4; check jungle travel and return timing.
+3. Verify map zoom, click-outside close, and destination selection at narrow mobile widths and near world edges.
+4. Re-test restart-state reset after a death, and assess ranged enemies after a wall breaks.
+5. Continue the 10-hour mission only for actual work time. Goal timer was about 55 minutes across the thread at the start of the previous cycle; it includes nonproductive waiting and is not a claim of 55 minutes coding.
 
 ## Known caveats
 

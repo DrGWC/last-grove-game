@@ -15,6 +15,7 @@
 - Live shop check: buying 藤木法杖 at 40 gold cost 18, equipped it, and raised attack from 1 to 2. The shop rerendered the equipped state and correctly disabled unaffordable replacements.
 - Local exploration test exposed friction in long trips to camps: the nearest camp starts 5.2 km away. The expanded map now accepts a destination tap/click, marks it, closes, and starts click-to-move. Local and live Pages checks both moved the nearest-camp readout from 5.2 km to 4.2 km after selecting a map destination. Clicking outside the map still closes it without setting a new destination. A narrow-screen title size adjustment keeps the map controls legible.
 - Commit `9655438` deployed successfully via Pages run `39472021132` (run #53). After refreshing with a cache-busting URL, the live map showed the new instruction, and destination selection was visibly marked before the panel closed.
+- Found and fixed a pause-state bug: opening shop/equipment while already paused used to close into a stale overlay while simulation resumed. Local regression checks confirmed both panels preserve a pre-existing pause (timer stayed at 0:03/0:10 and the pause overlay remained); opening/closing shop from active gameplay still resumes normally.
 
 ### Validation
 

@@ -10,9 +10,11 @@
 - One-time wall breach toast/particles; game restart clears leftover click and touch movement state.
 - Shop weapon purchase verified: attack bonus applies and the equipped/disabled replacement states update correctly.
 - Expanded map tap/click sets a movement destination and closes the map; clicking blank space closes without selecting a new destination.
+- Shop and equipment panels preserve whether the run was paused before they opened.
 
 ## Active
 
+- Commit and deploy the latest pause-state fix for shop/equipment; verify both paused and active close paths on Pages.
 - Continue live playtests beyond wave 2, including wave 3 and the every-fourth-wave boss encounter.
 - Verify map destination selection at narrow mobile widths, different zoom levels, and near world edges.
 - Test jungle travel and camp combat while waves are active; determine whether travel distance, return timing, and rewards support the intended loop.
