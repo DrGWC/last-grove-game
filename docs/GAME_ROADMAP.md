@@ -10,7 +10,7 @@
 - Shop weapon purchase verified to apply attack bonus and update equipped/disabled states.
 - Latest Live Pages workflow #62 succeeded; live checks verified paused shop close, map zoom and outside-click close, and the deployed E-skill return-to-defense guidance.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
-- Tree danger warning now targets 60% tree health (previously 25%) to give earlier return-to-defense feedback.
+- Tree danger warning now targets 60% tree health (previously 25%); local pressure run confirmed the alert at 4,299/10,000 HP.
 
 ## Active
 
@@ -20,7 +20,7 @@
 - Observe ranged enemy behavior after walls break or enemies retarget; tune only after more runs.
 - Test equipment pause restoration on Pages (local regression already covers it).
 - Validate tree-threat target selection in a live wave before tuning its priority multiplier.
-- Confirm the earlier tree danger warning fires once at the intended threshold in a live wave; latest 5:59 test kept the tree full and did not cross it.
+- Test F after unlocking it in a live siege; only its Node boundary test has run so far.
 
 ## Next
 
@@ -30,4 +30,4 @@
 4. Re-check mobile layout, touch input, map interaction, and long-run performance.
 5. Add a lightweight smoke-test harness if it fits the single-file architecture without adding dependencies.
 
-- Automatic E/F tree healing and shielding now require the hero to be in the 1,200-unit defense area; add browser verification under siege and tune travel/return timing based on that run.
+- Automatic E/F tree healing and shielding require the hero to be in the 1,200-unit defense area. Local pressure run confirmed E recovered the tree after the hero returned; see `docs/CODEX_CONTINUATION.md`.

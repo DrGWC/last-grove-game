@@ -39,10 +39,20 @@
 - A pressure run exposed a strategic flaw: automatic E restored the Ancient Tree from anywhere, and the F shield could also cover the tree globally. This let the player remain away while the core skills silently handled defense.
 - E and F now require the hero to be within 1,200 world units of the Ancient Tree, both in their automatic trigger and at skill-cast entry. Their ready-state label says `回防自动`, with hover text explaining the defense-range requirement.
 - Added three dependency-free Node regression tests: E/F trigger at the 1,200-unit boundary during a siege, do not trigger at 1,201 units even with a damaged tree and nearby threats, and stay idle when there is no siege or tree damage. All 3 passed. Inline script syntax check and `git diff --check` passed.
-- Browser local run verified the new skill labels and hover descriptions. A prior local pressure sample before this change showed tree health recovering globally while the hero was away; the new anti-global-heal behavior has not yet been observed in a full multi-wave browser run.
-- The 60% warning still awaits a live visual trigger; the most recent run recovered above the threshold before reaching it.
+- Local browser confirmed the new skill labels and hover descriptions. A follow-up pressure run directly displayed the 60% warning at 4,299/10,000 tree HP while the hero was away. After routing back to the tree, HP rose from 2,383 at 5:51 to 3,134 at 5:56 and E showed cooldown, consistent with its recovery activating in defense range. F range remains unverified in a live unlock-and-siege scenario.
 - GitHub Pages workflow #62 for `de6f661` completed successfully. A fresh online page loaded the `回防自动` status and E-skill hover guidance; the original paused test run was kept intact.
 
 ### Active time estimate
 
 - Add about 11 minutes of focused code, regression, and deployment checks across this cycle, plus roughly 3 minutes 45 seconds of deliberate game observation. Idle time is not counted. The 10-hour mission remains active and incomplete.
+
+
+## 2026-10-21 — Verify the warning and return heal under pressure
+
+- Continued the local away-from-base run through 6:00. The tree warning appeared at 4,299/10,000 HP at 5:19 with the hero away and all four walls broken.
+- Selected the Ancient Tree waypoint and returned. Tree health moved from 2,383 at 5:51 to 3,134 at 5:56; E showed cooldown, matching its 800-point cast after re-entering the 1,200-unit range. Choosing the Ancient Tree Breath level-up then raised it to 5,134.
+- The wave entered its preparation countdown after remaining wave enemies were cleared. Hero stayed at 100/100 HP. The run was paused at 6:00.
+- The new skill-range change is deployed as code commit `de6f661`; deployment workflow #62 succeeded. Docs synchronization #64 (`6ff0c9f`) also succeeded. Fresh online build displayed the new return-to-defense E guidance and was paused at 1:17 for the user.
+- This adds about 5 minutes of focused verification and 3 minutes 50 seconds of deliberate local browser play after the previous checkpoint. F's live unlock test and direct auto-target selection observation remain pending. The 60% warning live trigger and an E heal on return are now confirmed.
+
+- Documentation follow-up: the 60% danger warning triggered in the local away-from-tree run, and E recovered the Ancient Tree after the return waypoint. Pages workflow #62 contains the deployed code; documentation workflow #64 completed successfully.
