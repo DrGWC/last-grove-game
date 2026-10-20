@@ -10,7 +10,7 @@
 - Shop weapon purchase verified to apply attack bonus and update equipped/disabled states.
 - Latest Live Pages workflow #62 succeeded; live checks verified paused shop close, map zoom and outside-click close, and the deployed E-skill return-to-defense guidance.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
-- Tree danger warning now targets 60% tree health (previously 25%); local pressure run confirmed the alert at 4,299/10,000 HP.
+- Tree danger warning was raised from 25% to 60%, then moved to 75% with a persistent badge after a stress run showed the 60% alert too late; measure whether a return waypoint can save the tree.
 
 ## Active
 
@@ -30,4 +30,4 @@
 4. Re-check mobile layout, touch input, map interaction, and long-run performance.
 5. Add a lightweight smoke-test harness if it fits the single-file architecture without adding dependencies.
 
-- Automatic E/F tree healing and shielding require the hero to be in the 1,200-unit defense area. Local pressure run confirmed E recovered the tree after the hero returned; see `docs/CODEX_CONTINUATION.md`.
+- Automatic E/F tree healing and shielding require the hero to be in the 1,200-unit defense area. A persistent 75% return badge is now being tested; its alert-to-failure response window is not yet measured.

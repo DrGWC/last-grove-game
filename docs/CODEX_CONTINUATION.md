@@ -9,7 +9,7 @@
 
 - Map waypoint selection closes the map, moves the hero, and sets a destination marker; outside click closes without changing the destination. Map zoom and the translucent full-screen map are live.
 - Shop/equipment overlays preserve the pause state they inherit. Auto-targeting gives extra weight to non-jungle enemies within 450 units of the tree while retaining elite/boss value. Numeric score cases passed; live acquisition choice still needs direct observation.
-- The tree warning fires once when HP reaches 60% or less and asks the player to return and clear nearby enemies.
+- The tree warning currently triggers at 75% max HP: a one-shot toast plus a pinned danger badge that stays until the tree recovers above 75%. The earlier 60% threshold proved late in the away-from-base stress sample.
 - E root/heal and F tree shield now trigger only while the hero is within 1,200 world units of the Ancient Tree. Their ready label is `回防自动`, and hover guidance explains their defense role.
 
 ## Verification
@@ -32,3 +32,11 @@
 ## Time tracking
 
 - The mission is still active and incomplete. Keep measured game-play time separate from development time and exclude idle waits. This cycle adds about 16 minutes focused implementation/verification and roughly 7 minutes 35 seconds of deliberate browser play observation (estimates).
+
+
+## Persistent warning follow-up — local pressure test
+
+- Added a fixed alert badge at the top of the arena. It is hidden above 75% tree HP, remains visible through ordinary play until the tree heals above 75%, and is hidden on run end/restart. The one-shot toast still calls attention to the threshold crossing.
+- Four dependency-free Node tests now cover the E/F defense range and warning threshold boundary; all passed. Local visual pressure run at 75% showed the red badge at 1,808/10,000 tree HP around 2:09 and the Ancient Tree fell shortly after. Because the observation was one minute apart, the exact time from 75% crossing to failure is unknown; the badge is now clearly visible but return timing still needs finer live sampling.
+- The earlier 60% run showed tree HP falling to 479 and defeat at 2:16. Do not claim that the current alert guarantees enough return time from distant jungle camps.
+- Pending: commit/deploy this banner and 75% threshold update, then measure alert-to-failure timing in shorter observation intervals and test a return waypoint.

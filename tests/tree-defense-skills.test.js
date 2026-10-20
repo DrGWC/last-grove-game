@@ -12,6 +12,7 @@ function functionSource(name, nextName) {
   assert.notEqual(end, -1, `missing boundary after ${name}`);
   return html.slice(start, end);
 }
+const dangerSource = functionSource('isTreeInDanger', 'withinTreeGuardRange');
 const guardSource = functionSource('withinTreeGuardRange', 'castSkill');
 const skillsSource = functionSource('autoSkills', 'killEnemy');
 
@@ -48,4 +49,13 @@ test('tree defense skills do not heal or shield globally while the hero is away'
 
 test('tree defense skills wait when the tree is healthy and there is no siege', () => {
   assert.deepEqual(automaticDefenseCasts({ heroX: 500 }), []);
+});
+
+
+test('tree danger remains active at 75% health or below', () => {
+  const check = hp => vm.runInNewContext(`${dangerSource}; isTreeInDanger(tree)`, {tree:{hp,maxHp:10000}});
+  assert.equal(check(7501), false);
+  assert.equal(check(7500), true);
+  assert.equal(check(4299), true);
+  assert.equal(check(0), true);
 });
