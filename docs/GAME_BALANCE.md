@@ -63,3 +63,5 @@ The live wave-three sample destroyed the tree by 5:35 after all walls had fallen
 
 - Return-warning CTA was clicked online in wave 2 from about 542 units from the northwest camp; the hero returned near the tree in about 26 game seconds with full HP and the tree still full. The observation supports the control but is only one low-pressure sample.
 - Separate wave-stall defect: ranged enemies at breached gates could stop outside attack range, preventing them from reaching the tree and stalling the wave. A local candidate makes them approach into range. This is an AI correctness fix; the wave-three damage multiplier remains a balance candidate until a fresh deployed run reaches wave 3.
+
+- Latest deployed wave-three sample with 25% tree damage scaling: 9,917 tree HP at 5:25, 6,679 at 5:48, 4,029 at 6:12; two 2,500-HP resin purchases raised the tree to 8,829, then the run ended at 7:23 with 13 kills. Because clicking outside the shop redirected the hero, this sample cannot isolate the multiplier's fair survivability. Re-run after the UI fix.

@@ -43,3 +43,7 @@
 
 - Online return-button playtest succeeded: from the northwest camp approach, clicking the warning routed the hero back near the tree in about 26 game seconds; the tree stayed full during the return. Continue to test later waves under active siege.
 - Fixed locally a wave-stall case where a ranged enemy at a broken lane gate stood still outside tree attack range. New tests pass for movement into range; deploy and verify the wave now clears.
+
+- Live `cd9ed06` regression confirms the post-breach ranged enemy now advances and wave 2 clears by 3:43 (9 kills, tree 8,317). The prior version was still stuck at 5/5 at 5:43.
+- Local fix now stops outside shop/equipment dismissal clicks from propagating to canvas movement. Three tests cover shop/equipment click-through; online check pending.
+- Wave-three 25% damage sample still ended at 7:23 after two resin purchases; the test is confounded because an outside-shop click redirected the hero. Re-test after publishing click-through fix before tuning this multiplier.
