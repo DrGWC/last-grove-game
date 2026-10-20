@@ -2,29 +2,32 @@
 
 - Repository: `DrGWC/last-grove-game`
 - Branch: `main`
-- Latest remote commit before current local edits: `5bf7466` (`Fix skill and wall script syntax`)
+- Current remote base before latest local candidate: `cd25205` (`Restore complete game source in route AI update`)
 - Source: single-file browser game in `index.html`; GitHub Pages deploys on pushes to `main` via `.github/workflows/deploy-pages.yml`.
-- Local validation server: `python3 -m http.server 8765` (current shell session 77532; stop when done).
+- Local validation server: `python3 -m http.server 8765` (shell session 77532; stop when done).
 
-## Work completed and verified
+## Implemented since last remote base
 
-- Published and verified shop/equipment close-on-outside behavior and translucent map click-outside dismissal in the live browser.
-- Published and verified direct start, automatic skills, no mana HUD/resource/cost, four breakable walls, and wall HUD in a live run.
-- Latest uncommitted source edit: route-following enemies now use their lane road waypoints; if their wall is already broken and they remain more than 700 world units from that breach, they retarget the nearest intact wall.
-- Local first-wave smoke run reached simulated 0:56: wave cleared, 4 kills, tree 10,000/10,000, north wall 0%.
-- Bundled Node syntax check and `git diff --check` passed.
+- Route following and far-breach fallback: enemies follow road waypoints, then retarget the nearest standing wall if their lane’s gate is broken while they are still over 700 world units away.
+- One-time wall-breach toast and particle burst, shared by melee and ranged wall damage.
+- Shop/equipment dismissal and map transparency/click-outside close were previously verified on live Pages.
 
-## Current state and next actions
+## Verification
 
-1. `index.html` and four `docs/*.md` files are uncommitted local changes; update docs with actual commit/deployment details.
-2. Inspect `git diff`, rerun `node --check` and `git diff --check`.
-3. Commit and push to `main`; then verify Pages workflow succeeds.
-4. Reload the live game with a fresh cache query and test wave 1 with route-following/fallback AI.
-5. Run a second wave/local mobile layout check if practical. Do not claim the full 10-hour target unless actually elapsed.
+- Local wave test at simulated 0:53: north wall broken; enemies then damaged the south wall to 85%; ancient tree 10,000/10,000, hero 90/100, 3 kills. This observed the far-breach retarget behavior.
+- Node syntax check on the single inline script: passed. `git diff --check`: passed.
+- Current local `index.html` and docs have latest edits pending a GitHub commit/deployment.
+- No package manifest or pre-existing test runner was present.
+
+## Next actions
+
+1. Commit and publish the latest candidate; verify Pages build succeeds.
+2. Refresh the live site and verify no missing/garbled source, then confirm the breach toast, map, overlays, and a first wave.
+3. Test a second wave and a narrow viewport. Tune only after additional observation.
+4. Keep updating the four docs and continue the 10-hour target only as actual work time allows; do not claim the full duration early.
 
 ## Known caveats
 
-- First wave walls can break quickly under tank damage; only one local route-following run has been observed. Tune after second-wave evidence.
-- Fallback wall retargeting is only locally verified at this checkpoint; deployment verification remains.
-- No existing automated test runner or package manifest was present.
-- User’s supplied target is up to 10 hours of productive development. The thread elapsed counter was around 38 minutes at the last checkpoint and includes idle/deployment time; do not misreport it as productive hours.
+- First-wave wall HP and damage multiplier are provisional; only a few first-wave simulations are observed.
+- Breach alert is coded but not yet visually verified after a wall actually breaks.
+- The 10-hour mission is incomplete. The thread elapsed counter is not productive time; report only verifiable work and elapsed duration.

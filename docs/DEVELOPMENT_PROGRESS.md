@@ -17,12 +17,13 @@
 - Bundled Node `--check` on the single inline game script: passed after latest source edit.
 - `git diff --check`: passed.
 - No package manifest or pre-existing automated test suite is present.
-- The latest route-following/fallback change has been tested locally but is not yet deployed; verify after push.
+- The route-following/fallback and breach-alert code is now included in the local candidate; redeploy and verify the latest source on Pages before calling it live-tested.
 
 ### Observations and tuning
 
 - Stationary auto-combat can clear the first wave without tree damage, while allowing one gate to break. That gives the defense system a useful first breaching event; verify it remains fair in wave 2 before tuning durability.
-- The wall fallback and route-following change has not yet been observed on a deployed run.
+- Local follow-up at simulated 0:53 confirmed the north gate had broken and a later wave enemy attacked the south gate instead (south at 85%); tree remained at 10,000/10,000, player 90/100, 3 kills. This verifies the far-breach fallback on the local build.
+- Added a one-time breach toast and particle burst for melee and ranged wall destruction; verify its readability in the next online run.
 - Prior play tests showed exploration exposes the tree and that the first two wave rewards/preparation periods are the intended shop/jungle loop.
 
 ## Time accounting

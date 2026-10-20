@@ -11,7 +11,7 @@
 
 ## Active
 
-- Deploy and verify the latest route-following and fallback-wall behavior on GitHub Pages.
+- Deploy and verify the latest route-following, fallback-wall, and one-time breach warning on GitHub Pages.
 - Observe the first two waves with the new wall behavior; tune wall durability, wall damage, and automatic-skill triggers only from additional play evidence.
 - Check narrow-screen/mobile layout and input after the new wall HUD.
 

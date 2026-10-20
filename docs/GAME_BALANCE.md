@@ -28,7 +28,8 @@ Values here are current implementation starting points. Treat the new wall / ski
 - After a lane wall reaches zero HP, its attackers can continue to the ancient tree.
 
 - When an enemy’s assigned wall is broken and it remains more than 700 world units from that breach, it reassigns to the nearest standing wall. Near the broken gate, it enters instead.
-- Wave enemies now follow the route waypoints to their assigned wall.
+- Wave enemies now follow the route waypoints to their assigned wall. A destroyed breach alerts once, with a toast and burst effect.
+- Local first-wave test: north wall broke, enemies redirected toward the closest intact south wall (85% remained at 0:53), and the tree stayed full. More runs are needed before changing the 6,000 HP / DPS × 20 values.
 
 ## Follow-up tuning questions
 
