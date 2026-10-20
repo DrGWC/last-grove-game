@@ -10,7 +10,7 @@
 - Shop weapon purchase verified to apply attack bonus and update equipped/disabled states.
 - Latest Live Pages workflow #62 succeeded; live checks verified paused shop close, map zoom and outside-click close, and the deployed E-skill return-to-defense guidance.
 - Automatic targeting now weights wave enemies threatening the Ancient Tree more heavily, while keeping elite and boss targets valuable.
-- Tree danger warning is being moved earlier: if a wave enemy comes within 5,000 world units while the hero is away, show the persistent return warning; retain 90%/75% HP fallback thresholds. A wave-1 away run verified an early warning and successful return. Wave 2 showed the 2,500-unit warning still leaves too little return time; candidate radius is increased to 5,000 and needs a live timing check. Tree resin and E recovered the run after it fell to 2,886 HP.
+- Tree danger warning is being moved earlier: if a wave enemy comes within 4,000 world units while the hero is away, show the persistent return warning; retain 90%/75% HP fallback thresholds. A wave-1 away run verified an early warning and successful return. Wave 2 showed the 2,500-unit warning still leaves too little return time; 2,500 fired too late in wave 2 and 5,000 fired over 100 seconds before wave-1 tree damage; a 4,000 candidate needs a live timing check. Tree resin and E recovered the run after it fell to 2,886 HP.
 
 ## Active
 

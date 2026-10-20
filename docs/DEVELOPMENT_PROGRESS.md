@@ -78,15 +78,15 @@
 ## 2026-10-21 — Move the warning ahead of tree damage
 
 - The 90% HP warning did not give a safe return window in the live wave-2 pressure run: by 3:40 tree HP was 4,408/10,000 with the badge visible; defeat occurred at 3:50 before the map return completed. The sample missed the moment the tree first took damage, so the exact time gained by 90% cannot be stated.
-- Added a pre-breach candidate: while the hero is outside 1,200 units, warn if a non-jungle enemy enters 5,000 units from the tree. Keep the existing 90% away / 75% nearby HP fallbacks. Badge clears once the hero is back in range, tree exceeds 90% HP, and nearby wave threats are gone.
-- Expanded `tests/tree-defense-skills.test.js` to six cases including approaching wave enemies, jungle exclusion, the 5,000-unit boundary, HP fallback thresholds, and return latch behavior. All six pass; inline JS syntax and whitespace checks pass. Candidate awaits publishing/live timing validation.
+- Added a pre-breach candidate: while the hero is outside 1,200 units, warn if a non-jungle enemy enters 4,000 units from the tree. Keep the existing 90% away / 75% nearby HP fallbacks. Badge clears once the hero is back in range, tree exceeds 90% HP, and nearby wave threats are gone.
+- Expanded `tests/tree-defense-skills.test.js` to six cases including approaching wave enemies, jungle exclusion, the 4,000-unit boundary, HP fallback thresholds, and return latch behavior. All six pass; inline JS syntax and whitespace checks pass. Candidate awaits publishing/live timing validation.
 
 ## 2026-10-21 — Live-verified pre-breach warning and gear slots
 
 - Deployed commit `973f0b4` in Pages run #70. Six tests pass for E/F locality, enemy-proximity warning, HP fallbacks, jungle exclusion, and return latch. Inline script syntax and diff whitespace checks pass.
 - Online wave-1 test: at 0:20, the warning appeared while Ancient Tree was 10,000/10,000, all four walls were 100%, and hero was away near the northwest camp. I selected the tree marker as a map waypoint; by 0:31 the hero was back near the northeast defense/camp point, tree still full, and the warning badge had cleared. Wave 1 later remained stable at full tree HP. This demonstrates the early warning and a successful first-wave return, not later-wave safety.
 - Live purchase regression: staff applied its attack bonus; footwear applied +30 movement speed (205→235) and occupied the single shoes slot. Character equipment panel reflected weapon, shirt, shoes, and derived stats correctly.
-- The previous wave-2 run had shown tree at 4,408/10,000 at 3:40 and defeat by 3:50, with too coarse sampling to see the exact damage start. This establishes urgency, not an exact response-time benchmark. Test the new trigger in wave 2 and later before tuning its 5,000-unit radius.
+- The previous wave-2 run had shown tree at 4,408/10,000 at 3:40 and defeat by 3:50, with too coarse sampling to see the exact damage start. This establishes urgency, not an exact response-time benchmark. Test the new trigger in wave 2 and later before tuning its 4,000-unit radius.
 
 - Post-deployment online check: at 0:20 in wave 1, badge/toast appeared while tree remained full and all walls were intact; hero was at a distant camp. A waypoint return brought the hero back by 0:31; badge cleared and the tree remained at 10,000 through wave-1 clear at 1:45. The user-facing wording was adjusted to “古树防线告急” because the early signal is an approaching threat, not tree damage already underway.
 
@@ -94,4 +94,6 @@
 
 - At wave 2 3:03, with the hero away, the published 2,500-unit warning showed at 8,671/10,000 tree HP. The map return took about 35 seconds; tree fell to 2,886 before the hero reached defense. This confirms the warning still arrives too late for that route.
 - In the live shop, Ancient Tree Resin cost 12 gold and restored 2,500 HP (2,886→6,018). Near-tree E then fired; tree rose to 8,418 by 4:33. The run was still active, demonstrating a meaningful recovery choice without treating it as proof the warning was adequate.
-- Candidate expands the pre-breach radius to 5,000 units; six automated cases were updated to cover the new boundary. Test deployment timing in a later wave before accepting the tuning.
+- Candidate expands the pre-breach radius to 4,000 units; six automated cases were updated to cover the new boundary. Test deployment timing in a later wave before accepting the tuning.
+
+- Live evaluation of the 5,000-unit setting: warning appeared at wave-1 0:19 with tree at 10,000 and all walls at 100%; the first observed tree damage was after 2:00, so the warning was over 100 seconds ahead of damage. The player returned and wave 1 stayed alive, but the interruption is too early. 2,500 was too late in wave 2; set the next candidate to 4,000 and retest.

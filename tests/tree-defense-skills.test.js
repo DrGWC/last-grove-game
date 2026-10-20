@@ -55,8 +55,8 @@ test('tree defense skills wait when the tree is healthy and there is no siege', 
 
 test('tree danger warns before breach when wave enemies approach from afar', () => {
   const check = (hp, heroX, enemies = []) => vm.runInNewContext(`${dangerSource}; isTreeInDanger(tree, hero, enemies)`, {tree:{x:0,y:0,hp,maxHp:10000},hero:{x:heroX,y:0},enemies});
-  assert.equal(check(10000, 5000, [{x:5000,y:0}]), true);
-  assert.equal(check(10000, 5000, [{x:5001,y:0}]), false);
+  assert.equal(check(10000, 5000, [{x:4000,y:0}]), true);
+  assert.equal(check(10000, 5000, [{x:4001,y:0}]), false);
   assert.equal(check(10000, 5000, [{x:1000,y:0,jungle:true}]), false);
   assert.equal(check(10000, 1200, [{x:1000,y:0}]), false);
 });
@@ -73,11 +73,11 @@ test('tree danger still uses 90% away and 75% nearby damage thresholds', () => {
 
 test('tree warning stays visible through return until defense is stable', () => {
   const check = (hp, heroX, wasActive, enemies = []) => vm.runInNewContext(`${dangerSource}; ${warningSource}; isTreeWarningActive(tree, hero, wasActive, enemies)`, {tree:{x:0,y:0,hp,maxHp:10000},hero:{x:heroX,y:0},wasActive,enemies});
-  assert.equal(check(10000, 5000, false, [{x:5000,y:0}]), true);
+  assert.equal(check(10000, 5000, false, [{x:4000,y:0}]), true);
   assert.equal(check(10000, 5000, true), true);
   assert.equal(check(8000, 0, true), true);
   assert.equal(check(9000, 0, true), true);
   assert.equal(check(9001, 0, true), false);
-  assert.equal(check(10000, 0, true, [{x:4500,y:0}]), true);
+  assert.equal(check(10000, 0, true, [{x:3500,y:0}]), true);
   assert.equal(check(8000, 0, false), false);
 });

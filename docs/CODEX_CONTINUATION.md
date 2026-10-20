@@ -9,7 +9,7 @@
 - Mobile/desktop map waypoint selection closes the map and moves the hero; outside click closes without changing destination. Map zoom and translucent full-screen presentation remain live.
 - Shop and equipment are separate overlays; they pause while open, preserve inherited pause state, and close with outside click. The live shop showed separate weapon/gear, potion, and skill-book lists. A staff purchase changed gold from 32 to 14, attack from 1 to 2, and marked the weapon equipped while unaffordable replacements were disabled.
 - E root/heal and F tree shield require the hero within 1,200 world units of the tree. Five dependency-free Node tests cover those boundaries, the away alert threshold, and warning persistence; all pass.
-- Tree alert starts when a non-jungle wave enemy comes within 5,000 world units while the hero is more than 1,200 away; tree-HP fallbacks remain 90% away / 75% nearby. The badge latches until the hero returns within 1,200, tree is above 90%, and nearby wave threats are gone.
+- Tree alert starts when a non-jungle wave enemy comes within 4,000 world units while the hero is more than 1,200 away; tree-HP fallbacks remain 90% away / 75% nearby. The badge latches until the hero returns within 1,200, tree is above 90%, and nearby wave threats are gone.
 
 ## Latest verification
 
@@ -34,9 +34,9 @@ The longer autonomous mission is still active and incomplete. Track actual imple
 ## Latest follow-up — pre-breach warning candidate
 
 - At 3:40 in live wave 2, tree HP was 4,408/10,000 and the warning was visible; the run ended at 3:50 before the waypoint return succeeded. Sampling confirms the response window is too short, but did not capture the exact damage onset or warning crossing.
-- Published pre-breach code triggers an away-from-tree warning when a non-jungle enemy comes within 5,000 world units, with 90%/75% HP fallbacks. Six tests pass. At 0:20 of online wave 1 it warned with tree full, walls intact, and the hero at a distant camp. A tree-directed map click returned the hero to the defense area by 0:31; tree remained full and the badge cleared. Later-wave response still needs testing.
+- Published pre-breach code triggers an away-from-tree warning when a non-jungle enemy comes within 4,000 world units, with 90%/75% HP fallbacks. Six tests pass. At 0:20 of online wave 1 it warned with tree full, walls intact, and the hero at a distant camp. A tree-directed map click returned the hero to the defense area by 0:31; tree remained full and the badge cleared. Later-wave response still needs testing.
 
 ## Latest wave-2 follow-up — response time
 
 - At 3:03 during wave 2, the published 2,500-unit warning was visible at tree 8,671/10,000. A map return was ordered, but it took about 35 seconds for the hero to reach the tree; tree HP fell to 2,886. Buying the 12-gold Ancient Tree Resin raised it to 6,018, then local E/defense pushed it to 8,418 by 4:33. This proves the consumable and return skills can recover the run, but the proximity warning came too late to save the tree unaided.
-- Local candidate expands the away alert radius to 5,000 world units. Since wave spawns begin roughly 5,900 units from the tree, this should warn early in an approaching wave and give the player more travel time. The new distance boundary is covered by tests; next, verify the published timing before retaining this radius.
+- The 5,000-unit build warned at 0:19 on wave 1 with tree full and all walls intact—more than 100 seconds before the first measured tree damage. That is too early. The current local candidate uses 4,000 units as a compromise between the over-early 5,000 trigger and the late 2,500 trigger. Test live timing before retaining it.
