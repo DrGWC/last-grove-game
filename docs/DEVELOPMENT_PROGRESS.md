@@ -324,4 +324,4 @@
 - Replaced the oversized scoped rifle drawn in the woodland marksman's hands with a compact pistol: a short slide and barrel, visible grip, trigger guard, front sight, recoil, and a brief muzzle flash.
 - The marksman's basic attacks now draw as small pointed bullets with a casing and fading tracer, and launch from the pistol muzzle along the target angle. Other hero forms keep their existing projectile visuals.
 - Renamed the rifle shop entry to 苔影手枪 and updated its description while preserving its current stats and fourth-shot effect.
-- Code commit: `2a6f707`. Verify the Pages deployment and inspect the marksman in a fresh run before calling this live.
+- Code commit: `2a6f707`; Pages workflow #129 succeeded. A fresh cache-busted tab loaded the marksman with the compact pistol, the shop showed 苔影手枪 and its updated copy, wave 1 ended with 4 kills, and the browser console had no errors. The run is paused in wave 2.
