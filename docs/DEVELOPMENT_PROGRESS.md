@@ -334,4 +334,6 @@
 - Removed Root Snare. E is now an automatic rapid-fire burst: when a wave enemy enters attack range, the hero gains 70% attack speed for 3.2 seconds, with a 14-second cooldown.
 - Added 8% starting critical chance and 2× critical damage, with gold-colored critical bullets and damage numbers. Added a repeatable critical training book (up to five purchases), a level-up critical upgrade, and crit-focused choices for pistol and boots.
 - Added three gear alternatives: Moonshadow Pistol for range and crits, Silverleaf Coat for HP and damage reduction, and Hunter Boots for speed and crits.
-- Code commit: `743b634`; GitHub Pages workflow #134 succeeded. Inline JavaScript syntax parsed successfully. This update has not yet had a new live gameplay balance run; the earlier density and pacing values are candidates for player feedback rather than final balance.
+- Code commit: `743b634`; GitHub Pages workflow #134 succeeded. Inline JavaScript syntax parsed successfully.
+- Follow-up commit `e94b387` corrected the intro reward copy to match the new 18/24-gold rewards; Pages workflow #137 succeeded.
+- Fresh deployed preview showed wave 1 at 0:18 with all 6 enemies spawned, north wall at 51%, tree at 10,000, and hero at 100 HP. The HUD showed E 急速连射 as automatic and 8% crit. The run was paused. This is an 18-second display/pacing sample, not a full balance run; keep these values provisional for player feedback.
