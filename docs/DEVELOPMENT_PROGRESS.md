@@ -313,3 +313,8 @@
 - Corrected marksman shop labels and unlock toast so its Q/R books say 榴霰箭 and 穿林狙击 instead of the generic 自然脉冲/林风箭 labels.
 - Latest game commit: `35b89f6` (following environment and breach fixes through `100aa9c`). Pages workflow for the game commit was still running at this checkpoint; verify deployment before treating it as live.
 - This turn delivered about an hour of focused implementation and play observation. It did not include an uninterrupted one-hour game session; wave pacing and later-wave balance still need more samples.
+
+
+## Deployment verification (2026-10-21)
+
+- The marksman/rifle revision `35b89f6` is published; Pages workflow #121 succeeded. After the four documentation updates, workflow #125 also succeeded. A fresh cache-busted Pages session loaded the new role badge, rifle shop copy, and marksman-specific skill-book names. The run was paused in wave 2 with the tree at 10,000 HP and 4 kills; the browser console had no errors.
