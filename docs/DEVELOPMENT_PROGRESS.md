@@ -325,3 +325,13 @@
 - The marksman's basic attacks now draw as small pointed bullets with a casing and fading tracer, and launch from the pistol muzzle along the target angle. Other hero forms keep their existing projectile visuals.
 - Renamed the rifle shop entry to 苔影手枪 and updated its description while preserving its current stats and fourth-shot effect.
 - Code commit: `2a6f707`; Pages workflow #129 succeeded. A fresh cache-busted tab loaded the marksman with the compact pistol, the shop showed 苔影手枪 and its updated copy, wave 1 ended with 4 kills, and the browser console had no errors. The run is paused in wave 2.
+
+## 2026-10-21 — Tempo, crits, and rapid-fire skill
+
+- Compressed the complete world layout to 55% of its previous dimensions, including roads, creek, gates, camps, boss location, route checks, and tree-defense distance rules. Kept actor size and the existing 50% camera zoom.
+- Waves now begin with 6 enemies; the target count grows by 1 per wave to a cap of 16. Spawn intervals are shorter and wave enemies move 25% faster. Wave 1 and 2 preparation windows are 12 and 22 seconds; later windows are 12 seconds.
+- Increased wave-clear rewards to 18 gold for wave 1, 24 for wave 2, and a growing reward from wave 3 onward so early equipment purchases are reachable.
+- Removed Root Snare. E is now an automatic rapid-fire burst: when a wave enemy enters attack range, the hero gains 70% attack speed for 3.2 seconds, with a 14-second cooldown.
+- Added 8% starting critical chance and 2× critical damage, with gold-colored critical bullets and damage numbers. Added a repeatable critical training book (up to five purchases), a level-up critical upgrade, and crit-focused choices for pistol and boots.
+- Added three gear alternatives: Moonshadow Pistol for range and crits, Silverleaf Coat for HP and damage reduction, and Hunter Boots for speed and crits.
+- Code commit: `743b634`; GitHub Pages workflow #134 succeeded. Inline JavaScript syntax parsed successfully. This update has not yet had a new live gameplay balance run; the earlier density and pacing values are candidates for player feedback rather than final balance.
