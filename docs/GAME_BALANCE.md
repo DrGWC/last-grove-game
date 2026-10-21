@@ -5,9 +5,9 @@ Values here are current implementation starting points. Treat the new wall / ski
 ## Run economy and progression
 
 - Starting gold: 20.
-- Wave 1 clear reward: 12 gold, followed by 30 seconds of preparation.
-- Wave 2 clear reward: 16 gold, followed by 75 seconds for jungle exploration and upgrades.
-- Later clear rewards: at least 6 gold, scaling by wave.
+- Wave 1 clear reward: 18 gold, followed by 12 seconds of preparation.
+- Wave 2 clear reward: 24 gold, followed by 22 seconds for jungle exploration and upgrades.
+- Later clear rewards: `max(12, wave × 4 + 8)` gold.
 - The ancient tree has 10,000 HP.
 - Character death costs `level × 10` gold and respawns the character.
 - Live check: after wave 1 and four kills, the player had 40 gold; buying 藤木法杖 cost 18 and increased attack from 1 to 2.
@@ -17,16 +17,16 @@ Values here are current implementation starting points. Treat the new wall / ski
 ## Automatic skills
 
 - Q: 8-second cooldown; triggers below 78% player health, on a nearby group, or for a nearby elite/boss.
-- E: 12-second cooldown; triggers after at least 300 tree damage or when a wave enemy approaches the tree.
+- E 急速连射: automatic; when a wave enemy enters hero attack range, attack speed rises 70% for 3.2 seconds. Cooldown: 14 seconds.
 - R: 10-second cooldown; shop unlock; targets a nearby enemy automatically.
 - F: 24-second cooldown; shop unlock; triggers when the tree is threatened by a group or the hero is surrounded.
 - Skills have cooldowns but no MP cost.
 
 ## Automatic targeting
 
-- Wave enemies within 450 world units of the tree receive a 0.65 priority multiplier for hero auto-attacks. Enemies within 260 units of their assigned standing wall receive a 0.55 multiplier; these priorities stack. Once that wall breaks, its attackers stop receiving the wall bonus. Bosses and elites retain distance-score multipliers of 1.5 and 1.35 respectively.
+- Wave enemies within 248 compressed-world units of the tree receive a 0.65 priority multiplier for hero auto-attacks. Enemies within 143 compressed-world units of their assigned standing wall receive a 0.55 multiplier; these priorities stack. Once that wall breaks, its attackers stop receiving the wall bonus. Bosses and elites retain distance-score multipliers of 1.5 and 1.35 respectively.
 - This defensive weighting helps the hero intercept active tree and wall attackers. Five target-score cases verify wall priority and its interactions. A pre-refinement local browser run cleared wave 1 with 4 kills and 98% north wall while the hero guarded that gate; in wave 2 the hero was at the east lane by 1:31 with 6 kills, full east wall, full tree, and full HP. This is a promising sample, not proof that the priority alone caused the outcome. Commit `4926efc` is deployed; the cache-busted live page loaded and started, but the target-selection scenario has not been visually isolated.
-- Tree danger warning triggers when a non-jungle wave enemy comes within 4,000 world units while the hero is farther than 1,200 units away and has no wave enemy within auto-attack range plus 100. HP fallbacks remain 90% max while away and 75% nearby. A latched warning clears if the hero returns safely or is actively intercepting, while tree HP is above 90%. Twelve Node tests cover the alert/latch and auto-target boundaries. The deployed page loaded and started normally; coverage-aware alert suppression still needs a live-combat browser check.
+- Tree danger warning triggers when a non-jungle wave enemy comes within 2,200 compressed-world units while the hero is farther than 660 compressed-world units away and has no wave enemy within auto-attack range plus 100. HP fallbacks remain 90% max while away and 75% nearby. A latched warning clears if the hero returns safely or is actively intercepting, while tree HP is above 90%. Twelve Node tests cover the alert/latch and auto-target boundaries. The deployed page loaded and started normally; coverage-aware alert suppression still needs a live-combat browser check.
 - Live 4,000-unit warning sample saw the banner by 0:33 with the north wall at 34%; by 1:00 the north and south walls were broken while tree HP remained full and the hero was away. We did not issue a return order, so alert-to-breach response remains unknown. Previous 2,500-unit warning arrived too late in wave 2; 5,000 units was judged early based on tree-damage timing, but wall-damage timing needs more comparison before further radius tuning.
 
 ## Grove walls
@@ -54,8 +54,11 @@ Values here are current implementation starting points. Treat the new wall / ski
 
 ## Ancient Tree skill range
 
-- Automatic E healing/root and F protection trigger only when the hero is within 1,200 world units of the Ancient Tree. This stops global off-screen healing from erasing the cost of leaving the defense zone and gives the return warning a gameplay purpose. Test three boundary/siege cases with `node --test tests/tree-defense-skills.test.js` before changing this range.
-- This is a first-pass range, not final balance. Check how long the player needs to return from the nearest camps and whether the 90% away / 75% nearby warning arrives early enough during a real wave.
+- F protection remains a defense-zone skill and triggers only when the hero is within 660 compressed-world units of the Ancient Tree. E is now a combat-focused attack-speed burst and no longer heals or roots enemies.
+- The world map and route geometry use 55% of their previous dimensions; actor size and camera zoom remain unchanged. Roads, creek, gates, camps, boss location, and enemy routes are scaled together.
+- Wave 1 starts with 6 enemies; each following wave adds one, capped at 16. Enemy movement speed is multiplied by 1.25, spawn intervals are shorter, and preparation windows are 12 seconds after wave 1, 22 seconds after wave 2, and 12 seconds thereafter. These are first-pass pacing values; collect play feedback before further tuning.
+- Starting critical chance is 8%, with 2× critical damage and a 65% chance cap. Critical training books add 8% per purchase, up to five purchases; the level-up critical choice adds 6%. Critical damage uses gold bullet and popup feedback.
+- Shop additions: 月影手枪 (+1 attack, +90 range, +10% crit), 银叶护衣 (+90 max HP, 12% damage reduction), and 猎风短靴 (+45 movement, +5% crit). Replacing an item removes the previous slot bonuses first.
 
 ## Wave-three breach ramp (candidate)
 
@@ -154,3 +157,4 @@ The randomized 林地神射手 form borrows the long-range precision role associ
 - 苔影长铳 costs 42; adds 2 attack and 240 range with a slower interval (+0.18s). Every fourth shot deals 1.8x damage and slows for 0.9s. It is an alternative weapon build, not an extra weapon slot.
 
 A two-wave preview reached wave 2 with 8 kills and the tree at 9,105/10,000; the east wall had fallen. Buying R at 26 gold changed its state to auto-release. The rifle's new fourth-shot effect and R proc on a later wave still need direct live capture. Do not rebalance from this short sample.
+
