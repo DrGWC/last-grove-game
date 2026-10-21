@@ -300,3 +300,16 @@
 - Fixed combat, HUD, shop loadout, and gear preview to share a capped effective attack interval, and removed duplicate Haste scaling. Added regression tests for Haste and over-fast weapon replacement. Tests: 46/46; inline JS syntax and `git diff --check` pass.
 - Deployed as `aa7b5d38964eaeeff289c415c431bd8555e387f8`; GitHub Pages workflow #97 succeeded. Cache-busted production smoke test loaded and started with the expected 1.8 attacks/s. Exact crossbow + stacked-Haste scenario still needs live recheck.
 - Saved production run tab 47 remains at wave 7 / 21:02 with level-up choices open. Approx. 30 focused minutes added; waiting and game clock excluded. The one-hour playtest and 10-hour mission remain incomplete.
+
+
+
+## 2026-10-21 — Breach routing, forest identity, and woodland marksman
+
+- Fixed the broken-gate oscillation: once an assigned wall reaches 0 HP, that wave enemy keeps moving inward toward the ancient tree instead of steering back to the gate. It still crosses the creek only at its assigned opening. Live north-lane test cleared wave 1 after the gate broke: 4 kills, tree 7,772/10,000 at clear, then recovered through automatic defense skills.
+- Replaced non-central tree decorations with rocks, stumps, ferns, and mushrooms. Added animated current marks and light glints to the creek. Rebuilt the four gate pieces as stone-and-timber battlements with side towers and foundations, aligned with the roads.
+- Added the original woodland marksman form, inspired by DotA 1 Sniper's long-range/precision role: range bonus, every-fifth-shot headshot, automatic area slow, and an unlockable long-range finisher. The pixel sprite now has a broader hunter cap, bright goggles, a longer scoped rifle, recoil, and a muzzle flash. A persistent role tag shows the current randomized form/passive.
+- Added a distinct long-rifle weapon effect: every fourth rifle shot deals 1.8x damage and slows for 0.9s. The rifle remains one choice for the single weapon slot; armor and boots remain their own slots.
+- Live preview marksman sample: wave 1 ended with 4 kills and a full tree. Wave 2 reached 8 kills; tree was 9,105/10,000 and the east gate was broken. Bought the 26-gold ultimate book; the HUD changed to “R 穿林狙击 · 自动释放.” This is a short balance sample, not a full-run balance claim.
+- Corrected marksman shop labels and unlock toast so its Q/R books say 榴霰箭 and 穿林狙击 instead of the generic 自然脉冲/林风箭 labels.
+- Latest game commit: `35b89f6` (following environment and breach fixes through `100aa9c`). Pages workflow for the game commit was still running at this checkpoint; verify deployment before treating it as live.
+- This turn delivered about an hour of focused implementation and play observation. It did not include an uninterrupted one-hour game session; wave pacing and later-wave balance still need more samples.
