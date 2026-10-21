@@ -248,3 +248,6 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Live preview test, marksman form: wave 1 cleared with 4 kills and tree at 10,000; at wave 2/5 the tree was 9,105, east wall was broken, and 8 enemies were defeated. Purchased the 26-gold ultimate; HUD showed R 穿林狙击 / 自动释放. Shop text and unlock toast were stale at the time of this test and are fixed in `35b89f6`.
 - Remaining checks: after deployment, verify contextual skill-book copy/toast, long-rifle fourth-shot feedback and ultimate hit; inspect role badge on a phone viewport. This is not enough evidence for a full late-wave balance conclusion.
 - Do not update the independent stale local checkout or push it wholesale. Continue by fetching remote file blobs and publishing only the requested, reviewed changes.
+
+
+- Deployment check: game commit `35b89f6` passed Pages workflow #121; the final documentation commit passed workflow #125. Fresh published tab `?v=2373cbd-live-test` shows the marksman role/passive badge, Q/R HUD, and updated skill-book/long-rifle copy. It is paused in wave 2 with 10,000 tree HP, 4 kills, 40 gold; no browser console errors were reported. Resume it from the in-game “继续守护” control.
