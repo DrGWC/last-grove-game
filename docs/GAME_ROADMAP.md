@@ -117,3 +117,14 @@
 
 - Unified combat cooldown, HUD, shop loadout, and weapon replacement preview around the 0.19-second minimum attack interval. Removed duplicate Haste scaling and added regression tests.
 - Still to verify: crossbow with stacked Haste in the deployed game; continue mobile shop review and later-wave balance sampling.
+
+
+
+## 2026-10-21 — Final-grove identity and marksman update
+
+- Completed: enemies keep advancing after their assigned gate is destroyed; the creek still blocks cross-lane shortcuts.
+- Completed: remove all non-central tree props, add stump/fern/mushroom/rock dressing and animated water glints, and replace plank-like gates with road-aligned stone-and-timber battlements.
+- Completed: add woodland marksman form, headshot passive, automatic Shrapnel-inspired area slow, unlockable long-range finisher, recognizable rifle animation, and an original sniper rifle with a fourth-shot charge.
+- Verified in the live preview: broken north gate no longer traps its attackers; first wave cleared with 4 kills; the marksman reached wave 2 with 8 kills; the ultimate book changed R to automatic release.
+- Remaining: capture an actual long-rifle charge and sniper R hit in a later wave; check the hero role tag and skill-book copy at phone width; gather more wave-4+ balance samples. No broad economy changes until these samples are available.
+- Latest game code revision: `35b89f6`; verify the Pages workflow and browser cache after pushing documentation updates.
