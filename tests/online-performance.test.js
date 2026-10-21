@@ -67,3 +67,12 @@ test('each co-op character renders its own aim direction', () => {
   assert.match(html, /function drawPixelHero\([^\n]*attackAngle=hero\.attackAngle/);
   assert.match(html, /remoteHero\.characterClass,remoteHero\.attackAngle/);
 });
+
+test('HUD distinguishes the permanent hero class from a random blessing or class passive', () => {
+  const start = html.indexOf('function onlineCharacterName(');
+  const end = html.indexOf('function packOnlinePlayer(', start);
+  const helpers = html.slice(start, end);
+  const labels = vm.runInNewContext(`${helpers}; ({solo:heroRoleLabel({characterClass:'marksman',form:{passive:'移动速度 +30'}}),guest:heroRoleLabel({characterClass:'vinewarden',form:{passive:'每四发藤蔓箭减速敌人'}})})`);
+  assert.equal(labels.solo, '林地神射手 · 祝福：移动速度 +30');
+  assert.equal(labels.guest, '藤影游侠 · 被动：每四发藤蔓箭减速敌人');
+});
