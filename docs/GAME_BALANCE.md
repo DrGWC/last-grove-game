@@ -141,3 +141,16 @@ Production verification for the threat hint: wave 1 at 0:55 showed the nearest o
 
 - Combat uses a 0.19-second minimum attack interval (5.3 attacks/s). Haste grants +20% attacks/s by dividing the base interval by 1.2 and must not be applied again in the firing loop.
 - HUD, loadout, and gear replacement preview must all report the same capped rate used by combat. A 6.9/s HUD versus 5.3/s effective cadence was observed with crossbow/Haste. Fix deployed in `aa7b5d3`; recheck the full late-run combination before changing item balance.
+
+
+
+## Woodland marksman and long-rifle tuning (2026-10-21)
+
+The randomized 林地神射手 form borrows the long-range precision role associated with DotA 1 Sniper, with original forest-themed naming and art:
+
+- Passive: +160 range; every fifth basic shot deals 2.5x damage and stuns for 0.55s.
+- Q 榴霰箭: auto-casts on low HP, nearby groups, elite, or boss pressure; hits a 175-radius area for skill power +3, slows for 2.2s, 8s cooldown.
+- R 穿林狙击: shop unlock, auto-targets the lowest-HP wave enemy within 4x range, deals 5x attack + skill power, stuns 1.35s, 18s cooldown.
+- 苔影长铳 costs 42; adds 2 attack and 240 range with a slower interval (+0.18s). Every fourth shot deals 1.8x damage and slows for 0.9s. It is an alternative weapon build, not an extra weapon slot.
+
+A two-wave preview reached wave 2 with 8 kills and the tree at 9,105/10,000; the east wall had fallen. Buying R at 26 gold changed its state to auto-release. The rifle's new fourth-shot effect and R proc on a later wave still need direct live capture. Do not rebalance from this short sample.
