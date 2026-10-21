@@ -237,3 +237,14 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 - Next: resume tab 47 to sample later-wave defense, then start a fresh published run to reproduce the crossbow/Haste replacement rate if practical. Continue narrow-screen shop QA; keep any balance changes evidence-led. This session added about 30 focused minutes; game time/waiting excluded. One-hour playtest and 10-hour mission incomplete.
 
 - Fresh fixed-build production tab 49 (`?v=aa7b5d3-attack-rate`) has advanced through wave 1: at 1:51 it showed the clear reward, 40 gold, 4 kills, tree 10,000/10,000, hero 90/100, level 1 at 50%, north/south walls broken, east/west intact, and attack speed 1.8/s. The game is in the wave-one intermission; keep this tab for continuing the one-hour observation.
+
+
+
+## Resume checkpoint — 2026-10-21, world art and marksman
+
+- Repository: `DrGWC/last-grove-game`, main. Production: https://drgwc.github.io/last-grove-game/
+- Latest code at checkpoint: `35b89f6`, “Make the forest marksman clearer and refine its rifle.” It adds a permanent randomized hero/passive badge, contextual marksman Q/R skill-book names and toast, a distinctive cap/goggles/scoped-rifle sprite with recoil/muzzle flash, and a 4th-rifle-shot 1.8x slow proc. The prior commit `100aa9c` added the no-extra-trees forest dressing, animated river highlights, and stone/timber battlements. Verify the Pages workflow after this commit.
+- Earlier gameplay fix `2c44371`: a monster whose assigned gate has 0 HP always walks toward the tree, avoiding the gate-radius oscillation; the existing creek crossing rule remains active.
+- Live preview test, marksman form: wave 1 cleared with 4 kills and tree at 10,000; at wave 2/5 the tree was 9,105, east wall was broken, and 8 enemies were defeated. Purchased the 26-gold ultimate; HUD showed R 穿林狙击 / 自动释放. Shop text and unlock toast were stale at the time of this test and are fixed in `35b89f6`.
+- Remaining checks: after deployment, verify contextual skill-book copy/toast, long-rifle fourth-shot feedback and ultimate hit; inspect role badge on a phone viewport. This is not enough evidence for a full late-wave balance conclusion.
+- Do not update the independent stale local checkout or push it wholesale. Continue by fetching remote file blobs and publishing only the requested, reviewed changes.
