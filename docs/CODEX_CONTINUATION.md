@@ -251,3 +251,9 @@ Published build `2a2b94c` verified in fresh run: wave 1 cleared at 1:52 with tre
 
 
 - Deployment check: game commit `35b89f6` passed Pages workflow #121; the final documentation commit passed workflow #125. Fresh published tab `?v=2373cbd-live-test` shows the marksman role/passive badge, Q/R HUD, and updated skill-book/long-rifle copy. It is paused in wave 2 with 10,000 tree HP, 4 kills, 40 gold; no browser console errors were reported. Resume it from the in-game “继续守护” control.
+
+
+## Resume checkpoint — marksman pistol pass (2026-10-21)
+
+- Latest code commit: `2a6f707` (“Change marksman rifle to pistol bullets”). The marksman sprite now has a compact pistol, attack muzzle flash, and recoil. Marksman bullets are pointed, have a short tracer, and spawn at the muzzle; other hero projectile styles are unchanged. The shop entry is renamed 苔影手枪 with the same gameplay stats.
+- Next verify the Pages workflow, then open a fresh cache-busted game tab and confirm that the randomized marksman visibly fires bullets from the pistol muzzle without console errors. Do not claim publication until Pages succeeds.
