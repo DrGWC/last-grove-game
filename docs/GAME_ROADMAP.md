@@ -128,3 +128,6 @@
 - Verified in the live preview: broken north gate no longer traps its attackers; first wave cleared with 4 kills; the marksman reached wave 2 with 8 kills; the ultimate book changed R to automatic release.
 - Remaining: capture an actual long-rifle charge and sniper R hit in a later wave; check the hero role tag and skill-book copy at phone width; gather more wave-4+ balance samples. No broad economy changes until these samples are available.
 - Latest game code revision: `35b89f6`; verify the Pages workflow and browser cache after pushing documentation updates.
+
+
+- Published verification complete: Pages workflow #121 succeeded for code `35b89f6`; documentation workflow #125 succeeded. Fresh production smoke test confirmed the role badge, “榴霰箭 / 穿林狙击” shop labels, the 4-shot long-rifle description, and a clean browser console.
