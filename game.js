@@ -710,11 +710,27 @@
     }
     state.enemies = state.enemies.filter(e => e.hp > 0);
     // Give enemy sprites enough breathing room for their silhouettes and windups to stay readable.
-    for (let i = 0; i < state.enemies.length; i++) for (let j = i + 1; j < state.enemies.length; j++) {
-      const a = state.enemies[i], b = state.enemies[j], dx = b.x - a.x, dy = b.y - a.y, rawD = Math.hypot(dx, dy);
-      const angle = rawD > .001 ? Math.atan2(dy, dx) : ((((parseInt(a.id.slice(0, 6), 36) || 1) ^ (parseInt(b.id.slice(0, 6), 36) || 2)) % 6283) / 1000);
-      const nx = Math.cos(angle), ny = Math.sin(angle), min = (a.radius + b.radius) * 1.05;
-      if (rawD < min) { const push = (min - rawD) * .06; moveBody(a, -nx * push, -ny * push, a.radius * .62); moveBody(b, nx * push, ny * push, b.radius * .62); }
+    // Neighbor buckets skip crowd pairs that are too far apart to collide.
+    const crowd = state.enemies; let maxRadius = 0;
+    for (const e of crowd) maxRadius = Math.max(maxRadius, e.radius);
+    const spacingCell = Math.max(96, maxRadius * 2.1), buckets = new Map();
+    const cellKey = (x, y) => `${Math.floor(x / spacingCell)},${Math.floor(y / spacingCell)}`;
+    for (let i = 0; i < crowd.length; i++) {
+      const key = cellKey(crowd[i].x, crowd[i].y), bucket = buckets.get(key);
+      if (bucket) bucket.push(i); else buckets.set(key, [i]);
+    }
+    for (let i = 0; i < crowd.length; i++) {
+      const a = crowd[i], gx = Math.floor(a.x / spacingCell), gy = Math.floor(a.y / spacingCell);
+      for (let ox = -1; ox <= 1; ox++) for (let oy = -1; oy <= 1; oy++) {
+        const bucket = buckets.get(`${gx + ox},${gy + oy}`); if (!bucket) continue;
+        for (const j of bucket) {
+          if (j <= i) continue;
+          const b = crowd[j], dx = b.x - a.x, dy = b.y - a.y, rawD = Math.hypot(dx, dy);
+          const angle = rawD > .001 ? Math.atan2(dy, dx) : ((((parseInt(a.id.slice(0, 6), 36) || 1) ^ (parseInt(b.id.slice(0, 6), 36) || 2)) % 6283) / 1000);
+          const nx = Math.cos(angle), ny = Math.sin(angle), min = (a.radius + b.radius) * 1.05;
+          if (rawD < min) { const push = (min - rawD) * .06; moveBody(a, -nx * push, -ny * push, a.radius * .62); moveBody(b, nx * push, ny * push, b.radius * .62); }
+        }
+      }
     }
   }
 
@@ -1034,7 +1050,18 @@
       const newPet = { foxPet: 'fox', cranePet: 'crane', tigerPet: 'tiger', tortoisePet: 'tortoise' }[card.id];
       if (newPet && !state.pet) { state.pet = newPet; state.petX = state.hero.x - 68; state.petY = state.hero.y + 42; state.petCd = .6; }
     }
-    if (card.type === 'evolution') { const base = card.id.slice(4), move = state.moves.find(m => m.id === base), next = { ironSword: 'tenThousandSwords', mountainSaber: 'dragonBlade', dragonPalm: 'dragonPalmAwakened', cloudSpear: 'overlordSpear' }[base]; if (move && next) { move.id = next; move.level = 1; } }
+    if (card.type === 'evolution') {
+      const base = card.id.slice(4), move = state.moves.find(m => m.id === base), next = { ironSword: 'tenThousandSwords', mountainSaber: 'dragonBlade', dragonPalm: 'dragonPalmAwakened', cloudSpear: 'overlordSpear' }[base];
+      if (move && next) {
+        const rank = move.level || 5, spec = moveSpecs[next];
+        move.id = next; move.level = rank; move.cooldown = .25;
+        const x = state.hero.x, y = state.hero.y - 12;
+        state.effects.push({ kind: 'evolution', x, y, life: 1.65, max: 1.65, color: spec.color, rank, label: `${spec.name} · 蜕变` });
+        if (base === 'dragonPalm') state.effects.push({ kind: 'weapon', style: 'dragonCoil', followHero: true, x, y, angle: 0, life: 1.65, max: 1.65, color: spec.color, count: 5, rank });
+        state.cameraShake = Math.max(state.cameraShake, 1.15);
+        setToast(`武学蜕变：「${spec.name}」· 第 ${rank} 重威力保留`, 3.2);
+      }
+    }
     if (card.type === 'passive' && card.id === 'lightness') state.effects.push({ kind: 'rankUp', x: state.hero.x, y: state.hero.y - 25, life: .9, max: .9, color: '#9ce4c1', rank: state.passives.lightness, label: `轻功身法 · 第 ${state.passives.lightness} 重` });
     state.draftOpen = false; state.choiceCards = []; $('levelModal').hidden = true; refreshUI(); saveRun();
   }
@@ -2063,6 +2090,27 @@
           ctx.strokeStyle = '#211b13'; ctx.strokeText(e.label, 0, -58 - t * 10);
           ctx.fillStyle = '#ffe3a0'; ctx.shadowColor = e.color; ctx.shadowBlur = 10; ctx.fillText(e.label, 0, -58 - t * 10);
         }
+      }
+      else if (e.kind === 'evolution') {
+        const rank = e.rank || 5, radius = 22 + t * (116 + rank * 3);
+        ctx.translate(e.x, e.y); ctx.globalCompositeOperation = 'lighter';
+        const pillar = ctx.createRadialGradient(0, -38, 8, 0, -38, 105);
+        pillar.addColorStop(0, `${e.color}00`); pillar.addColorStop(.38, `${e.color}2b`); pillar.addColorStop(.7, '#fff0bd20'); pillar.addColorStop(1, `${e.color}00`);
+        ctx.fillStyle = pillar; ctx.fillRect(-110, -150, 220, 230);
+        ctx.shadowColor = e.color; ctx.shadowBlur = 24;
+        ctx.strokeStyle = '#fff0bf'; ctx.lineWidth = 4 * a; ctx.beginPath(); ctx.ellipse(0, 18, radius, radius * .38, 0, 0, TAU); ctx.stroke();
+        ctx.strokeStyle = e.color; ctx.lineWidth = 2.5 * a; ctx.beginPath(); ctx.ellipse(0, 18, radius * .78, radius * .29, 0, t * 3.8, TAU + t * 3.8); ctx.stroke();
+        ctx.save(); ctx.translate(0, -20); ctx.rotate(-t * 2.4); ctx.setLineDash([10, 7]); ctx.lineWidth = 2 * a; ctx.strokeStyle = '#ffe8a1'; ctx.beginPath(); ctx.arc(0, 0, 32 + t * 12, 0, TAU); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+        for (let i = 0; i < 8; i++) {
+          const angle = i * TAU / 8 - t * 2.1, orbit = 30 + t * (54 + (i % 2) * 12), px = Math.cos(angle) * orbit, py = -18 + Math.sin(angle) * orbit * .68;
+          ctx.save(); ctx.translate(px, py); ctx.rotate(angle + t * 2); ctx.fillStyle = i % 2 ? '#fff0bd' : e.color; ctx.shadowBlur = 14;
+          ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(4, 0); ctx.lineTo(0, 6); ctx.lineTo(-4, 0); ctx.closePath(); ctx.fill(); ctx.restore();
+        }
+        ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha *= clamp(1 - t * .38, 0, 1);
+        ctx.font = 'bold 16px Noto Sans SC'; ctx.textAlign = 'center'; ctx.lineJoin = 'round'; ctx.lineWidth = 5;
+        ctx.strokeStyle = '#20190f'; ctx.strokeText(e.label, 0, -81 - t * 22);
+        ctx.fillStyle = '#fff0c2'; ctx.shadowColor = e.color; ctx.shadowBlur = 15; ctx.fillText(e.label, 0, -81 - t * 22);
+        ctx.font = 'bold 11px Noto Sans SC'; ctx.fillStyle = '#f5d887'; ctx.fillText(`第 ${rank} 重 · 绝学已成`, 0, -62 - t * 22);
       }
       else if (e.kind === 'hazard') {
         ctx.translate(e.x, e.y); ctx.globalCompositeOperation = 'lighter'; const r = e.radius * (.93 + Math.sin(state.elapsed * 5 + e.x) * .05);
