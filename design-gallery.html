@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14251d">
+  <title>武侠世界 · 设计画廊</title>
+  <style>
+    :root { color-scheme: dark; --ink:#f3e8c8; --muted:#a9b7a5; --gold:#e5bd70; --line:#3d5143; --panel:#14251e; --green:#8fc49b; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:radial-gradient(ellipse at 50% -10%,#345543 0,#182a21 48%,#0d1814 100%); font:15px/1.5 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; }
+    a { color:inherit; }
+    .shell { max-width:1420px; margin:auto; padding:32px clamp(16px,4vw,52px) 64px; }
+    header { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; margin:8px 0 28px; }
+    .eyebrow { color:var(--gold); letter-spacing:.18em; font-size:12px; font-weight:800; }
+    h1 { margin:6px 0 8px; font-family:Georgia,"Songti SC",serif; font-size:clamp(34px,5vw,54px); line-height:1.1; }
+    .intro { max-width:720px; color:#c2cbbd; margin:0; }
+    .top-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .button { border:1px solid #617057; border-radius:999px; padding:11px 17px; text-decoration:none; font-weight:750; background:#21352a; transition:.18s ease; white-space:nowrap; }
+    .button:hover { border-color:var(--gold); transform:translateY(-1px); }
+    .button.primary { color:#241a0e; background:linear-gradient(120deg,#e8ca78,#c9874e); border-color:#edd98e; }
+    .toolbar { position:sticky; z-index:2; top:0; display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:14px 0; margin:0 0 20px; background:linear-gradient(#14251ef2,#14251eea); backdrop-filter:blur(12px); }
+    .search { flex:1 1 240px; min-width:190px; color:var(--ink); background:#0c1914; border:1px solid var(--line); border-radius:12px; padding:12px 14px; font:inherit; outline:none; }
+    .search:focus { border-color:var(--gold); box-shadow:0 0 0 3px #e5bd7020; }
+    .filters { display:flex; gap:7px; flex-wrap:wrap; }
+    .filter { cursor:pointer; color:#c0cbbb; background:#1b2c23; border:1px solid #35483a; border-radius:999px; padding:9px 13px; font:inherit; font-size:13px; }
+    .filter[aria-pressed="true"] { color:#f6e5b9; border-color:#b99956; background:#3c3521; }
+    .summary { color:var(--muted); font-size:13px; white-space:nowrap; }
+    .section { margin:32px 0 40px; }
+    .section-heading { display:flex; align-items:baseline; justify-content:space-between; gap:15px; margin-bottom:14px; border-bottom:1px solid #39493d; padding-bottom:10px; }
+    h2 { margin:0; font-size:22px; font-family:Georgia,"Songti SC",serif; }
+    .section-heading p { margin:0; color:var(--muted); font-size:13px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,255px),1fr)); gap:14px; }
+    .card { overflow:hidden; border:1px solid #364a3d; border-radius:16px; background:linear-gradient(155deg,#1b3026,#12211b); box-shadow:0 10px 26px #06100b45; }
+    .card[hidden] { display:none; }
+    .art { display:grid; place-items:center; position:relative; height:190px; padding:10px; overflow:hidden; background-color:#101c17; background-image:linear-gradient(45deg,#17251d 25%,transparent 25%),linear-gradient(-45deg,#17251d 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#17251d 75%),linear-gradient(-45deg,transparent 75%,#17251d 75%); background-size:20px 20px; background-position:0 0,0 10px,10px -10px,-10px 0; }
+    .art.wide { height:190px; background:#0d1814; }
+    .art.wide img { object-fit:cover; }
+    .art img { display:block; width:100%; height:100%; object-fit:contain; }
+    .art button { position:absolute; inset:0; cursor:zoom-in; border:0; background:transparent; }
+    .card-body { padding:13px 15px 16px; }
+    .card-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    h3 { margin:0; font-size:16px; }
+    .badge { flex:0 0 auto; border-radius:999px; padding:3px 8px; font-size:11px; font-weight:800; color:#bfe3b6; border:1px solid #456b4b; background:#203926; }
+    .badge.old { color:#d0ba88; border-color:#67563a; background:#332c20; }
+    .desc { min-height:42px; margin:7px 0 8px; color:#b7c3b5; font-size:13px; }
+    .file { color:#7f9483; font-size:11px; overflow-wrap:anywhere; }
+    .fx-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr)); gap:12px; }
+    .fx-card { min-height:140px; display:flex; gap:14px; padding:17px; border:1px solid #425343; border-radius:16px; background:linear-gradient(130deg,#21382b,#16251d); }
+    .fx-icon { flex:0 0 54px; height:54px; display:grid; place-items:center; border-radius:15px; background:radial-gradient(circle at 35% 30%,#f2d78b,#a96d35 62%,#4f3723); font-size:27px; box-shadow:0 0 22px #e8b96444; }
+    .fx-card h3 { margin:0 0 5px; }
+    .fx-card p { margin:0; color:#b8c4b5; font-size:13px; }
+    .fx-card small { display:inline-block; margin-top:9px; color:#e2c47c; font-size:11px; }
+    .empty { display:none; color:var(--muted); padding:28px 0; }
+    .note { margin-top:30px; padding:18px 20px; border:1px solid #3e5041; border-radius:15px; color:#c1ccbd; background:#13221b; }
+    .note strong { color:var(--gold); }
+    dialog { width:min(94vw,1100px); max-height:92vh; padding:12px; border:1px solid #6a765c; border-radius:18px; color:var(--ink); background:#111f18; box-shadow:0 28px 100px #000b; }
+    dialog::backdrop { background:#050b08d9; backdrop-filter:blur(6px); }
+    dialog img { display:block; max-width:100%; max-height:82vh; margin:auto; object-fit:contain; }
+    dialog form { display:flex; justify-content:flex-end; margin-bottom:6px; }
+    dialog button { cursor:pointer; color:var(--ink); background:#26372b; border:1px solid #52624f; border-radius:999px; padding:7px 13px; }
+    @media(max-width:700px) { header { display:block; } .top-actions { justify-content:flex-start; margin-top:16px; } .toolbar { position:static; } .summary { width:100%; } .art { height:165px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <div class="eyebrow">江湖画卷 · VISUAL ARCHIVE</div>
+        <h1>武侠世界 · 设计画廊</h1>
+        <p class="intro">集中浏览目前制作的角色、怪物、场景与环境素材。标有“游戏中”的素材已接入当前版本；早期林地原型也保留在下面，方便对照。招式特效有一部分由游戏实时绘制。</p>
+      </div>
+      <nav class="top-actions" aria-label="页面导航">
+        <a class="button" href="#effects">查看招式特效</a>
+        <a class="button primary" href="./">进入游戏试玩 →</a>
+      </nav>
+    </header>
+
+    <div class="toolbar">
+      <input class="search" id="search" type="search" placeholder="搜索角色、场景或文件名…" aria-label="搜索设计素材">
+      <div class="filters" role="group" aria-label="素材分类">
+        <button class="filter" data-filter="all" aria-pressed="true">全部</button>
+        <button class="filter" data-filter="scene" aria-pressed="false">场景</button>
+        <button class="filter" data-filter="actor" aria-pressed="false">角色与怪物</button>
+        <button class="filter" data-filter="prop" aria-pressed="false">环境物件</button>
+        <button class="filter" data-filter="effects" aria-pressed="false">招式特效</button>
+        <button class="filter" data-filter="legacy" aria-pressed="false">早期原型</button>
+      </div>
+      <span class="summary" id="summary" aria-live="polite"></span>
+    </div>
+
+    <section class="section" data-section="scene">
+      <div class="section-heading"><h2>场景与地貌</h2><p>安平镇、野外地表与不同区域的环境基调</p></div>
+      <div class="grid">
+        <article class="card" data-tags="scene current" data-name="武侠村镇 安平镇 场景">
+          <div class="art wide"><img src="assets/art/wuxia-village.jpg" alt="安平镇武侠村落全景" loading="lazy"><button aria-label="放大查看安平镇全景"></button></div><div class="card-body"><div class="card-top"><h3>安平镇 · 村落全景</h3><span class="badge">游戏中</span></div><p class="desc">开场与村镇区域使用的整体场景画面。</p><div class="file">wuxia-village.jpg</div></div>
+        </article>
+        <article class="card" data-tags="scene current" data-name="武侠野外 山道 河岸 村外">
+          <div class="art wide"><img src="assets/art/wuxia-outskirts.jpg" alt="武侠村外山水场景" loading="lazy"><button aria-label="放大查看村外场景"></button></div><div class="card-body"><div class="card-top"><h3>村外山水构想</h3><span class="badge old">素材档案</span></div><p class="desc">村外道路与水岸的场景素材，供区域设计对照。</p><div class="file">wuxia-outskirts.jpg</div></div>
+        </article>
+        <article class="card" data-tags="scene current" data-name="开阔地 原野 地表">
+          <div class="art wide"><img src="assets/art/open-ground.jpg" alt="开阔原野地表纹理" loading="lazy"><button aria-label="放大查看开阔地纹理"></button></div><div class="card-body"><div class="card-top"><h3>开阔原野</h3><span class="badge">游戏中</span></div><p class="desc">常规野外地面纹理。</p><div class="file">open-ground.jpg</div></div>
+        </article>
+        <article class="card" data-tags="scene current" data-name="竹林 竹海 地表">
+          <div class="art wide"><img src="assets/art/bamboo-ground.jpg" alt="竹林区域地表纹理" loading="lazy"><button aria-label="放大查看竹林地表"></button></div><div class="card-body"><div class="card-top"><h3>竹林地表</h3><span class="badge">游戏中</span></div><p class="desc">竹林区域的地表纹理。</p><div class="file">bamboo-ground.jpg</div></div>
+        </article>
+        <article class="card" data-tags="scene current" data-name="山地 山脊 地表">
+          <div class="art wide"><img src="assets/art/mountain-ground-v2.jpg" alt="山地区域地表纹理" loading="lazy"><button aria-label="放大查看山地地表"></button></div><div class="card-body"><div class="card-top"><h3>山地地表</h3><span class="badge">游戏中</span></div><p class="desc">山脊与岩地的主要地表纹理。</p><div class="file">mountain-ground-v2.jpg</div></div>
+        </article>
+        <article class="card" data-tags="scene current" data-name="湿地 沼泽 莲池 地表">
+          <div class="art wide"><img src="assets/art/wetland-ground.jpg" alt="湿地沼泽地表纹理" loading="lazy"><button aria-label="放大查看湿地地表"></button></div><div class="card-body"><div class="card-top"><h3>湿地地表</h3><span class="badge">游戏中</span></div><p class="desc">湿地与毒蛇区域的地表纹理。</p><div class="file">wetland-ground.jpg</div></div>
+        </article>
+        <article class="card" data-tags="scene current" data-name="桃林 梅花 花林 地表">
+          <div class="art wide"><img src="assets/art/plum-ground.jpg" alt="花林区域地表纹理" loading="lazy"><button aria-label="放大查看花林地表"></button></div><div class="card-body"><div class="card-top"><h3>花林地表</h3><span class="badge">游戏中</span></div><p class="desc">花林区域的地表纹理。</p><div class="file">plum-ground.jpg</div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" data-section="actor">
+      <div class="section-heading"><h2>人物、野怪与伙伴</h2><p>行走江湖的人物、近郊敌人与同行灵宠</p></div>
+      <div class="grid">
+        <article class="card" data-tags="actor current" data-name="无名游侠 玩家 主角 江湖新手">
+          <div class="art"><img src="assets/art/jianghu-novice.png" alt="无名游侠角色设计" loading="lazy"><button aria-label="放大查看无名游侠"></button></div><div class="card-body"><div class="card-top"><h3>无名游侠</h3><span class="badge">游戏中</span></div><p class="desc">当前玩家角色造型与动作基础。</p><div class="file">jianghu-novice.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="山贼 强盗 刀客">
+          <div class="art"><img src="assets/art/bandit-swordsman.png" alt="持刀山贼" loading="lazy"><button aria-label="放大查看持刀山贼"></button></div><div class="card-body"><div class="card-top"><h3>持刀山贼</h3><span class="badge">游戏中</span></div><p class="desc">近郊人形敌人。</p><div class="file">bandit-swordsman.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="疾行贼 快攻 轻甲">
+          <div class="art"><img src="assets/art/bandit-runner.png" alt="青巾疾行贼" loading="lazy"><button aria-label="放大查看疾行贼"></button></div><div class="card-body"><div class="card-top"><h3>疾行贼</h3><span class="badge">游戏中</span></div><p class="desc">轻甲快攻敌人，以青绿长巾和低身冲刺姿态区分。</p><div class="file">bandit-runner.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="重装刀客 山寨刀客 精英">
+          <div class="art"><img src="assets/art/bandit-brute.png" alt="重装山寨刀客" loading="lazy"><button aria-label="放大查看重装刀客"></button></div><div class="card-body"><div class="card-top"><h3>重装刀客</h3><span class="badge">游戏中</span></div><p class="desc">缓慢逼近、蓄力挥出重刀的精英敌人。</p><div class="file">bandit-brute.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="山狼 野狼 野兽">
+          <div class="art"><img src="assets/art/mountain-wolf.png" alt="山地野狼" loading="lazy"><button aria-label="放大查看山狼"></button></div><div class="card-body"><div class="card-top"><h3>山狼</h3><span class="badge">游戏中</span></div><p class="desc">山地野兽敌人。</p><div class="file">mountain-wolf.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="石鬃野猪 山猪">
+          <div class="art"><img src="assets/art/stone-mane-boar.png" alt="石鬃野猪" loading="lazy"><button aria-label="放大查看石鬃野猪"></button></div><div class="card-body"><div class="card-top"><h3>石鬃野猪</h3><span class="badge">游戏中</span></div><p class="desc">会冲锋的重型野兽。</p><div class="file">stone-mane-boar.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="古寺石像 守卫 石像鬼">
+          <div class="art"><img src="assets/art/temple-stone-guardian.png" alt="古寺石像守卫" loading="lazy"><button aria-label="放大查看古寺石像"></button></div><div class="card-body"><div class="card-top"><h3>古寺石像</h3><span class="badge">游戏中</span></div><p class="desc">寺院区域的重型守卫。</p><div class="file">temple-stone-guardian.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="沼泽毒蛇 灵蛇">
+          <div class="art"><img src="assets/art/marsh-venom-serpent.png" alt="沼泽毒蛇" loading="lazy"><button aria-label="放大查看沼泽毒蛇"></button></div><div class="card-body"><div class="card-top"><h3>沼泽毒蛇</h3><span class="badge">游戏中</span></div><p class="desc">湿地毒系敌人。</p><div class="file">marsh-venom-serpent.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="赤鳞山蛟 龙 神兽 Boss">
+          <div class="art"><img src="assets/art/crimson-wyrm.png" alt="赤鳞山蛟" loading="lazy"><button aria-label="放大查看赤鳞山蛟"></button></div><div class="card-body"><div class="card-top"><h3>赤鳞山蛟</h3><span class="badge">游戏中</span></div><p class="desc">大型首领与降龙掌龙形特效共用的蛟龙造型。</p><div class="file">crimson-wyrm.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="灵狐 宠物">
+          <div class="art"><img src="assets/art/spirit-fox.png" alt="灵狐伙伴" loading="lazy"><button aria-label="放大查看灵狐伙伴"></button></div><div class="card-body"><div class="card-top"><h3>灵狐伙伴</h3><span class="badge">游戏中</span></div><p class="desc">可结识的灵宠造型。</p><div class="file">spirit-fox.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="村民 百姓 NPC">
+          <div class="art"><img src="assets/art/village-folk.png" alt="村民角色素材" loading="lazy"><button aria-label="放大查看村民素材"></button></div><div class="card-body"><div class="card-top"><h3>村中百姓</h3><span class="badge">游戏中</span></div><p class="desc">村民角色图集。</p><div class="file">village-folk.png</div></div>
+        </article>
+        <article class="card" data-tags="actor current" data-name="江湖伙伴 灵宠 鹤 虎 乌龟">
+          <div class="art"><img src="assets/art/wuxia-companions.png" alt="江湖伙伴角色图集" loading="lazy"><button aria-label="放大查看江湖伙伴图集"></button></div><div class="card-body"><div class="card-top"><h3>江湖伙伴图集</h3><span class="badge">游戏中</span></div><p class="desc">其他灵宠与伙伴的造型图集。</p><div class="file">wuxia-companions.png</div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" data-section="prop">
+      <div class="section-heading"><h2>林木、地形与场景物件</h2><p>让不同区域有自己的轮廓、植被与地标</p></div>
+      <div class="grid">
+        <article class="card" data-tags="prop current" data-name="竹丛 竹林 环境">
+          <div class="art"><img src="assets/art/bamboo-clump.png" alt="竹丛环境素材" loading="lazy"><button aria-label="放大查看竹丛"></button></div><div class="card-body"><div class="card-top"><h3>竹丛</h3><span class="badge">游戏中</span></div><p class="desc">竹林中的高层植被。</p><div class="file">bamboo-clump.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="低矮竹丛 竹林 环境">
+          <div class="art"><img src="assets/art/bamboo-clump-wide.png" alt="低矮宽幅竹丛" loading="lazy"><button aria-label="放大查看低矮竹丛"></button></div><div class="card-body"><div class="card-top"><h3>低矮竹丛</h3><span class="badge">游戏中</span></div><p class="desc">宽幅竹叶与林下植被。</p><div class="file">bamboo-clump-wide.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="竹门 关隘">
+          <div class="art"><img src="assets/art/bamboo-gate.png" alt="竹制关门" loading="lazy"><button aria-label="放大查看竹门"></button></div><div class="card-body"><div class="card-top"><h3>竹制关门</h3><span class="badge">游戏中</span></div><p class="desc">竹林区域的地标物件。</p><div class="file">bamboo-gate.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="山崖 悬崖 岩石">
+          <div class="art"><img src="assets/art/mountain-cliff.png" alt="山地岩崖" loading="lazy"><button aria-label="放大查看山崖"></button></div><div class="card-body"><div class="card-top"><h3>山地岩崖</h3><span class="badge">游戏中</span></div><p class="desc">山地区域的地形边界与岩壁素材。</p><div class="file">mountain-cliff.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="莲池 莲花 水面">
+          <div class="art"><img src="assets/art/lotus-pond.png" alt="莲池素材" loading="lazy"><button aria-label="放大查看莲池"></button></div><div class="card-body"><div class="card-top"><h3>莲池</h3><span class="badge">游戏中</span></div><p class="desc">湿地区域的水生地标。</p><div class="file">lotus-pond.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="梅花树 桃林 花树">
+          <div class="art"><img src="assets/art/plum-blossom-tree.png" alt="梅花树" loading="lazy"><button aria-label="放大查看梅花树"></button></div><div class="card-body"><div class="card-top"><h3>梅花树</h3><span class="badge">游戏中</span></div><p class="desc">花林区域的特色树木。</p><div class="file">plum-blossom-tree.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="阔叶树 林木">
+          <div class="art"><img src="assets/art/woodland-tree.png" alt="阔叶林木" loading="lazy"><button aria-label="放大查看阔叶树"></button></div><div class="card-body"><div class="card-top"><h3>阔叶林木</h3><span class="badge">游戏中</span></div><p class="desc">野外林地树木素材。</p><div class="file">woodland-tree.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="松树 针叶林">
+          <div class="art"><img src="assets/art/woodland-pine.png" alt="林地松树" loading="lazy"><button aria-label="放大查看松树"></button></div><div class="card-body"><div class="card-top"><h3>林地松树</h3><span class="badge">游戏中</span></div><p class="desc">针叶林区域的树木轮廓。</p><div class="file">woodland-pine.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="花草 灌木 林下植被">
+          <div class="art"><img src="assets/art/woodland-foliage.png" alt="林下花草与灌木" loading="lazy"><button aria-label="放大查看林下植被"></button></div><div class="card-body"><div class="card-top"><h3>林下植被</h3><span class="badge">游戏中</span></div><p class="desc">花草与灌木点缀素材。</p><div class="file">woodland-foliage.png</div></div>
+        </article>
+        <article class="card" data-tags="prop current" data-name="林石 石块 山石">
+          <div class="art"><img src="assets/art/woodland-stones.png" alt="林地石块" loading="lazy"><button aria-label="放大查看林地石块"></button></div><div class="card-body"><div class="card-top"><h3>林地石块</h3><span class="badge">游戏中</span></div><p class="desc">野外道路与林间散石。</p><div class="file">woodland-stones.png</div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="effects" data-section="effects">
+      <div class="section-heading"><h2>招式与战斗特效</h2><p>效果在实战时绘制，不是单张贴图</p></div>
+      <div class="fx-grid">
+        <article class="card" data-tags="effects current" data-name="如来神掌 金色巨掌 佛掌 图稿">
+          <div class="art"><img src="assets/art/buddha-palm-vfx.png" alt="如来神掌金色巨掌特效图稿" loading="lazy"><button aria-label="放大查看如来神掌巨掌图稿"></button></div><div class="card-body"><div class="card-top"><h3>如来神掌 · 巨掌图稿</h3><span class="badge">游戏中</span></div><p class="desc">落点攻击使用的金色巨掌素材。</p><div class="file">buddha-palm-vfx.png</div></div>
+        </article>
+        <article class="fx-card" data-tags="effects current" data-name="降龙十八掌 龙形气劲 内功"><div class="fx-icon">🐉</div><div><h3>降龙十八掌</h3><p>赤金游龙先绕身盘旋，再与掌劲一同扑向敌阵；升级会增加龙劲数量和冲击范围。</p><small>进入游戏，升级习得后自动施展</small></div></article>
+        <article class="fx-card" data-tags="effects current" data-name="如来神掌 金色巨掌 佛掌 内功"><div class="fx-icon">✋</div><div><h3>如来神掌</h3><p>落点先出现佛印蓄势，再落下金色巨掌造成范围重击。巨掌图稿也可在上方素材中放大查看。</p><small>进入游戏，升级习得后自动施展</small></div></article>
+        <article class="fx-card" data-tags="effects current" data-name="一阳指 指光 光束 内功"><div class="fx-icon">☯</div><div><h3>一阳指</h3><p>指尖凝出真气光束，贯穿一线敌人；精进后能连续分化指劲。</p><small>进入游戏，升级习得后自动施展</small></div></article>
+        <article class="fx-card" data-tags="effects current" data-name="凌波微步 轻功 闪避 残影"><div class="fx-icon">〰</div><div><h3>凌波微步</h3><p>敌人逼近时自动侧闪，留下残影；短暂无敌并提高移速，轻功精进会强化距离和闪避。</p><small>靠近敌群观察自动触发</small></div></article>
+      </div>
+    </section>
+
+    <section class="section" data-section="legacy">
+      <div class="section-heading"><h2>早期林地版本与原型</h2><p>保留在仓库里的旧题材图稿，不属于当前武侠版本</p></div>
+      <div class="grid">
+        <article class="card" data-tags="legacy actor" data-name="远古之心 古树 旧版">
+          <div class="art"><img src="assets/art/ancient-heart.png" alt="早期林地版本的古树核心" loading="lazy"><button aria-label="放大查看古树核心旧素材"></button></div><div class="card-body"><div class="card-top"><h3>古树核心</h3><span class="badge old">早期原型</span></div><p class="desc">最初“最后的林地”版本的核心图稿。</p><div class="file">ancient-heart.png</div></div>
+        </article>
+        <article class="card" data-tags="legacy actor" data-name="腐化 怪物 图集 旧版">
+          <div class="art"><img src="assets/art/corruption-atlas.png" alt="早期林地怪物图集" loading="lazy"><button aria-label="放大查看旧怪物图集"></button></div><div class="card-body"><div class="card-top"><h3>林地怪物图集</h3><span class="badge old">早期原型</span></div><p class="desc">早期林地主题的怪物素材。</p><div class="file">corruption-atlas.png</div></div>
+        </article>
+        <article class="card" data-tags="legacy scene" data-name="森林地面 林地 旧版">
+          <div class="art wide"><img src="assets/art/forest-ground.png" alt="早期森林地表纹理" loading="lazy"><button aria-label="放大查看早期森林地表"></button></div><div class="card-body"><div class="card-top"><h3>森林地表 · 初稿</h3><span class="badge old">早期原型</span></div><p class="desc">早期林地版本的重复地面纹理。</p><div class="file">forest-ground.png</div></div>
+        </article>
+        <article class="card" data-tags="legacy scene" data-name="森林地面 v2 旧版">
+          <div class="art wide"><img src="assets/art/forest-ground-v2.jpg" alt="早期森林地表纹理二稿" loading="lazy"><button aria-label="放大查看早期森林地表二稿"></button></div><div class="card-body"><div class="card-top"><h3>森林地表 · 二稿</h3><span class="badge old">早期原型</span></div><p class="desc">旧版本林地地表方案。</p><div class="file">forest-ground-v2.jpg</div></div>
+        </article>
+        <article class="card" data-tags="legacy scene" data-name="森林地面 v3 旧版">
+          <div class="art wide"><img src="assets/art/forest-ground-v3.jpg" alt="早期森林地表纹理三稿" loading="lazy"><button aria-label="放大查看早期森林地表三稿"></button></div><div class="card-body"><div class="card-top"><h3>森林地表 · 三稿</h3><span class="badge old">早期原型</span></div><p class="desc">旧版本林地地表方案。</p><div class="file">forest-ground-v3.jpg</div></div>
+        </article>
+        <article class="card" data-tags="legacy scene" data-name="山地地面 初稿 旧版">
+          <div class="art wide"><img src="assets/art/mountain-ground.jpg" alt="早期山地地表纹理" loading="lazy"><button aria-label="放大查看早期山地地表"></button></div><div class="card-body"><div class="card-top"><h3>山地地表 · 初稿</h3><span class="badge old">早期原型</span></div><p class="desc">当前山地版本之前的纹理方案。</p><div class="file">mountain-ground.jpg</div></div>
+        </article>
+        <article class="card" data-tags="legacy actor" data-name="狙击手 sniper 旧角色">
+          <div class="art"><img src="assets/art/marksman.png" alt="早期狙击手角色原型" loading="lazy"><button aria-label="放大查看早期狙击手原型"></button></div><div class="card-body"><div class="card-top"><h3>狙击手原型</h3><span class="badge old">早期原型</span></div><p class="desc">武侠改版前的角色概念。</p><div class="file">marksman.png</div></div>
+        </article>
+        <article class="card" data-tags="legacy actor" data-name="狙击手 起始角色 旧版">
+          <div class="art"><img src="assets/art/marksman-starter.png" alt="早期狙击手起始角色素材" loading="lazy"><button aria-label="放大查看早期起始角色素材"></button></div><div class="card-body"><div class="card-top"><h3>起始角色旧稿</h3><span class="badge old">早期原型</span></div><p class="desc">武侠版本之前的角色稿。</p><div class="file">marksman-starter.png</div></div>
+        </article>
+        <article class="card" data-tags="legacy actor" data-name="狙击手 装备 旧版">
+          <div class="art"><img src="assets/art/marksman-equipped-ready.png" alt="早期装备狙击枪角色素材" loading="lazy"><button aria-label="放大查看装备角色旧稿"></button></div><div class="card-body"><div class="card-top"><h3>装备角色旧稿</h3><span class="badge old">早期原型</span></div><p class="desc">武侠版本之前的装备造型。</p><div class="file">marksman-equipped-ready.png</div></div>
+        </article>
+        <article class="card" data-tags="legacy actor" data-name="狙击手 起始 完成稿 旧版">
+          <div class="art"><img src="assets/art/marksman-starter-ready.png" alt="早期起始狙击手完成稿" loading="lazy"><button aria-label="放大查看起始角色完成稿"></button></div><div class="card-body"><div class="card-top"><h3>起始角色完成稿</h3><span class="badge old">早期原型</span></div><p class="desc">武侠版本之前的起始角色完成稿。</p><div class="file">marksman-starter-ready.png</div></div>
+        </article>
+        <article class="card" data-tags="legacy actor" data-name="狙击子弹 子弹 旧版">
+          <div class="art"><img src="assets/art/rifle-bullet.png" alt="早期狙击枪子弹效果素材" loading="lazy"><button aria-label="放大查看旧子弹素材"></button></div><div class="card-body"><div class="card-top"><h3>狙击子弹旧稿</h3><span class="badge old">早期原型</span></div><p class="desc">早期远程武器弹体素材。</p><div class="file">rifle-bullet.png</div></div>
+        </article>
+      </div>
+    </section>
+
+    <p class="empty" id="empty">没有找到匹配的设计。试试更短的关键词或切换分类。</p>
+    <div class="note"><strong>怎么看战斗动态：</strong>点右上方“进入游戏试玩”，在战斗中收集阅历并选择武学。已学招式会自动施展；升级后的变化和敌人技能预警都需要在实战中观察。这个画廊会展示静态图稿，动态招式仍以游戏里的实时效果为准。</div>
+  </main>
+  <dialog id="lightbox"><form method="dialog"><button aria-label="关闭大图">关闭 ✕</button></form><img alt=""></dialog>
+  <script>
+    const cards = [...document.querySelectorAll('.card, .fx-card')];
+    const filters = [...document.querySelectorAll('.filter')];
+    const search = document.querySelector('#search');
+    const summary = document.querySelector('#summary');
+    let activeFilter = 'all';
+    function update() {
+      const query = search.value.trim().toLowerCase(); let visible = 0;
+      for (const card of cards) {
+        const tags = (card.dataset.tags || '').split(/\s+/), text = `${card.dataset.name || ''} ${card.textContent} ${card.querySelector('.file')?.textContent || ''}`.toLowerCase();
+        const matches = (activeFilter === 'all' || tags.includes(activeFilter)) && (!query || text.includes(query));
+        card.hidden = !matches; if (matches) visible++;
+      }
+      for (const section of document.querySelectorAll('[data-section]')) {
+        const hasVisibleCard = [...section.querySelectorAll('.card, .fx-card')].some(card => !card.hidden);
+        section.hidden = !hasVisibleCard;
+      }
+      summary.textContent = `显示 ${visible} 项`;
+      document.querySelector('#empty').style.display = visible ? 'none' : 'block';
+    }
+    filters.forEach(button => button.addEventListener('click', () => { activeFilter = button.dataset.filter; filters.forEach(item => item.setAttribute('aria-pressed', item === button)); update(); }));
+    search.addEventListener('input', update);
+    const lightbox = document.querySelector('#lightbox'), lightboxImage = lightbox.querySelector('img');
+    document.querySelectorAll('.art').forEach(frame => frame.querySelector('button').addEventListener('click', () => { const image = frame.querySelector('img'); lightboxImage.src = image.src; lightboxImage.alt = image.alt; lightbox.showModal(); }));
+    update();
+  </script>
+</body>
+</html>
