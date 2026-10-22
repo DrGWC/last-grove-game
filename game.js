@@ -48,6 +48,7 @@
   const groundPatterns = new Map(), groundTiles = new Map(), regionGrounds = new Map();
   let villageBlend = null;
   let w = 0, h = 0, dpr = 1, scale = 1, zoom = 1, viewW = 0, viewH = 0, cameraX = 0, cameraY = 0;
+  let renderLeft = 0, renderRight = 0, renderTop = 0, renderBottom = 0;
   let state = null, lastFrame = 0, raf = 0, toastTimer = 0, pointer = null, moveTarget = null;
   let joystick = { x: 0, y: 0, id: null, originX: 0, originY: 0 }, keys = Object.create(null), uiTimer = 0;
   const touchPoints = new Map(); let pinchStartDistance = 0, pinchStartZoom = 1;
@@ -148,6 +149,9 @@
   }
   function rand(a, b) { return a + Math.random() * (b - a); }
   function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+  function inRenderBounds(x, y, pad = 0) {
+    return Number.isFinite(x) && Number.isFinite(y) && x >= renderLeft - pad && x <= renderRight + pad && y >= renderTop - pad && y <= renderBottom + pad;
+  }
   function displayWeaponMove() { return state?.moves.find(m => moveSpecs[m.id]?.category === '外功') || null; }
   function specFor(move = displayWeaponMove()) { return move ? moveSpecs[move.id] : null; }
   function setToast(text, seconds = 2.2) { const el = $('toast'); el.textContent = text; el.classList.add('show'); toastTimer = seconds; }
@@ -1064,6 +1068,10 @@
     }
     if (card.type === 'passive' && card.id === 'lightness') state.effects.push({ kind: 'rankUp', x: state.hero.x, y: state.hero.y - 25, life: .9, max: .9, color: '#9ce4c1', rank: state.passives.lightness, label: `轻功身法 · 第 ${state.passives.lightness} 重` });
     state.draftOpen = false; state.choiceCards = []; $('levelModal').hidden = true; refreshUI(); saveRun();
+    // A large pickup can contain enough experience for more than one level.
+    // Re-check immediately after each choice so leftover experience never
+    // waits for another orb before opening the next martial-arts draft.
+    checkLevel();
   }
 
   function nearestEnemy(range = Infinity, reserved = null) {
@@ -1337,10 +1345,16 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = '#17251c'; ctx.fillRect(0, 0, w, h);
     const p = state.hero; cameraX += (p.x - cameraX) * .14; cameraY += (p.y - cameraY) * .14;
     const kick = state.cameraShake || 0, shakeX = Math.sin(state.elapsed * 83) * kick, shakeY = Math.cos(state.elapsed * 67) * kick;
-    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * (w / 2 - (cameraX - shakeX) * scale), dpr * (h / 2 - (cameraY - shakeY) * scale));
+    const renderCameraX = cameraX - shakeX, renderCameraY = cameraY - shakeY;
+    renderLeft = renderCameraX - viewW / 2; renderRight = renderCameraX + viewW / 2;
+    renderTop = renderCameraY - viewH / 2; renderBottom = renderCameraY + viewH / 2;
+    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * (w / 2 - renderCameraX * scale), dpr * (h / 2 - renderCameraY * scale));
     const sceneryProps = drawGround(); drawCamps(); drawVillage(); drawWeather();
-    for (const o of state.orbs) drawOrb(o); for (const d of state.drops) drawDrop(d);
-    const actors = state.enemies.filter(e => e.hp > 0).map(e => ({ y: e.y, type: 'enemy', ref: e })); actors.push({ y: p.y, type: 'hero', ref: p }); if (state.pet) actors.push({ y: state.petY, type: 'pet', ref: state });
+    for (const o of state.orbs) if (inRenderBounds(o.x, o.y, Math.max(28, o.r + 12))) drawOrb(o);
+    for (const d of state.drops) if (inRenderBounds(d.x, d.y, 44)) drawDrop(d);
+    const actors = [];
+    for (const e of state.enemies) if (e.hp > 0 && inRenderBounds(e.x, e.y, Math.max(110, e.radius * 3 + 64))) actors.push({ y: e.y, type: 'enemy', ref: e });
+    actors.push({ y: p.y, type: 'hero', ref: p }); if (state.pet) actors.push({ y: state.petY, type: 'pet', ref: state });
     for (const prop of sceneryProps) actors.push({ y: prop.y, type: 'prop', ref: prop });
     actors.sort((a, b) => a.y - b.y);
     for (const a of actors) { if (a.type === 'enemy') drawEnemy(a.ref); else if (a.type === 'hero') drawHero(a.ref); else if (a.type === 'pet') drawPet(a.ref); else drawWorldProp(a.ref); }
@@ -1370,7 +1384,13 @@
     // Regions use their own flora, ground colors and winding trails so exploration changes the whole scene.
     const cx1 = Math.floor(left / 900), cx2 = Math.floor((left + viewW + 200) / 900), cy1 = Math.floor(top / 900), cy2 = Math.floor((top + viewH + 200) / 900);
     const visibleProps = [];
-    for (let cx = cx1; cx <= cx2; cx++) for (let cy = cy1; cy <= cy2; cy++) visibleProps.push(...worldPropsForCell(cx, cy));
+    for (let cx = cx1; cx <= cx2; cx++) for (let cy = cy1; cy <= cy2; cy++) {
+      for (const prop of worldPropsForCell(cx, cy)) {
+        const radius = prop.r || 0, padX = Math.max(48, radius * 2.3), padY = Math.max(48, radius * 4.4);
+        if (prop.x + padX < renderLeft || prop.x - padX > renderRight || prop.y + padY < renderTop || prop.y - padY > renderBottom) continue;
+        visibleProps.push(prop);
+      }
+    }
     visibleProps.sort((a, b) => a.y - b.y);
     const village = getVillageBlend(); if (village) ctx.drawImage(village, VILLAGE.x, VILLAGE.y, VILLAGE.w, VILLAGE.h);
     return visibleProps;
@@ -1691,6 +1711,7 @@
   function drawVillage() {
     if (Math.abs(state.hero.x - (VILLAGE.x + 768)) > viewW / 2 + 900 || Math.abs(state.hero.y - (VILLAGE.y + 512)) > viewH / 2 + 700) return;
     for (const v of state.villagers) {
+      if (!inRenderBounds(v.x, v.y, 64)) continue;
       if (!v.alive) { ctx.fillStyle = '#604b35'; ctx.fillRect(v.x - 9, v.y, 18, 5); continue; }
       const bob = Math.sin(state.elapsed * 2 + v.x) * 1.2;
       ctx.fillStyle = 'rgba(24, 20, 14, .23)'; ctx.beginPath(); ctx.ellipse(v.x, v.y + 2, 10, 3.5, 0, 0, TAU); ctx.fill();
@@ -1722,6 +1743,7 @@
     const cx = Math.floor(state.hero.x / CAMP_SIZE), cy = Math.floor(state.hero.y / CAMP_SIZE);
     for (let x = cx - 2; x <= cx + 2; x++) for (let y = cy - 2; y <= cy + 2; y++) {
       const camp = campData(x, y); if (!camp || state.campCleared.has(camp.key)) continue;
+      if (!inRenderBounds(camp.x, camp.y, 130)) continue;
       ctx.save(); ctx.strokeStyle = '#b0794a88'; ctx.lineWidth = 3; ctx.setLineDash([8, 8]); ctx.beginPath(); ctx.ellipse(camp.x, camp.y, 112, 62, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
       ctx.fillStyle = '#5c3929'; ctx.beginPath(); ctx.moveTo(camp.x - 28, camp.y); ctx.lineTo(camp.x, camp.y - 43); ctx.lineTo(camp.x + 29, camp.y); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#d5b36c'; ctx.fillRect(camp.x - 3, camp.y - 52, 6, 22); ctx.fillStyle = '#a54135'; ctx.beginPath(); ctx.moveTo(camp.x + 3, camp.y - 50); ctx.lineTo(camp.x + 23, camp.y - 45); ctx.lineTo(camp.x + 3, camp.y - 39); ctx.fill();
       ctx.fillStyle = '#efdfb7'; ctx.font = 'bold 11px Noto Sans SC'; ctx.textAlign = 'center'; ctx.fillText(state.campActive.has(camp.key) ? '山寨据点' : '山贼营地', camp.x, camp.y + 22); ctx.restore();
@@ -1968,6 +1990,7 @@
   }
   function drawShots() {
     for (const s of state.shots) {
+      if (!inRenderBounds(s.x, s.y, Math.max(64, s.r * 5.2 + 24))) continue;
       const a = Math.min(1, s.life * 3.5), speed = Math.hypot(s.vx, s.vy) || 1;
       ctx.save(); ctx.translate(s.x, s.y); ctx.rotate(Math.atan2(s.vy, s.vx)); ctx.globalAlpha = a;
       // Carry skill rank into the projectile so successive refinements remain visible for the full flight.
@@ -2044,6 +2067,16 @@
   function drawDrop(d) { const y = d.y + Math.sin(d.bob || 0) * 4; ctx.save(); ctx.shadowBlur = 12; ctx.shadowColor = '#f5d980'; ctx.fillStyle = '#eac96e'; if (d.type === 'coin') { if ((d.count || 1) > 1) { ctx.beginPath(); ctx.arc(d.x - 3, y - 2, 6, 0, TAU); ctx.fill(); } ctx.beginPath(); ctx.arc(d.x, y, 7, 0, TAU); ctx.fill(); ctx.fillStyle = '#6d5328'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('◈', d.x, y + 3); if (d.count > 1) { ctx.fillStyle = '#fff1bd'; ctx.font = 'bold 8px sans-serif'; ctx.fillText(`×${Math.min(99, d.count)}`, d.x + 12, y - 7); } } else { ctx.fillStyle = '#f4e3a5'; ctx.fillRect(d.x - 7, y - 8, 14, 17); ctx.fillStyle = '#926c45'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('秘', d.x, y + 4); } ctx.restore(); }
   function drawTelegraphs() {
     for (const e of state.enemies) if (e.windup > 0) {
+      if (e.role === 'guardian') {
+        const x = Number.isFinite(e.slamX) ? e.slamX : e.x, y = Number.isFinite(e.slamY) ? e.slamY : e.y;
+        if (!inRenderBounds(x, y, 140)) continue;
+      } else if (e.role === 'serpent') {
+        const x = Number.isFinite(e.poisonAimX) ? e.poisonAimX : e.x, y = Number.isFinite(e.poisonAimY) ? e.poisonAimY : e.y;
+        if (!inRenderBounds(e.x, e.y, 100) && !inRenderBounds(x, y, 64)) continue;
+      } else {
+        const reach = e.role === 'dragon' ? 450 : e.role === 'charger' ? 236 : e.role === 'ranged' || e.role === 'summoner' ? 390 : 120;
+        if (!inRenderBounds(e.x, e.y, reach)) continue;
+      }
       const pulse = .52 + Math.sin(state.elapsed * 32) * .2, tellColor = e.role === 'summoner' ? '#c27be8' : e.role === 'serpent' ? '#b99be9' : e.role === 'guardian' ? '#8de0b2' : e.role === 'charger' ? '#f2a36e' : e.role === 'dragon' ? '#ff744a' : e.role === 'ranged' ? '#efc879' : '#ed8766';
       ctx.save(); ctx.globalAlpha = pulse; ctx.strokeStyle = tellColor; ctx.fillStyle = tellColor + '25'; ctx.lineWidth = e.boss ? 4 : 2;
       if (e.role === 'dragon') {
@@ -2069,6 +2102,12 @@
   }
   function drawEffects() {
     for (const e of state.effects) {
+      let pad = 96;
+      if (e.kind === 'evolution') pad = 190;
+      else if (e.kind === 'hazard') pad = (e.radius || 0) + 20;
+      else if (e.kind === 'weapon') pad = Math.max(280, (e.radius || 0) * 1.5 + 48);
+      else if (e.kind === 'impact') pad = Math.max(72, (e.radius || 22) * 1.6 + 24);
+      if (!inRenderBounds(e.x, e.y, pad)) continue;
       const a = clamp(e.life / e.max, 0, 1), t = 1 - a; ctx.save(); ctx.globalAlpha = a;
       if (e.kind === 'spark') {
         ctx.translate(e.x, e.y); ctx.rotate(Math.atan2(e.vy || 1, e.vx || 1)); ctx.fillStyle = e.color; ctx.shadowColor = e.color; ctx.shadowBlur = 7;
@@ -2414,7 +2453,7 @@
     }
     if (e.crit) { ctx.fillStyle = '#fff2b5'; drawStarPath(0, 0, r * .5, r * .15, 6); ctx.fill(); }
   }
-  function drawFloats() { for (const f of state.floats) { const p = 1 - f.life / f.max; ctx.save(); ctx.globalAlpha = clamp(f.life / f.max, 0, 1); ctx.textAlign = 'center'; ctx.font = `bold ${f.crit ? 14 : 12}px Noto Sans SC`; ctx.lineWidth = f.crit ? 4 : 3; ctx.strokeStyle = '#1d1c17'; ctx.shadowColor = f.crit ? '#f2b747' : 'transparent'; ctx.shadowBlur = f.crit ? 9 : 0; ctx.strokeText(f.text, f.x, f.y - p * 18); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, f.y - p * 18); ctx.restore(); } }
+  function drawFloats() { for (const f of state.floats) { if (!inRenderBounds(f.x, f.y, 160)) continue; const p = 1 - f.life / f.max; ctx.save(); ctx.globalAlpha = clamp(f.life / f.max, 0, 1); ctx.textAlign = 'center'; ctx.font = `bold ${f.crit ? 14 : 12}px Noto Sans SC`; ctx.lineWidth = f.crit ? 4 : 3; ctx.strokeStyle = '#1d1c17'; ctx.shadowColor = f.crit ? '#f2b747' : 'transparent'; ctx.shadowBlur = f.crit ? 9 : 0; ctx.strokeText(f.text, f.x, f.y - p * 18); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, f.y - p * 18); ctx.restore(); } }
   function pixel(x, y, ww, hh, color) { ctx.fillStyle = color; ctx.fillRect(Math.round(x), Math.round(y), Math.round(ww), Math.round(hh)); }
   function drawWeather() {
     if (state.weather !== 1) return;
