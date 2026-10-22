@@ -10,34 +10,41 @@
   const VILLAGE = { x: 0, y: 0, w: 1536, h: 1024 };
   const CAMP_SIZE = 1900;
   const TAU = Math.PI * 2;
+  const lazyImageSources = new WeakMap();
+  function lazyImage(file) { const image = new Image(); lazyImageSources.set(image, `assets/art/${file}`); return image; }
+  function imageReady(image) {
+    const source = lazyImageSources.get(image);
+    if (source) { lazyImageSources.delete(image); image.src = source; return false; }
+    return image.complete && image.naturalWidth > 0;
+  }
   const groundTextures = Object.fromEntries(Object.entries({
     grove: 'open-ground.jpg', bamboo: 'bamboo-ground.jpg', mountain: 'mountain-ground-v2.jpg',
     wetland: 'wetland-ground.jpg', plum: 'plum-ground.jpg'
-  }).map(([id, file]) => { const image = new Image(); image.src = `assets/art/${file}`; return [id, image]; }));
-  const villageArt = new Image(); villageArt.src = 'assets/art/wuxia-village.jpg';
-  const heroSprite = new Image(); heroSprite.src = 'assets/art/jianghu-novice.png';
-  const banditSprite = new Image(); banditSprite.src = 'assets/art/bandit-swordsman.png';
-  const runnerSprite = new Image(); runnerSprite.src = 'assets/art/bandit-runner.png';
-  const bruteSprite = new Image(); bruteSprite.src = 'assets/art/bandit-brute.png';
-  const wolfSprite = new Image(); wolfSprite.src = 'assets/art/mountain-wolf.png';
-  const boarSprite = new Image(); boarSprite.src = 'assets/art/stone-mane-boar.png';
-  const guardianSprite = new Image(); guardianSprite.src = 'assets/art/temple-stone-guardian.png';
-  const serpentSprite = new Image(); serpentSprite.src = 'assets/art/marsh-venom-serpent.png';
-  const foxSprite = new Image(); foxSprite.src = 'assets/art/spirit-fox.png';
-  const companionSprite = new Image(); companionSprite.src = 'assets/art/wuxia-companions.png';
-  const woodlandTreeSprite = new Image(); woodlandTreeSprite.src = 'assets/art/woodland-tree.png';
-  const woodlandPineSprite = new Image(); woodlandPineSprite.src = 'assets/art/woodland-pine.png';
-  const woodlandFoliageSprite = new Image(); woodlandFoliageSprite.src = 'assets/art/woodland-foliage.png';
-  const woodlandStoneSprite = new Image(); woodlandStoneSprite.src = 'assets/art/woodland-stones.png';
-  const mountainCliffSprite = new Image(); mountainCliffSprite.src = 'assets/art/mountain-cliff.png';
-  const lotusPondSprite = new Image(); lotusPondSprite.src = 'assets/art/lotus-pond.png';
-  const bambooClumpSprite = new Image(); bambooClumpSprite.src = 'assets/art/bamboo-clump.png';
-  const bambooLowSprite = new Image(); bambooLowSprite.src = 'assets/art/bamboo-clump-wide.png';
-  const bambooGateSprite = new Image(); bambooGateSprite.src = 'assets/art/bamboo-gate.png';
-  const plumTreeSprite = new Image(); plumTreeSprite.src = 'assets/art/plum-blossom-tree.png';
-  const wyrmSprite = new Image(); wyrmSprite.src = 'assets/art/crimson-wyrm.png';
-  const villagerAtlas = new Image(); villagerAtlas.src = 'assets/art/village-folk.png';
-  const buddhaPalmSprite = new Image(); buddhaPalmSprite.src = 'assets/art/buddha-palm-vfx.png';
+  }).map(([id, file]) => [id, lazyImage(file)]));
+  const villageArt = lazyImage('wuxia-village.jpg');
+  const heroSprite = lazyImage('jianghu-novice.png');
+  const banditSprite = lazyImage('bandit-swordsman.png');
+  const runnerSprite = lazyImage('bandit-runner.png');
+  const bruteSprite = lazyImage('bandit-brute.png');
+  const wolfSprite = lazyImage('mountain-wolf.png');
+  const boarSprite = lazyImage('stone-mane-boar.png');
+  const guardianSprite = lazyImage('temple-stone-guardian.png');
+  const serpentSprite = lazyImage('marsh-venom-serpent.png');
+  const foxSprite = lazyImage('spirit-fox.png');
+  const companionSprite = lazyImage('wuxia-companions.png');
+  const woodlandTreeSprite = lazyImage('woodland-tree.png');
+  const woodlandPineSprite = lazyImage('woodland-pine.png');
+  const woodlandFoliageSprite = lazyImage('woodland-foliage.png');
+  const woodlandStoneSprite = lazyImage('woodland-stones.png');
+  const mountainCliffSprite = lazyImage('mountain-cliff.png');
+  const lotusPondSprite = lazyImage('lotus-pond.png');
+  const bambooClumpSprite = lazyImage('bamboo-clump.png');
+  const bambooLowSprite = lazyImage('bamboo-clump-wide.png');
+  const bambooGateSprite = lazyImage('bamboo-gate.png');
+  const plumTreeSprite = lazyImage('plum-blossom-tree.png');
+  const wyrmSprite = lazyImage('crimson-wyrm.png');
+  const villagerAtlas = lazyImage('village-folk.png');
+  const buddhaPalmSprite = lazyImage('buddha-palm-vfx.png');
   const groundPatterns = new Map(), groundTiles = new Map(), regionGrounds = new Map();
   let villageBlend = null;
   let w = 0, h = 0, dpr = 1, scale = 1, zoom = 1, viewW = 0, viewH = 0, cameraX = 0, cameraY = 0;
@@ -161,7 +168,7 @@
   function getGroundTile(textureId = 'grove') {
     if (groundTiles.has(textureId)) return groundTiles.get(textureId);
     const ground = groundTextures[textureId] || groundTextures.grove;
-    if (!ground?.complete || !ground.naturalWidth) return null;
+    if (!ground || !imageReady(ground)) return null;
     const tile = document.createElement('canvas'); tile.width = 768; tile.height = 768;
     const g = tile.getContext('2d', { willReadFrequently: true });
     g.drawImage(ground, 0, 0, ground.naturalWidth, ground.naturalHeight, 0, 0, tile.width, tile.height);
@@ -242,7 +249,7 @@
   }
 
   function getVillageBlend() {
-    if (villageBlend || !villageArt.complete || !villageArt.naturalWidth) return villageBlend;
+    if (villageBlend || !imageReady(villageArt)) return villageBlend;
     const width = VILLAGE.w, height = VILLAGE.h, fadeX = 300, fadeY = 240;
     const art = document.createElement('canvas'); art.width = width; art.height = height;
     const a = art.getContext('2d'); a.drawImage(villageArt, 0, 0, width, height); a.globalCompositeOperation = 'destination-in';
@@ -417,7 +424,7 @@
   ];
   let villageWaterMask = null;
   function getVillageWaterMask() {
-    if (villageWaterMask || !villageArt.complete || !villageArt.naturalWidth) return villageWaterMask;
+    if (villageWaterMask || !imageReady(villageArt)) return villageWaterMask;
     const scratch = document.createElement('canvas'); scratch.width = VILLAGE.w; scratch.height = VILLAGE.h;
     const sample = scratch.getContext('2d', { willReadFrequently: true }); sample.drawImage(villageArt, 0, 0, VILLAGE.w, VILLAGE.h);
     const pixels = sample.getImageData(0, 0, VILLAGE.w, VILLAGE.h).data, mask = new Uint8Array(VILLAGE.w * VILLAGE.h);
@@ -531,10 +538,10 @@
           // The painted pond is a wide, shallow ellipse. A circular .8r
           // blocker only covered its center and let land creatures walk over
           // the visible water around the edges.
-          const variation = lotusPondSprite.complete && lotusPondSprite.naturalWidth ? .91 + prop.seed * .18 : 1;
-          const waterRx = prop.r * (lotusPondSprite.complete && lotusPondSprite.naturalWidth ? 1.98 : 1.84) * variation + radius;
-          const waterRy = prop.r * (lotusPondSprite.complete && lotusPondSprite.naturalWidth ? 1.16 : .79) * variation + radius;
-          const rotation = lotusPondSprite.complete && lotusPondSprite.naturalWidth ? (prop.seed - .5) * .10 : -.08;
+          const variation = .91 + prop.seed * .18;
+          const waterRx = prop.r * 1.98 * variation + radius;
+          const waterRy = prop.r * 1.16 * variation + radius;
+          const rotation = (prop.seed - .5) * .10;
           const dx = x - prop.x, dy = y - (prop.y + 2), cos = Math.cos(rotation), sin = Math.sin(rotation);
           const localX = cos * dx + sin * dy, localY = -sin * dx + cos * dy;
           if ((localX * localX) / (waterRx * waterRx) + (localY * localY) / (waterRy * waterRy) < 1) return true;
@@ -682,7 +689,7 @@
       }
       if (wasWindingUp) {
         if (e.windup === 0 && !e.resolved) resolveEnemyAttack(e, target);
-      } else if (e.role === 'ranged' || e.role === 'summoner' || e.role === 'serpent') {
+      } else if (e.role === 'ranged' || e.role === 'summoner' || e.role === 'serpent' || e.role === 'dragon') {
         const range = e.boss ? 420 : e.role === 'serpent' ? 245 : e.role === 'summoner' ? 355 : 300;
         if (d > range * .85) moveEnemy(e, dx, dy, d, dt);
         else if (d < 145 && target === p) moveEnemy(e, -dx, -dy, d, dt * .8);
@@ -1370,7 +1377,7 @@
     if (tallFoliage && prop.y >= p.y - 4) ctx.restore();
   }
   function drawWorldTree(x, y, r, seed) {
-    if (woodlandTreeSprite.complete && woodlandTreeSprite.naturalWidth) {
+    if (imageReady(woodlandTreeSprite)) {
       const variation = .92 + seed * .18, width = r * 4.05 * variation, height = r * 4.18 * variation;
       ctx.save(); ctx.translate(x, y + 4); ctx.rotate(Math.sin(state.elapsed * 1.2 + seed * TAU) * .006);
       if (seed > .5) ctx.scale(-1, 1);
@@ -1391,7 +1398,7 @@
   }
   function drawWorldRock(x, y, r, seed) {
     const variationSeed = Number.isFinite(seed) ? seed : (Math.sin(x * .17 + y * .11) + 1) * .5;
-    if (woodlandStoneSprite.complete && woodlandStoneSprite.naturalWidth) {
+    if (imageReady(woodlandStoneSprite)) {
       const variation = .9 + variationSeed * .18, width = r * 3.15 * variation, height = r * 2.12 * variation;
       ctx.save(); ctx.translate(x, y + 4); if (variationSeed > .5) ctx.scale(-1, 1);
       ctx.drawImage(woodlandStoneSprite, -width / 2, -height, width, height); ctx.restore(); return;
@@ -1400,7 +1407,7 @@
   }
   function drawWorldShrub(x, y, r, seed) {
     const variationSeed = Number.isFinite(seed) ? seed : (Math.sin(x * .09 + y * .17) + 1) * .5;
-    if (woodlandFoliageSprite.complete && woodlandFoliageSprite.naturalWidth) {
+    if (imageReady(woodlandFoliageSprite)) {
       const variation = .88 + variationSeed * .22, width = r * 3.15 * variation, height = r * 2.05 * variation;
       ctx.save(); ctx.translate(x, y + 2); if (variationSeed > .5) ctx.scale(-1, 1);
       ctx.drawImage(woodlandFoliageSprite, -width / 2, -height, width, height); ctx.restore(); return;
@@ -1443,8 +1450,8 @@
     ctx.restore();
   }
   function drawBamboo(x,y,r,seed) {
-    if (bambooClumpSprite.complete && bambooClumpSprite.naturalWidth) {
-      const low = seed < .38 && bambooLowSprite.complete && bambooLowSprite.naturalWidth;
+    if (imageReady(bambooClumpSprite)) {
+      const low = seed < .38 && imageReady(bambooLowSprite);
       const sprite = low ? bambooLowSprite : bambooClumpSprite;
       const variation = .88 + seed * .22, width = r * (low ? 4.1 : 3.35) * variation, height = r * (low ? 3.0 : 3.8) * variation;
       ctx.fillStyle = '#17231e28'; ctx.beginPath(); ctx.ellipse(x, y + 4, width * (low ? .34 : .25), r * .24, 0, 0, TAU); ctx.fill();
@@ -1463,7 +1470,7 @@
   function drawBambooLeaves(x,y,r,seed){ctx.fillStyle='#17302035';ctx.beginPath();ctx.ellipse(x,y+3,r*1.2,r*.45,0,0,TAU);ctx.fill();for(let i=0;i<7;i++){const a=seed*TAU+i*.9,rr=r*(.35+(i%3)*.17);ctx.fillStyle=i%2?'#507a49':'#77945a';ctx.beginPath();ctx.ellipse(x+Math.cos(a)*rr,y+Math.sin(a)*rr*.48,rr*.38,rr*.13,a,0,TAU);ctx.fill();}}
   function drawWorldPine(x, y, r, seed) {
     const variationSeed = Number.isFinite(seed) ? seed : (Math.sin(x * .13 + y * .19) + 1) * .5;
-    if (woodlandPineSprite.complete && woodlandPineSprite.naturalWidth) {
+    if (imageReady(woodlandPineSprite)) {
       const variation = .9 + variationSeed * .2, width = r * 4.15 * variation, height = r * 4.05 * variation;
       ctx.save(); ctx.translate(x, y + 4); ctx.rotate(Math.sin(state.elapsed * 1.05 + variationSeed * TAU) * .004);
       if (variationSeed > .5) ctx.scale(-1, 1);
@@ -1475,7 +1482,7 @@
   }
   function drawWorldCliff(x,y,r,seed){
     const variationSeed = Number.isFinite(seed) ? seed : (Math.sin(x * .13 + y * .19) + 1) * .5;
-    if (mountainCliffSprite.complete && mountainCliffSprite.naturalWidth) {
+    if (imageReady(mountainCliffSprite)) {
       const variation = .9 + variationSeed * .18, width = r * 3.65 * variation, height = r * 2.75 * variation;
       ctx.save(); ctx.translate(x, y + 4); if (variationSeed > .5) ctx.scale(-1, 1);
       ctx.drawImage(mountainCliffSprite, -width / 2, -height, width, height); ctx.restore(); return;
@@ -1529,7 +1536,7 @@
   }
   function drawWorldReeds(x,y,r,seed){ctx.fillStyle='#1c292344';ctx.beginPath();ctx.ellipse(x,y+3,r*1.2,r*.4,0,0,TAU);ctx.fill();for(let i=0;i<7;i++){const bx=x+(i/6-.5)*r*1.25,h=r*(.7+((i*3)%4)*.24),lean=(seed-.5)*r*.45+(i-3)*r*.08;ctx.strokeStyle=i%2?'#738553':'#98a365';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(bx,y);ctx.quadraticCurveTo(bx+lean*.3,y-h*.55,bx+lean,y-h);ctx.stroke();if(i%2===0){ctx.fillStyle='#806743';ctx.beginPath();ctx.ellipse(bx+lean,y-h,r*.07,r*.17,lean*.01,0,TAU);ctx.fill();}}}
   function drawWorldLotus(x,y,r,seed){
-    if (lotusPondSprite.complete && lotusPondSprite.naturalWidth) {
+    if (imageReady(lotusPondSprite)) {
       const variation = .91 + seed * .18, width = r * 4.5 * variation, height = r * 3.0 * variation;
       ctx.save(); ctx.translate(x, y + 2); ctx.rotate((seed - .5) * .10); if (seed > .5) ctx.scale(-1, 1);
       ctx.drawImage(lotusPondSprite, -width / 2, -height / 2, width, height);
@@ -1569,7 +1576,7 @@
   }
   function drawWorldWillow(x,y,r,seed){drawProceduralTree(x,y,r,seed);ctx.strokeStyle='#81916a';ctx.lineWidth=1.2;for(let i=0;i<9;i++){const side=i%2?1:-1,sx=x+side*r*.45,sy=y-r*.35+(i%4)*r*.12;ctx.beginPath();ctx.moveTo(sx,sy);ctx.quadraticCurveTo(sx+side*r*.3,sy+r*.55,sx+side*r*.24,sy+r*.95);ctx.stroke();}}
   function drawWorldBlossom(x,y,r,seed){
-    if (plumTreeSprite.complete && plumTreeSprite.naturalWidth) {
+    if (imageReady(plumTreeSprite)) {
       const sway = Math.sin(state.elapsed * 1.4 + seed * 8) * .012;
       const scale = .9 + seed * .18;
       ctx.save(); ctx.translate(x, y); ctx.rotate(sway + (seed - .5) * .1); ctx.scale(seed > .5 ? -scale : scale, scale);
@@ -1581,10 +1588,68 @@
   function drawMountainShrine(x,y){ctx.fillStyle='#25302c44';ctx.beginPath();ctx.ellipse(x,y+14,96,22,0,0,TAU);ctx.fill();for(let i=0;i<4;i++){ctx.fillStyle=['#877c68','#989079','#a49a80','#b0a58a'][i];ctx.fillRect(x-56+i*6,y+4-i*7,112-i*12,8);}ctx.fillStyle='#5b564d';ctx.fillRect(x-40,y-35,80,38);ctx.fillStyle='#887859';ctx.beginPath();ctx.moveTo(x-52,y-34);ctx.lineTo(x,y-68);ctx.lineTo(x+52,y-34);ctx.lineTo(x+39,y-29);ctx.lineTo(x,y-56);ctx.lineTo(x-39,y-29);ctx.closePath();ctx.fill();ctx.fillStyle='#c0a36d';ctx.fillRect(x-4,y-22,8,22);ctx.fillStyle='#d6c28f';ctx.fillRect(x-2,y-18,3,9);}
   function drawLotusPool(x,y,r){drawWorldLotus(x,y,r,.37);drawWorldLotus(x+r*1.78,y-r*.26,r*.34,.83);}
   function drawBlossomGrove(x,y,r){drawWorldBlossom(x-r*.75,y+8,r*.68,.26);drawWorldBlossom(x+r*.75,y-9,r*.58,.72);drawWorldBlossom(x,y-r*.55,r*.74,.48);}
-  function drawBanditWaystation(x,y){ctx.fillStyle='#33281e66';ctx.beginPath();ctx.ellipse(x,y+11,82,20,0,0,TAU);ctx.fill();ctx.fillStyle='#49362b';ctx.beginPath();ctx.moveTo(x-55,y+4);ctx.lineTo(x,y-38);ctx.lineTo(x+55,y+4);ctx.closePath();ctx.fill();ctx.fillStyle='#9b4939';ctx.beginPath();ctx.moveTo(x-58,y+2);ctx.lineTo(x,y-42);ctx.lineTo(x+58,y+2);ctx.closePath();ctx.fill();ctx.fillStyle='#5b3a2b';ctx.fillRect(x-38,y+2,76,20);ctx.fillStyle='#d5ae70';ctx.fillRect(x-3,y-20,6,18);}
+  function drawBanditWaystation(x, y) {
+    ctx.save(); ctx.translate(x, y);
+    ctx.fillStyle = '#281e1766'; ctx.beginPath(); ctx.ellipse(0, 13, 116, 23, 0, 0, TAU); ctx.fill();
+
+    // A rough ring of sharpened logs makes this read as a raider checkpoint,
+    // rather than another neutral roadside hut.
+    for (let i = 0; i < 13; i++) {
+      const px = (i - 6) * 15, h = 34 + (i % 3) * 5;
+      ctx.beginPath(); ctx.moveTo(px - 8, 5); ctx.lineTo(px - 8, -h + 5); ctx.lineTo(px, -h - 5); ctx.lineTo(px + 8, -h + 5); ctx.lineTo(px + 8, 5); ctx.closePath();
+      const wood = ctx.createLinearGradient(px - 8, 0, px + 8, 0); wood.addColorStop(0, '#513525'); wood.addColorStop(.42, '#9a6840'); wood.addColorStop(1, '#533726');
+      ctx.fillStyle = wood; ctx.fill(); ctx.strokeStyle = '#38271f'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.strokeStyle = '#c18a51'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(px - 3, -h + 7); ctx.lineTo(px - 3, 1); ctx.stroke();
+    }
+    ctx.fillStyle = '#36271e'; ctx.fillRect(-47, -1, 94, 15);
+    ctx.fillStyle = '#62432e'; ctx.fillRect(-42, -3, 84, 14);
+
+    // Gate posts, iron-bound doors, and the raised tiled roof give the camp a
+    // clear silhouette at the normal camera zoom.
+    for (const side of [-1, 1]) {
+      const px = side * 43, post = ctx.createLinearGradient(px - 8, 0, px + 8, 0);
+      post.addColorStop(0, '#583722'); post.addColorStop(.48, '#b07b45'); post.addColorStop(1, '#644128');
+      ctx.fillStyle = post; ctx.fillRect(px - 8, -53, 16, 62); ctx.strokeStyle = '#39291d'; ctx.lineWidth = 2; ctx.strokeRect(px - 8, -53, 16, 62);
+      ctx.fillStyle = '#3a2920'; ctx.fillRect(px - 12, 3, 24, 8); ctx.fillStyle = '#c08a51'; ctx.fillRect(px - 9, -40, 3, 36);
+    }
+    ctx.fillStyle = '#31251e'; ctx.fillRect(-31, -1, 62, 18);
+    const door = ctx.createLinearGradient(-29, 0, 29, 0); door.addColorStop(0, '#70482c'); door.addColorStop(.5, '#9a683d'); door.addColorStop(1, '#684329');
+    ctx.fillStyle = door; ctx.fillRect(-28, 0, 56, 17); ctx.strokeStyle = '#d0a168'; ctx.lineWidth = 2; ctx.strokeRect(-28, 0, 56, 17);
+    for (let i = -2; i <= 2; i++) { ctx.strokeStyle = '#553923'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(i * 10, 2); ctx.lineTo(i * 10, 15); ctx.stroke(); }
+    ctx.fillStyle = '#e4b957'; ctx.beginPath(); ctx.arc(0, 9, 2, 0, TAU); ctx.fill();
+
+    ctx.beginPath(); ctx.moveTo(-67, -47); ctx.lineTo(-52, -61); ctx.quadraticCurveTo(0, -75, 52, -61); ctx.lineTo(67, -47); ctx.lineTo(54, -44); ctx.lineTo(47, -49); ctx.lineTo(36, -44); ctx.lineTo(25, -49); ctx.lineTo(13, -44); ctx.lineTo(0, -49); ctx.lineTo(-13, -44); ctx.lineTo(-25, -49); ctx.lineTo(-37, -44); ctx.lineTo(-49, -49); ctx.lineTo(-56, -44); ctx.closePath();
+    const roof = ctx.createLinearGradient(0, -75, 0, -43); roof.addColorStop(0, '#9c5939'); roof.addColorStop(.55, '#633b2d'); roof.addColorStop(1, '#38291f');
+    ctx.fillStyle = roof; ctx.fill(); ctx.strokeStyle = '#34251d'; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.strokeStyle = '#d29957'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-62, -47); ctx.quadraticCurveTo(0, -63, 62, -47); ctx.stroke();
+    for (let row = 0; row < 2; row++) for (let col = -3; col <= 3; col++) {
+      const tx = col * 15 + (row ? 7 : 0), ty = -58 + row * 7;
+      ctx.strokeStyle = row ? '#b17648' : '#cf9256'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(tx - 6, ty); ctx.quadraticCurveTo(tx, ty + 3, tx + 6, ty); ctx.stroke();
+    }
+
+    // The sign and paired lamps mark the entrance from a distance.
+    ctx.fillStyle = '#4a2d20'; ctx.fillRect(-24, -38, 48, 17); ctx.strokeStyle = '#d3a45f'; ctx.lineWidth = 1.5; ctx.strokeRect(-24, -38, 48, 17);
+    ctx.fillStyle = '#e8c17b'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'bold 10px "Noto Serif SC", "Songti SC", serif'; ctx.fillText('黑风寨', 0, -29);
+    for (const side of [-1, 1]) {
+      const lx = side * 52; ctx.strokeStyle = '#59402a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(lx, -44); ctx.lineTo(lx, -28); ctx.stroke();
+      ctx.shadowColor = '#f6a64b'; ctx.shadowBlur = 12; ctx.fillStyle = '#f5ae4f'; ctx.fillRect(lx - 4, -39, 8, 9); ctx.shadowBlur = 0;
+      ctx.strokeStyle = '#ffe19a'; ctx.lineWidth = .8; ctx.strokeRect(lx - 4, -39, 8, 9);
+    }
+    for (const side of [-1, 1]) {
+      const fx = side * 82; ctx.strokeStyle = '#4a3324'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(fx, 2); ctx.lineTo(fx, -43); ctx.stroke();
+      ctx.fillStyle = side < 0 ? '#9c4938' : '#c18342'; ctx.beginPath(); ctx.moveTo(fx, -41); ctx.lineTo(fx + side * 20, -36); ctx.lineTo(fx + side * 16, -22); ctx.lineTo(fx, -27); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = '#d5ae70'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(fx + side * 4, -35); ctx.lineTo(fx + side * 13, -33); ctx.stroke();
+    }
+    for (const side of [-1, 1]) {
+      const cx = side * 96; ctx.fillStyle = '#503722'; ctx.fillRect(cx - 9, -5, 18, 14); ctx.fillStyle = '#a57442'; ctx.fillRect(cx - 8, -13, 16, 8); ctx.strokeStyle = '#412d20'; ctx.lineWidth = 1.5; ctx.strokeRect(cx - 8, -13, 16, 22);
+      ctx.strokeStyle = '#d1a064'; ctx.beginPath(); ctx.moveTo(cx - 5, -3); ctx.lineTo(cx + 5, -3); ctx.moveTo(cx - 5, 3); ctx.lineTo(cx + 5, 3); ctx.stroke();
+    }
+    ctx.restore();
+  }
   function drawCliffCrown(x,y){for(let i=0;i<4;i++)drawWorldCliff(x+(i-1.5)*29,y+(i%2)*20,43+(i%2)*9,.2+i*.17);}
   function drawBambooGate(x,y){
-    if (bambooGateSprite.complete && bambooGateSprite.naturalWidth) {
+    if (imageReady(bambooGateSprite)) {
       const width = 246, height = 205;
       ctx.drawImage(bambooGateSprite, x - width / 2, y - height, width, height);
       ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'bold 12px "Noto Serif SC", "Songti SC", serif';
@@ -1602,7 +1667,7 @@
       if (!v.alive) { ctx.fillStyle = '#604b35'; ctx.fillRect(v.x - 9, v.y, 18, 5); continue; }
       const bob = Math.sin(state.elapsed * 2 + v.x) * 1.2;
       ctx.fillStyle = 'rgba(24, 20, 14, .23)'; ctx.beginPath(); ctx.ellipse(v.x, v.y + 2, 10, 3.5, 0, 0, TAU); ctx.fill();
-      if (villagerAtlas.complete && villagerAtlas.naturalWidth) {
+      if (imageReady(villagerAtlas)) {
         const atlasW = villagerAtlas.naturalWidth / 3, atlasH = villagerAtlas.naturalHeight;
         const column = v.id === 'tea' ? 0 : v.id === 'herbalist' ? 1 : 2;
         ctx.drawImage(villagerAtlas, column * atlasW, 0, atlasW, atlasH, v.x - 19, v.y - 54 + bob, 38, 57);
@@ -1642,7 +1707,7 @@
     ctx.fillStyle = 'rgba(18, 16, 13, .34)'; ctx.beginPath(); ctx.ellipse(0, 4, 18, 5.5, 0, 0, TAU); ctx.fill();
     if (p.invuln > 0 && Math.floor(state.elapsed * 18) % 2) ctx.globalAlpha = .45;
     const active = specFor();
-    if (heroSprite.complete && heroSprite.naturalWidth) {
+    if (imageReady(heroSprite)) {
       if (p.facingX < -.15) ctx.scale(-1, 1);
       if (p.walking) ctx.rotate(Math.sin(p.walkTime) * .018);
       ctx.drawImage(heroSprite, -32, -74, 64, 75);
@@ -1696,14 +1761,14 @@
   function drawEnemy(e) {
     if (e.role === 'dragon') { drawDragon(e); return; }
     const bossScale = e.boss ? 1.28 : 1;
-    if (e.type === 'boar' && boarSprite.complete && boarSprite.naturalWidth) { drawSpriteEnemy(e, boarSprite, 91 * bossScale, 79 * bossScale, true); return; }
-    if (e.type === 'guardian' && guardianSprite.complete && guardianSprite.naturalWidth) { drawSpriteEnemy(e, guardianSprite, 92 * bossScale, 94 * bossScale, true); return; }
-    if (e.type === 'serpent' && serpentSprite.complete && serpentSprite.naturalWidth) { drawSpriteEnemy(e, serpentSprite, 88 * bossScale, 92 * bossScale, true); return; }
-    if (e.beast && wolfSprite.complete && wolfSprite.naturalWidth) { drawSpriteEnemy(e, wolfSprite, 72, 48, false); return; }
+    if (e.type === 'boar' && imageReady(boarSprite)) { drawSpriteEnemy(e, boarSprite, 91 * bossScale, 79 * bossScale, true); return; }
+    if (e.type === 'guardian' && imageReady(guardianSprite)) { drawSpriteEnemy(e, guardianSprite, 92 * bossScale, 94 * bossScale, true); return; }
+    if (e.type === 'serpent' && imageReady(serpentSprite)) { drawSpriteEnemy(e, serpentSprite, 88 * bossScale, 92 * bossScale, true); return; }
+    if (e.beast && imageReady(wolfSprite)) { drawSpriteEnemy(e, wolfSprite, 72, 48, false); return; }
     if (['bandit', 'runner', 'brute'].includes(e.type)) {
-      const sprite = e.type === 'runner' && runnerSprite.complete && runnerSprite.naturalWidth ? runnerSprite
-        : e.type === 'brute' && bruteSprite.complete && bruteSprite.naturalWidth ? bruteSprite : banditSprite;
-      if (sprite.complete && sprite.naturalWidth) {
+      const sprite = e.type === 'runner' && imageReady(runnerSprite) ? runnerSprite
+        : e.type === 'brute' && imageReady(bruteSprite) ? bruteSprite : banditSprite;
+      if (imageReady(sprite)) {
         const size = e.type === 'brute' ? 1.3 : e.type === 'runner' ? .84 : 1;
         drawSpriteEnemy(e, sprite, 48 * size, 62 * size, false); return;
       }
@@ -1826,7 +1891,7 @@
     }
   }
   function drawDragon(e) {
-    if (wyrmSprite.complete && wyrmSprite.naturalWidth) {
+    if (imageReady(wyrmSprite)) {
       const moving = e.moving || e.chargeTime > 0, gait = moving ? Math.sin(e.anim * .8) : Math.sin(e.anim * .34) * .14;
       const bob = moving ? Math.sin(e.anim * .7) * 2 : Math.sin(e.anim * .36) * .65, lunge = (e.attackPose || 0) * 3;
       ctx.save(); ctx.translate(e.x + e.facingX * lunge, e.y + bob + e.facingY * lunge);
@@ -1858,9 +1923,9 @@
     const idleSway = state.pet === 'tortoise' ? Math.sin(state.elapsed * 1.7) * .018 : Math.sin(state.petWalkTime * .8) * .025;
     ctx.rotate(idleSway + pounce * (state.pet === 'tiger' ? -.1 : .04) - leap * (state.pet === 'tiger' ? .17 : 0));
     if (pounce > 0) { ctx.shadowColor = state.pet === 'crane' ? '#b9f4cf' : state.pet === 'tortoise' ? '#78d8c0' : '#f3bd70'; ctx.shadowBlur = 13 * pounce; }
-    if (state.pet === 'fox' && foxSprite.complete && foxSprite.naturalWidth) {
+    if (state.pet === 'fox' && imageReady(foxSprite)) {
       ctx.drawImage(foxSprite, -spriteW / 2, -spriteH, spriteW, spriteH);
-    } else if (companionSprite.complete && companionSprite.naturalWidth >= 2100) {
+    } else if (imageReady(companionSprite) && companionSprite.naturalWidth >= 2100) {
       const cell = state.pet === 'crane' ? 0 : state.pet === 'tiger' ? 1 : 2, cellW = companionSprite.naturalWidth / 3;
       if (state.pet === 'crane') ctx.scale(1, 1 + Math.sin(state.elapsed * 10) * .035);
       if (state.pet === 'tiger') ctx.scale(1 + pounce * .06 + leap * .09, 1 - pounce * .035 - leap * .06);
@@ -1892,7 +1957,7 @@
         const tail = r * 5.4, head = r * 4.6;
         ctx.strokeStyle = '#ed813b88'; ctx.lineWidth = r * 1.28; ctx.beginPath(); ctx.moveTo(-tail, 0); ctx.bezierCurveTo(-r * 2.6, -r * 2.8, r * .4, r * 2.4, head, 0); ctx.stroke();
         ctx.strokeStyle = '#ffd577'; ctx.lineWidth = Math.max(2.4, r * .44); ctx.beginPath(); ctx.moveTo(-tail + 4, 0); ctx.bezierCurveTo(-r * 2.6, -r * 2.2, r * .5, r * 1.8, head, 0); ctx.stroke();
-        if (wyrmSprite.complete && wyrmSprite.naturalWidth) {
+        if (imageReady(wyrmSprite)) {
           ctx.globalCompositeOperation = 'source-over'; ctx.shadowColor = '#ef8136'; ctx.shadowBlur = 14; ctx.drawImage(wyrmSprite, -r * 4.7, -r * 2.35, r * 9.4, r * 4.7);
           ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = '#fff1bc'; ctx.shadowColor = '#fff0bc'; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(r * 3.3, -r * .42, Math.max(2, r * .2), 0, TAU); ctx.fill();
         } else {
@@ -2056,7 +2121,7 @@
       const orbit = t * TAU * 1.42 - Math.PI / 2, dx = Math.cos(orbit) * (orbitRx - 5), dy = Math.sin(orbit) * (orbitRy - 3);
       ctx.save(); ctx.translate(dx, 7 + dy); ctx.rotate(orbit + Math.PI / 2);
       ctx.globalAlpha *= .96 + Math.max(0, Math.sin(orbit)) * .04;
-      if (wyrmSprite.complete && wyrmSprite.naturalWidth) {
+      if (imageReady(wyrmSprite)) {
         ctx.globalCompositeOperation = 'source-over'; ctx.shadowColor = '#f18b38'; ctx.shadowBlur = 23;
         const dragonW = 166 + Math.min(5, e.rank) * 7, dragonH = dragonW * .5;
         ctx.drawImage(wyrmSprite, -dragonW / 2, -dragonH / 2, dragonW, dragonH);
@@ -2112,7 +2177,7 @@
       const progress = clamp(1 - (e.hitAt || 0) / .48, 0, 1), impact = e.struck ? clamp((t - .45) / .61, 0, 1) : 0;
       const handAlpha = e.struck ? 1 - impact : .92, handScale = e.struck ? 1.04 - impact * .18 : .42 + progress * .58;
       ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha *= clamp(handAlpha, 0, 1); ctx.shadowColor = '#e8a82e'; ctx.shadowBlur = 13 + (1 - progress) * 7;
-      if (buddhaPalmSprite.complete && buddhaPalmSprite.naturalWidth) {
+      if (imageReady(buddhaPalmSprite)) {
         const handW = (286 + rank * 24) * handScale, handH = handW * buddhaPalmSprite.naturalHeight / buddhaPalmSprite.naturalWidth;
         ctx.drawImage(buddhaPalmSprite, -handW / 2, -handH / 2, handW, handH);
       }
