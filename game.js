@@ -761,13 +761,17 @@
 
   function updateAutoMove(dt) {
     const p = state.hero;
+    const targetsThisVolley = new Set();
     for (const move of state.moves) {
       const spec = moveSpecs[move.id]; if (!spec) continue;
       const rank = move.level || 1; move.cooldown = Math.max(0, (move.cooldown || 0) - dt);
       if (move.cooldown > 0) continue;
       const range = spec.style === 'lightness' ? Math.min(132 + rank * 5, 165) : spec.range * (1 + (state.passives.focus || 0) * .025) + Math.floor(rank / 2) * 7;
-      const target = nearestEnemy(range);
+      const reservedTargets = new Set(targetsThisVolley);
+      for (const otherMove of state.moves) if (otherMove !== move && otherMove.targetId) reservedTargets.add(otherMove.targetId);
+      const target = nearestEnemy(range, reservedTargets);
       if (!target) { move.cooldown = .1; continue; }
+      targetsThisVolley.add(target.id); move.targetId = target.id;
       const dx = target.x - p.x, dy = target.y - p.y, d = Math.hypot(dx, dy) || 1;
       p.facingX = dx / d; p.facingY = dy / d; p.attackAnim = Math.max(p.attackAnim, .28);
       const baseCooldown = spec.style === 'lightness' ? Math.max(8.2, spec.cd - (rank - 1) * .3) : spec.cd * (1 - (rank - 1) * .075) * (1 - (state.passives.focus || 0) * .035);
@@ -915,8 +919,8 @@
   }
   function defeatEnemy(e) {
     e.hp = 0; state.kills++; const n = e.boss ? 8 : Math.random() < .2 ? 2 : 1;
-    for (let i = 0; i < n; i++) state.orbs.push({ x: e.x + rand(-12, 12), y: e.y + rand(-10, 10), value: e.boss ? 13 : Math.floor(rand(7, 12)), r: e.boss ? 6 : 4, bob: rand(0, TAU) });
-    state.drops.push({ type: 'coin', x: e.x + rand(-10, 10), y: e.y + rand(-10, 10), value: e.coin });
+    for (let i = 0; i < n; i++) dropExperience(e.x + rand(-12, 12), e.y + rand(-10, 10), e.boss ? 13 : Math.floor(rand(7, 12)));
+    dropCoins(e.x + rand(-10, 10), e.y + rand(-10, 10), e.coin);
     for (let i = 0; i < 12; i++) spark(e.x, e.y - 10, e.boss ? '#ffd174' : '#e9cb85');
     if (e.boss) {
       state.gold += e.coin; state.drops.push({ type: 'manual', x: e.x, y: e.y - 15, value: e.type === 'dragon' ? 'tenThousandSwords' : null });
@@ -929,9 +933,29 @@
     if (Math.random() < (e.boss ? .45 : .035)) state.drops.push({ type: 'manual', x: e.x + 10, y: e.y + 5, value: null });
   }
 
+  function dropExperience(x, y, value) {
+    // Enemies often fall together in packs; combine nearby experience into
+    // fewer, brighter crystals without changing the amount awarded.
+    const bundle = state.orbs.find(o => !o.got && Math.hypot(o.x - x, o.y - y) < 36);
+    if (bundle) {
+      bundle.value += value;
+      bundle.r = Math.min(9, 4 + Math.sqrt(bundle.value) * .42);
+      bundle.x = (bundle.x + x) * .5; bundle.y = (bundle.y + y) * .5;
+    } else state.orbs.push({ x, y, value, r: Math.min(9, 4 + Math.sqrt(value) * .42), bob: rand(0, TAU) });
+  }
+  function dropCoins(x, y, value) {
+    // Show one readable coin pile where a group of enemies fell instead of a
+    // trail of identical icons scattered across the fight.
+    const pile = state.drops.find(d => d.type === 'coin' && Math.hypot(d.x - x, d.y - y) < 42);
+    if (pile) {
+      pile.value += value; pile.count = (pile.count || 1) + 1;
+      pile.x = (pile.x + x) * .5; pile.y = (pile.y + y) * .5;
+    } else state.drops.push({ type: 'coin', x, y, value, count: 1, bob: rand(0, TAU) });
+  }
+
   function updateOrbs(dt) {
-    const p = state.hero, magnet = 78 + (state.passives.magnet || 0) * 76;
-    for (const o of state.orbs) { o.bob += dt * 4; const d = dist(o, p); if (d < magnet && d > 2) { const speed = 240 + (magnet - d) * 1.4; o.x += (p.x - o.x) / d * speed * dt; o.y += (p.y - o.y) / d * speed * dt; } if (d < 26) { state.xp = (state.xp || 0) + o.value; o.got = true; checkLevel(); } }
+    const p = state.hero, magnet = 118 + (state.passives.magnet || 0) * 76;
+    for (const o of state.orbs) { o.bob += dt * 4; const d = dist(o, p); if (d < magnet && d > 2) { const speed = 300 + (magnet - d) * 1.35; o.x += (p.x - o.x) / d * speed * dt; o.y += (p.y - o.y) / d * speed * dt; } if (d < 28) { state.xp = (state.xp || 0) + o.value; o.got = true; checkLevel(); } }
     state.orbs = state.orbs.filter(o => !o.got);
   }
 
@@ -1008,7 +1032,21 @@
     state.draftOpen = false; state.choiceCards = []; $('levelModal').hidden = true; refreshUI(); saveRun();
   }
 
-  function nearestEnemy(range = Infinity) { return state.enemies.filter(e => e.hp > 0).map(e => [e, dist(e, state.hero)]).filter(([_, d]) => d <= range).sort((a, b) => a[1] - b[1])[0]?.[0] || null; }
+  function nearestEnemy(range = Infinity, reserved = null) {
+    const p = state.hero;
+    const candidates = state.enemies.filter(e => e.hp > 0 && dist(e, p) <= range).sort((a, b) => dist(a, p) - dist(b, p));
+    let nearestVisible = null;
+    for (const enemy of candidates) {
+      // Physical hits and projectiles need a clear line; don't spend a cooldown
+      // on a target hidden behind a tree, rock, wall, or river bend.
+      if (terrainPathBlocked(p.x, p.y, enemy.x, enemy.y, 2)) continue;
+      if (!nearestVisible) nearestVisible = enemy;
+      if (!reserved?.has(enemy.id)) return enemy;
+    }
+    // If this volley has fewer visible enemies than ready moves, let the
+    // remaining skills reinforce the nearest target instead of sitting idle.
+    return nearestVisible;
+  }
   function damageFloat(enemy, amount, crit) {
     const existing = state.floats.find(f => f.targetId === enemy.id && f.life > f.max * .76);
     if (existing) { existing.value += Math.round(amount); existing.crit ||= crit; existing.text = `${existing.crit ? '会心 ' : ''}${existing.value}`; existing.color = existing.crit ? '#ffe18b' : '#fff0d2'; existing.life = Math.min(existing.max, existing.life + .04); }
@@ -1152,7 +1190,8 @@
   }
 
   function spawnBoss() {
-    const p = state.hero, a = rand(0, TAU), d = Math.max(viewW, viewH) * .62, region = getLandscapeRegion(p.x, p.y);
+    const p = state.hero, facing = Math.hypot(p.facingX, p.facingY) > .01 ? Math.atan2(p.facingY, p.facingX) : 0;
+    const a = facing + rand(-.52, .52), d = Math.max(viewW, viewH) * .62, region = getLandscapeRegion(p.x, p.y);
     const biomeBoss = { bamboo: 'boar', ridge: 'boar', temple: 'guardian', crag: 'guardian', lotus: 'serpent', marsh: 'serpent', peach: 'chief', pass: 'chief' };
     const remoteBoss = region?.strength > .62 && state.wave >= 4 ? biomeBoss[region.region.id] : null;
     const useDragon = state.wave >= 7 && (!remoteBoss || ['lotus', 'marsh'].includes(region?.region.id)) && Math.random() < .42;
@@ -1160,7 +1199,7 @@
     const e = spawnEnemy(type, p.x + Math.cos(a) * d, p.y + Math.sin(a) * d, { boss: true, regionalBoss: !!remoteBoss });
     if (e) {
       e.hp *= 1.8; e.maxHp = e.hp; e.damage *= 1.08; e.radius *= 1.2;
-      state.event = `${e.name}现身江湖！`; state.eventUntil = state.elapsed + 8; setToast(`${e.name}现身！观察它的蓄势范围，及时走位。`, 4);
+      state.event = `${e.name}现身江湖！看上方金色箭头追踪`; state.eventUntil = state.elapsed + 8; setToast(`${e.name}现身！金色指引标出方位，迎上去或先清周围敌人。`, 4);
     }
     state.nextBossAt += 180;
   }
@@ -1184,7 +1223,17 @@
   }
 
   function updateDrops(dt) {
-    for (const d of state.drops) { d.bob = (d.bob || 0) + dt * 4; if (dist(d, state.hero) < 34) {
+    for (const d of state.drops) {
+      d.bob = (d.bob || 0) + dt * 4;
+      const distance = dist(d, state.hero);
+      // Coins gently follow when nearby so the player can keep moving through
+      // a fight and still collect the reward. Secret manuals remain deliberate pickups.
+      if (d.type === 'coin' && distance < 132 && distance > 2) {
+        const speed = 330 + (132 - distance) * 1.1;
+        d.x += (state.hero.x - d.x) / distance * speed * dt;
+        d.y += (state.hero.y - d.y) / distance * speed * dt;
+      }
+      if (dist(d, state.hero) < (d.type === 'coin' ? 28 : 38)) {
       if (d.type === 'coin') { state.gold += d.value; d.got = true; }
       if (d.type === 'manual') { d.got = true; openDraft(); setToast('拾得秘籍！从三项武学中择一领悟。', 3); }
     } }
@@ -1214,9 +1263,18 @@
       const m = state.moves[i], s = m ? moveSpecs[m.id] : null;
       return `<div class="skill-slot ${s ? 'learned' : 'empty'}" ${s ? `data-category="${s.category}"` : ''}><span class="slot-icon">${s?.icon || '·'}</span><b>${s?.name || '空位'}</b><small>${s ? `<span class="slot-category">${s.category}</span><span class="slot-kind"> · ${s.kind}</span>` : '升级可习得'}</small>${m ? `<span class="level-tag">${m.level}重</span>` : ''}</div>`;
     }).join('');
-    const boss = state.enemies.find(e => e.boss && dist(e, p) < Math.max(viewW, viewH) * .78);
+    const boss = state.enemies.filter(e => e.boss && e.hp > 0).sort((a, b) => dist(a, p) - dist(b, p))[0];
     $('bossBar').hidden = !boss;
-    if (boss) { $('bossName').textContent = boss.name; $('bossHpText').textContent = `${Math.max(0, Math.ceil(boss.hp))} / ${Math.ceil(boss.maxHp)}`; $('bossHpBar').style.width = `${clamp(boss.hp / boss.maxHp * 100, 0, 100)}%`; }
+    if (boss) {
+      $('bossName').textContent = boss.name; $('bossHpText').textContent = `${Math.max(0, Math.ceil(boss.hp))} / ${Math.ceil(boss.maxHp)}`; $('bossHpBar').style.width = `${clamp(boss.hp / boss.maxHp * 100, 0, 100)}%`;
+      const screenX = w / 2 + (boss.x - cameraX) * scale, screenY = h / 2 + (boss.y - cameraY) * scale;
+      const offscreen = screenX < 30 || screenX > w - 30 || screenY < 158 || screenY > h - 165;
+      $('bossDirection').hidden = !offscreen;
+      if (offscreen) {
+        $('bossDirectionArrow').style.transform = `rotate(${Math.atan2(screenY - h / 2, screenX - w / 2)}rad)`;
+        const distance = dist(boss, p); $('bossDirectionDistance').textContent = distance >= 1000 ? `${(distance / 1000).toFixed(1)}km` : `${Math.round(distance)}m`;
+      }
+    } else $('bossDirection').hidden = true;
     $('eventRibbon').hidden = !state.event || state.eventUntil < state.elapsed; $('eventText').textContent = state.event || '';
     if (!$('mapModal').hidden) drawMap();
   }
@@ -1890,8 +1948,8 @@
       ctx.restore();
     }
   }
-  function drawOrb(o) { const pulse = 1 + Math.sin(o.bob) * .15; ctx.save(); ctx.shadowColor = '#f4dd88'; ctx.shadowBlur = 14; ctx.fillStyle = '#f6db86'; ctx.beginPath(); ctx.moveTo(o.x, o.y - o.r * pulse); ctx.lineTo(o.x + o.r * .7, o.y); ctx.lineTo(o.x, o.y + o.r * pulse); ctx.lineTo(o.x - o.r * .7, o.y); ctx.closePath(); ctx.fill(); ctx.restore(); }
-  function drawDrop(d) { const y = d.y + Math.sin(d.bob || 0) * 4; ctx.save(); ctx.shadowBlur = 12; ctx.shadowColor = '#f5d980'; ctx.fillStyle = '#eac96e'; if (d.type === 'coin') { ctx.beginPath(); ctx.arc(d.x, y, 7, 0, TAU); ctx.fill(); ctx.fillStyle = '#6d5328'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('◈', d.x, y + 3); } else { ctx.fillStyle = '#f4e3a5'; ctx.fillRect(d.x - 7, y - 8, 14, 17); ctx.fillStyle = '#926c45'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('秘', d.x, y + 4); } ctx.restore(); }
+  function drawOrb(o) { const pulse = 1 + Math.sin(o.bob) * .15; ctx.save(); ctx.shadowColor = '#f4dd88'; ctx.shadowBlur = Math.min(22, 12 + o.r); ctx.fillStyle = '#f6db86'; ctx.beginPath(); ctx.moveTo(o.x, o.y - o.r * pulse); ctx.lineTo(o.x + o.r * .7, o.y); ctx.lineTo(o.x, o.y + o.r * pulse); ctx.lineTo(o.x - o.r * .7, o.y); ctx.closePath(); ctx.fill(); if (o.value >= 24) { ctx.strokeStyle = '#fff3ba'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(o.x, o.y - o.r * .55); ctx.lineTo(o.x, o.y + o.r * .55); ctx.stroke(); } ctx.restore(); }
+  function drawDrop(d) { const y = d.y + Math.sin(d.bob || 0) * 4; ctx.save(); ctx.shadowBlur = 12; ctx.shadowColor = '#f5d980'; ctx.fillStyle = '#eac96e'; if (d.type === 'coin') { if ((d.count || 1) > 1) { ctx.beginPath(); ctx.arc(d.x - 3, y - 2, 6, 0, TAU); ctx.fill(); } ctx.beginPath(); ctx.arc(d.x, y, 7, 0, TAU); ctx.fill(); ctx.fillStyle = '#6d5328'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('◈', d.x, y + 3); if (d.count > 1) { ctx.fillStyle = '#fff1bd'; ctx.font = 'bold 8px sans-serif'; ctx.fillText(`×${Math.min(99, d.count)}`, d.x + 12, y - 7); } } else { ctx.fillStyle = '#f4e3a5'; ctx.fillRect(d.x - 7, y - 8, 14, 17); ctx.fillStyle = '#926c45'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('秘', d.x, y + 4); } ctx.restore(); }
   function drawTelegraphs() {
     for (const e of state.enemies) if (e.windup > 0) {
       const pulse = .52 + Math.sin(state.elapsed * 32) * .2, tellColor = e.role === 'summoner' ? '#c27be8' : e.role === 'serpent' ? '#b99be9' : e.role === 'guardian' ? '#8de0b2' : e.role === 'charger' ? '#f2a36e' : e.role === 'dragon' ? '#ff744a' : e.role === 'ranged' ? '#efc879' : '#ed8766';
