@@ -45,3 +45,6 @@
   #levelModal .choice-card p{grid-column:2;align-self:center;font-size:9px;line-height:1.35;margin:1px 0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
   #levelModal .choice-card .new-tag{grid-column:2;align-self:start;font-size:8px;margin-top:1px}
 }
+
+.skill-swipe-hint{display:none}
+@media(max-width:760px),(pointer:coarse){.dock-heading .skill-swipe-hint{display:block;color:#d8c589;font-size:7px;white-space:nowrap}}
