@@ -10,12 +10,19 @@
   const VILLAGE = { x: 0, y: 0, w: 1536, h: 1024 };
   const CAMP_SIZE = 1900;
   const TAU = Math.PI * 2;
-  const ground = new Image(); ground.src = 'assets/art/forest-ground.png';
+  const ground = new Image(); ground.src = 'assets/art/forest-ground-v2.jpg';
   const villageArt = new Image(); villageArt.src = 'assets/art/wuxia-village.jpg';
+  const heroSprite = new Image(); heroSprite.src = 'assets/art/jianghu-novice.png';
+  const banditSprite = new Image(); banditSprite.src = 'assets/art/bandit-swordsman.png';
+  const wolfSprite = new Image(); wolfSprite.src = 'assets/art/mountain-wolf.png';
+  const wyrmSprite = new Image(); wyrmSprite.src = 'assets/art/crimson-wyrm.png';
+  const villagerAtlas = new Image(); villagerAtlas.src = 'assets/art/village-folk.png';
   let groundPattern = null;
-  let w = 0, h = 0, dpr = 1, scale = 1, viewW = 0, viewH = 0, cameraX = 0, cameraY = 0;
+  let villageBlend = null;
+  let w = 0, h = 0, dpr = 1, scale = 1, zoom = 1, viewW = 0, viewH = 0, cameraX = 0, cameraY = 0;
   let state = null, lastFrame = 0, raf = 0, toastTimer = 0, pointer = null, moveTarget = null;
   let joystick = { x: 0, y: 0, id: null, originX: 0, originY: 0 }, keys = Object.create(null), uiTimer = 0;
+  const touchPoints = new Map(); let pinchStartDistance = 0, pinchStartZoom = 1;
 
   const moveSpecs = {
     woodStaff: { name: '粗木棍', icon: '🪵', kind: '入门兵器', style: 'melee', range: 72, damage: 5, cd: .82, desc: '最低级的短棍，贴近敌人后单体敲击。', color: '#c39a5c' },
@@ -29,10 +36,11 @@
     dragonPalm: { name: '降龙十八掌', icon: '🐉', kind: '掌法', style: 'palm', range: 350, damage: 31, cd: 1.45, speed: 350, count: 3, radius: 13, desc: '掌劲化作三道龙形气浪。', color: '#f5bf64' },
     rainNeedles: { name: '暴雨梨花针', icon: '针', kind: '暗器', style: 'volley', range: 310, damage: 12, cd: 1.25, speed: 650, count: 7, desc: '七枚细针扇形齐发，攻速迅疾。', color: '#d4e3c2' },
     heavenSword: { name: '倚天剑', icon: '⚔', kind: '剑法', style: 'orbit', range: 150, damage: 24, cd: .58, desc: '剑影环身，近者皆受锋芒。', color: '#c9eff0' },
-    dragonBlade: { name: '屠龙刀', icon: '刀', kind: '刀法', style: 'crescent', range: 450, damage: 76, cd: 2.2, speed: 350, pierce: 6, radius: 24, desc: '沉重刀罡开山裂石，扫过大片敌阵。', color: '#ff9c56', rare: true },
+    dragonBlade: { name: '屠龙刀·破军式', icon: '刀', kind: '刀法', style: 'crescent', range: 450, damage: 76, cd: 2.2, speed: 350, pierce: 6, radius: 24, desc: '沉重刀罡开山裂石，扫过大片敌阵。', color: '#ff9c56', rare: true },
     skyHalberd: { name: '方天画戟', icon: '戟', kind: '戟法', style: 'spin', range: 168, damage: 52, cd: 1.3, desc: '画戟旋舞，四周敌人无处可避。', color: '#e8c36f', rare: true },
-    overlordSpear: { name: '霸王枪', icon: '枪', kind: '枪法', style: 'thrust', range: 520, damage: 59, cd: 1.35, speed: 800, pierce: 9, desc: '霸王枪劲贯穿长阵。', color: '#d3ddd1', rare: true },
-    tenThousandSwords: { name: '万剑归宗', icon: '✦', kind: '剑诀', style: 'rain', range: 440, damage: 33, cd: 1.9, speed: 360, count: 5, pierce: 2, desc: '剑气自天而落，追击周围敌人。', color: '#bce8eb', rare: true }
+    overlordSpear: { name: '霸王枪·贯日', icon: '枪', kind: '枪法', style: 'thrust', range: 520, damage: 59, cd: 1.35, speed: 800, pierce: 9, desc: '霸王枪劲贯穿长阵。', color: '#d3ddd1', rare: true },
+    tenThousandSwords: { name: '万剑归宗', icon: '✦', kind: '剑诀', style: 'rain', range: 440, damage: 33, cd: 1.9, speed: 360, count: 5, pierce: 2, desc: '剑气自天而落，追击周围敌人。', color: '#bce8eb', rare: true },
+    dragonPalmAwakened: { name: '亢龙有悔', icon: '🐉', kind: '掌法', style: 'palm', range: 420, damage: 44, cd: 1.6, speed: 390, count: 5, radius: 16, desc: '掌劲化出五道金龙，直破敌阵。', color: '#ffcc6f', rare: true, evolutionOnly: true }
   };
   for (const [id, spec] of Object.entries(moveSpecs)) spec.id = id;
 
@@ -50,6 +58,7 @@
 
   const passiveCards = [
     { id: 'innerQi', name: '吐纳心法', icon: '☯', desc: '内力上限 +12，恢复速度提高；与满级招式共鸣。', max: 5 },
+    { id: 'ironQi', name: '剑气淬炼', icon: '🗡️', desc: '招式伤害 +1；剑法伤害再提高 8%，可与精钢长剑共鸣。', max: 5 },
     { id: 'body', name: '铁布衫', icon: '🥋', desc: '气血上限 +18，并立刻恢复 18 点。', max: 5 },
     { id: 'lightness', name: '轻功身法', icon: '〰', desc: '移动速度提高 9%，闪避冷却缩短。', max: 5 },
     { id: 'focus', name: '凝神诀', icon: '🎯', desc: '会心率提高 4%，招式伤害提高 3%。', max: 5 },
@@ -68,7 +77,7 @@
     return {
       started: false, ended: false, draftOpen: false, bagOpen: false,
       elapsed: 0, wave: 1, kills: 0, gold: 25, savedVillagers: 0, xp: 0,
-      hero: { x: 760, y: 520, level: 1, hp: 100, maxHp: 100, qi: 40, maxQi: 40, damage: 8, speed: 205, crit: .05, invuln: 0, attackCd: .35, attackAnim: 0, facingX: 1, facingY: 0, walking: false, walkTime: 0, dodgeCd: 0, dashTime: 0, vx: 0, vy: 0 },
+      hero: { x: 768, y: 330, level: 1, hp: 100, maxHp: 100, qi: 40, maxQi: 40, damage: 8, speed: 205, crit: .05, invuln: 0, attackCd: .35, attackAnim: 0, facingX: 1, facingY: 0, walking: false, walkTime: 0, dodgeCd: 0, dashTime: 0, vx: 0, vy: 0 },
       moves: [{ id: 'woodStaff', level: 1 }], activeMove: 0, passives: {},
       enemies: [], shots: [], orbs: [], effects: [], floats: [],
       villagers: [
@@ -76,7 +85,7 @@
         { id: 'herbalist', x: 1100, y: 397, name: '采药姑娘', hp: 100, maxHp: 100, alive: true },
         { id: 'ferryman', x: 1240, y: 735, name: '摆渡人', hp: 100, maxHp: 100, alive: true }
       ],
-      spawnTimer: 1.5, raidTimer: 72, nextBossAt: 145, lastRaidId: 0,
+      spawnTimer: 1.5, raidTimer: 72, raidWarning: false, nextBossAt: 145, lastRaidId: 0,
       campActive: new Set(), campCleared: new Set(), seed: Math.floor(Math.random() * 0xffffff),
       pet: null, petCd: 0, petX: 720, petY: 565, cameraShake: 0,
       drops: [], choiceCards: [], weather: 0, version: 2
@@ -84,6 +93,20 @@
   }
 
   function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+  function syncZoomLabel() { const label = $('zoomValue'); if (label) label.textContent = `${Math.round(zoom * 100)}%`; }
+  function setZoom(next) { zoom = clamp(next, .65, 1.55); resize(); syncZoomLabel(); }
+  function touchDistance() { const points = [...touchPoints.values()]; return points.length < 2 ? 0 : Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y); }
+  function resetJoystick() { joystick.id = null; joystick.x = joystick.y = 0; const knob = $('stickKnob'); if (knob) knob.style.transform = ''; }
+  function beginTouch(e, repositionStick) {
+    touchPoints.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (touchPoints.size >= 2) {
+      resetJoystick(); pinchStartDistance = touchDistance(); pinchStartZoom = zoom;
+      $('touchStick').style.opacity = '0'; moveTarget = null; return;
+    }
+    joystick.id = e.pointerId; joystick.originX = e.clientX; joystick.originY = e.clientY; joystick.x = joystick.y = 0;
+    if (repositionStick) { $('touchStick').style.left = `${clamp(e.clientX - 45, 8, w - 100)}px`; $('touchStick').style.top = `${clamp(e.clientY - 45, 70, h - 110)}px`; }
+    $('touchStick').style.opacity = '1';
+  }
   function rand(a, b) { return a + Math.random() * (b - a); }
   function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
   function activeMove() { return state?.moves[state.activeMove] || state?.moves[0] || null; }
@@ -94,7 +117,7 @@
     if (!w || !h) return;
     dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
-    scale = clamp(Math.min(w / 1120, h / 760), .42, 1.25);
+    scale = clamp(Math.min(w / 1120, h / 760), .42, 1.25) * zoom;
     viewW = w / scale; viewH = h / scale;
     if (state) draw();
   }
@@ -105,7 +128,7 @@
   function rngFor(x, y) { let s = seedFor(x, y); return () => { s += 0x6d2b79f5; let t = s; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   function getPattern() {
     if (groundPattern || !ground.complete || !ground.naturalWidth) return groundPattern;
-    const tile = document.createElement('canvas'); tile.width = 768; tile.height = 768;
+    const tile = document.createElement('canvas'); tile.width = 1024; tile.height = 1024;
     const g = tile.getContext('2d');
     g.drawImage(ground, 0, 0, ground.naturalWidth, ground.naturalHeight, 0, 0, tile.width, tile.height);
     // Fade the image edges into one another so the wilderness can repeat without hard tile borders.
@@ -118,7 +141,37 @@
       const t = i / (seam - 1), top = (i * size + x) * 4, bottom = ((size - seam + i) * size + x) * 4;
       for (let c = 0; c < 3; c++) { const avg = (d[top + c] + d[bottom + c]) / 2; d[top + c] = avg * (1 - t) + d[top + c] * t; d[bottom + c] = avg * (1 - t) + d[bottom + c] * t; }
     }
-    g.putImageData(image, 0, 0); groundPattern = ctx.createPattern(tile, 'repeat'); return groundPattern;
+    g.putImageData(image, 0, 0);
+    // A larger supertile pushes the texture repeat beyond a normal screen view.
+    const worldTiles = 2, worldTile = document.createElement('canvas');
+    worldTile.width = worldTile.height = size * worldTiles;
+    const t = worldTile.getContext('2d');
+    for (let row = 0; row < worldTiles; row++) for (let col = 0; col < worldTiles; col++) {
+      const cx = col * size + size / 2, cy = row * size + size / 2;
+      t.save(); t.translate(cx, cy); t.scale(col % 2 ? -1 : 1, row % 2 ? -1 : 1);
+      t.drawImage(tile, -size / 2, -size / 2, size, size); t.restore();
+    }
+    groundPattern = ctx.createPattern(worldTile, 'repeat');
+    // Offset the motif boundaries away from the town/player spawn so the tile junction
+    // never reads as a cross-shaped clearing in the center of the play space.
+    if (groundPattern?.setTransform && typeof DOMMatrix !== 'undefined') {
+      groundPattern.setTransform(new DOMMatrix().translate(-size / 2, -size / 2));
+    }
+    return groundPattern;
+  }
+
+  function getVillageBlend() {
+    if (villageBlend || !villageArt.complete || !villageArt.naturalWidth) return villageBlend;
+    const width = VILLAGE.w, height = VILLAGE.h, fadeX = 300, fadeY = 240;
+    const art = document.createElement('canvas'); art.width = width; art.height = height;
+    const a = art.getContext('2d'); a.drawImage(villageArt, 0, 0, width, height); a.globalCompositeOperation = 'destination-in';
+    const horizontal = a.createLinearGradient(0, 0, width, 0);
+    horizontal.addColorStop(0, 'transparent'); horizontal.addColorStop(fadeX / width, '#fff'); horizontal.addColorStop(1 - fadeX / width, '#fff'); horizontal.addColorStop(1, 'transparent');
+    a.fillStyle = horizontal; a.fillRect(0, 0, width, height);
+    const vertical = a.createLinearGradient(0, 0, 0, height);
+    vertical.addColorStop(0, 'transparent'); vertical.addColorStop(fadeY / height, '#fff'); vertical.addColorStop(1 - fadeY / height, '#fff'); vertical.addColorStop(1, 'transparent');
+    a.fillStyle = vertical; a.fillRect(0, 0, width, height); a.globalCompositeOperation = 'source-over';
+    villageBlend = art; return villageBlend;
   }
 
   function startGame() {
@@ -269,13 +322,13 @@
   }
 
   function fireMove(spec, rank, target) {
-    const p = state.hero, angle = Math.atan2(target.y - p.y, target.x - p.x), power = (p.damage + spec.damage * (1 + (rank - 1) * .22)) * (1 + (state.passives.focus || 0) * .03), crit = Math.random() < p.crit;
+    const p = state.hero, angle = Math.atan2(target.y - p.y, target.x - p.x), swordQi = ['ironSword', 'tenThousandSwords'].includes(spec.id) ? (state.passives.ironQi || 0) * .08 : 0, power = (p.damage + spec.damage * (1 + (rank - 1) * .22)) * (1 + (state.passives.focus || 0) * .03 + swordQi), crit = Math.random() < p.crit;
     const damage = Math.round(power * (crit ? 1.85 : 1));
     if (crit) state.cameraShake = Math.max(state.cameraShake, 1.7);
     const impact = (enemy, mult = 1) => { spawnImpact(enemy, spec.id === 'woodStaff' ? 'woodStaff' : spec.style, angle, spec.color, crit); damageEnemy(enemy, damage * mult, crit); };
     const style = spec.style;
     if (style === 'melee' || style === 'orbit' || style === 'spin') {
-      const radius = style === 'melee' ? 53 : style === 'spin' ? spec.range : spec.range * .8;
+      const radius = style === 'melee' ? spec.range * (1 + (state.passives.focus || 0) * .025) + (rank - 1) * 10 : style === 'spin' ? spec.range : spec.range * .8;
       const targets = enemiesInArc(p, target, radius, style === 'spin' ? -1 : .45, style === 'melee' ? 1 : 4);
       for (const enemy of targets) impact(enemy, style === 'melee' ? 1 : .72);
       state.effects.push({ kind: 'weapon', style: style === 'melee' ? (spec.id === 'woodStaff' ? 'woodStaff' : 'fist') : style === 'spin' ? 'halberd' : spec.id === 'heavenSword' ? 'swordOrbit' : 'staffOrbit', x: p.x, y: p.y, angle, life: .34, max: .34, color: spec.color, radius });
@@ -376,13 +429,13 @@
     for (const [id, spec] of Object.entries(moveSpecs)) {
       const found = state.moves.find(m => m.id === id);
       if (found && found.level < 5) out.push({ id: `up:${id}`, title: `${spec.name} · 精进`, icon: spec.icon, desc: `招式威力与攻击频率提高。当前第 ${found.level} 重。`, type: 'upgrade', rarity: found.level >= 4 ? '精进' : '武学', level: found.level });
-      else if (!found && state.moves.length < 4 && (!spec.rare || state.wave >= 3)) out.push({ id, title: spec.name, icon: spec.icon, desc: spec.desc, type: 'move', rarity: spec.rare ? '绝世神兵' : spec.kind });
+      else if (!found && !spec.evolutionOnly && state.moves.length < 4 && (!spec.rare || state.wave >= 3)) out.push({ id, title: spec.name, icon: spec.icon, desc: spec.desc, type: 'move', rarity: spec.rare ? '绝世神兵' : spec.kind });
     }
     for (const card of passiveCards) { const level = state.passives[card.id] || 0; if (level < card.max) out.push({ ...card, title: card.name, type: 'passive', rarity: card.id === 'foxPet' ? '奇遇' : '心法', level }); }
     const eligibleEvolutions = [
       ['ironSword', 'ironQi', '万剑归宗'], ['mountainSaber', 'innerQi', '屠龙刀·破军式'], ['dragonPalm', 'innerQi', '亢龙有悔'], ['cloudSpear', 'innerQi', '霸王枪·贯日']
     ];
-    for (const [base, passive, title] of eligibleEvolutions) { const m = state.moves.find(x => x.id === base); if (m?.level >= 5 && (state.passives[passive] || state.passives.innerQi)) out.push({ id: `evo:${base}`, title, icon: '✦', desc: `原有武学与吐纳心法相融，招式发生蜕变。`, type: 'evolution', rarity: '武学共鸣' }); }
+    for (const [base, passive, title] of eligibleEvolutions) { const m = state.moves.find(x => x.id === base); if (m?.level >= 5 && state.passives[passive]) out.push({ id: `evo:${base}`, title, icon: '✦', desc: `第 5 重招式与对应心法相融，蜕变为绝技。`, type: 'evolution', rarity: '武学共鸣' }); }
     return out;
   }
   function openDraft() {
@@ -401,11 +454,12 @@
       state.passives[card.id] = (state.passives[card.id] || 0) + 1;
       if (card.id === 'body') { state.hero.maxHp += 18; state.hero.hp = Math.min(state.hero.maxHp, state.hero.hp + 18); }
       if (card.id === 'innerQi') { state.hero.maxQi += 12; state.hero.qi += 12; }
+      if (card.id === 'ironQi') state.hero.damage += 1;
       if (card.id === 'lightness') state.hero.speed *= 1.09;
       if (card.id === 'focus') { state.hero.crit = Math.min(.55, state.hero.crit + .04); state.hero.damage += 1; }
       if (card.id === 'foxPet' && !state.pet) { state.pet = 'fox'; state.petX = state.hero.x - 26; state.petY = state.hero.y + 28; }
     }
-    if (card.type === 'evolution') { const base = card.id.slice(4), move = state.moves.find(m => m.id === base); if (move) { const next = base === 'mountainSaber' ? 'dragonBlade' : base === 'cloudSpear' ? 'overlordSpear' : 'tenThousandSwords'; move.id = next; move.level = 1; } }
+    if (card.type === 'evolution') { const base = card.id.slice(4), move = state.moves.find(m => m.id === base), next = { ironSword: 'tenThousandSwords', mountainSaber: 'dragonBlade', dragonPalm: 'dragonPalmAwakened', cloudSpear: 'overlordSpear' }[base]; if (move && next) { move.id = next; move.level = 1; } }
     if (state.moves.length && state.moves.length === 2 && state.activeMove === 0) state.activeMove = 1;
     state.draftOpen = false; state.choiceCards = []; $('levelModal').hidden = true; refreshUI(); saveRun();
   }
@@ -430,14 +484,19 @@
 
   function updateVillage(dt) {
     state.raidTimer -= dt;
+    const alive = state.villagers.filter(v => v.alive);
+    if (!state.raidWarning && state.raidTimer <= 12 && alive.length) {
+      state.raidWarning = true;
+      state.event = '镇南有山贼集结！安平镇即将遇袭'; state.eventUntil = state.elapsed + 7;
+      setToast('镇南发现山贼踪迹！赶回安平镇支援（M 查看地图）。', 4.5);
+    }
     if (state.raidTimer <= 0) {
-      state.lastRaidId++; state.raidTimer = 102; const villageX = VILLAGE.x + VILLAGE.w / 2, villageY = VILLAGE.y + VILLAGE.h / 2;
-      const alive = state.villagers.filter(v => v.alive);
+      state.lastRaidId++; state.raidTimer = 102; state.raidWarning = false; const villageX = VILLAGE.x + VILLAGE.w / 2, villageY = VILLAGE.y + VILLAGE.h / 2;
       if (alive.length) {
         const count = Math.min(5, 2 + Math.floor(state.wave / 3));
         for (let i = 0; i < count; i++) { const villager = alive[i % alive.length]; const e = spawnEnemy(i === count - 1 && state.wave >= 4 ? 'brute' : 'bandit', villageX + rand(-100, 100), villageY + 530 + rand(-25, 65), { target: villager.id, raidId: state.lastRaidId }); if (e) e.speed *= .9; }
-        state.event = '安平镇遇袭！山贼正逼近百姓'; state.eventUntil = state.elapsed + 7;
-        if (Math.hypot(state.hero.x - villageX, state.hero.y - villageY) < 1500) setToast('安平镇遇袭！赶回村中击退山贼。', 4);
+        state.event = '安平镇遇袭！镇南山贼正逼近百姓'; state.eventUntil = state.elapsed + 9;
+        if (Math.hypot(state.hero.x - villageX, state.hero.y - villageY) < 1500) setToast('安平镇遇袭！镇南山贼正逼近百姓（M 查看地图回防）。', 4.5);
       }
     }
     for (const v of state.villagers) if (!v.alive && Math.random() < dt * .004) { v.alive = true; v.hp = 50; }
@@ -491,10 +550,10 @@
     $('qiText').textContent = `${Math.floor(p.qi)} / ${p.maxQi}`; $('qiBar').style.width = `${clamp(p.qi / p.maxQi * 100, 0, 100)}%`;
     $('xpText').textContent = `${Math.floor(state.xp || 0)} / ${xpNeed()}`; $('xpBar').style.width = `${clamp((state.xp || 0) / xpNeed() * 100, 0, 100)}%`;
     $('damageText').textContent = p.damage; $('critText').textContent = Math.round(p.crit * 100); $('speedText').textContent = Math.round(p.speed); $('villagerText').textContent = `${alive}/3`;
-    $('weaponName').textContent = spec?.name || '赤手空拳'; $('moveHint').textContent = state.enemies.length ? `附近 ${state.enemies.length} 名敌人 · ${weather.name}` : '走位避招，收集散落阅历';
+    $('weaponName').textContent = spec?.name || '赤手空拳'; $('moveHint').textContent = state.raidWarning ? '安平镇即将遇袭 · 往镇南回防' : state.enemies.length ? `附近 ${state.enemies.length} 名敌人 · ${weather.name}` : '走位避招，收集散落阅历';
     $('skillSlots').innerHTML = Array.from({ length: 4 }, (_, i) => {
       const m = state.moves[i], s = m ? moveSpecs[m.id] : null;
-      return `<button class="skill-slot ${i === state.activeMove ? 'active' : ''} ${s ? '' : 'empty'}" ${s ? `data-slot="${i}"` : 'disabled'}><kbd>${i + 1}</kbd><span class="slot-icon">${s?.icon || '·'}</span><b>${s?.name || '空位'}</b><small>${s ? `${s.kind} · 自动施展` : '升级可习得'}</small>${m ? `<span class="level-tag">${m.level}重</span>` : ''}</button>`;
+      return `<button class="skill-slot ${i === state.activeMove ? 'active' : ''} ${s ? '' : 'empty'}" ${s ? `data-slot="${i}"` : 'disabled'}><kbd>${i + 1}</kbd><span class="slot-icon">${s?.icon || '·'}</span><b>${s?.name || '空位'}</b><small>${s ? `${s.kind} · ${i === state.activeMove ? '当前施展' : '已习得'}` : '升级可习得'}</small>${m ? `<span class="level-tag">${m.level}重</span>` : ''}</button>`;
     }).join('');
     $('skillSlots').querySelectorAll('[data-slot]').forEach(b => b.addEventListener('click', () => switchMove(Number(b.dataset.slot))));
     const boss = state.enemies.find(e => e.boss && dist(e, p) < Math.max(viewW, viewH) * .78);
@@ -510,7 +569,7 @@
 
   function renderBag() {
     if (!state) return;
-    $('bagSkills').innerHTML = state.moves.map((m, i) => { const s = moveSpecs[m.id]; return `<div class="bag-item"><i>${s.icon}</i><div><b>${s.name} · 第 ${m.level} 重</b><small>${s.desc}${i === state.activeMove ? ' · 当前施展' : ''}</small></div></div>`; }).join('') || '<small>尚无武学</small>';
+    $('bagSkills').innerHTML = state.moves.map((m, i) => { const s = moveSpecs[m.id]; return `<div class="bag-item"><i>${s.icon}</i><div><b>${s.name} · 第 ${m.level} 重</b><small>${s.desc}${i === state.activeMove ? ' · 当前施展' : ' · 已习得'}</small></div></div>`; }).join('') || '<small>尚无武学</small>';
     const list = passiveCards.filter(c => state.passives[c.id]);
     $('bagWeapons').innerHTML = list.map(c => `<div class="bag-item"><i>${c.icon}</i><div><b>${c.name} · 第 ${state.passives[c.id]} 重</b><small>${c.desc}</small></div></div>`).join('') + `<div class="bag-item"><i>◈</i><div><b>碎银 ${state.gold}</b><small>用于江湖拾遗与后续补给</small></div></div>`;
   }
@@ -546,7 +605,7 @@
       const rnd = rngFor(cx, cy), count = 3 + Math.floor(rnd() * 5);
       for (let i = 0; i < count; i++) { const x = cx * 900 + 60 + rnd() * 780, y = cy * 900 + 70 + rnd() * 760, type = rnd(); if (type < .42) drawWorldTree(x, y, 17 + rnd() * 12, rnd()); else if (type < .72) drawWorldRock(x, y, 9 + rnd() * 10); else drawWorldShrub(x, y, 10 + rnd() * 8); }
     }
-    if (villageArt.complete && villageArt.naturalWidth) ctx.drawImage(villageArt, VILLAGE.x, VILLAGE.y, VILLAGE.w, VILLAGE.h);
+    const village = getVillageBlend(); if (village) ctx.drawImage(village, VILLAGE.x, VILLAGE.y, VILLAGE.w, VILLAGE.h);
   }
   function drawWorldTree(x, y, r, seed) {
     ctx.fillStyle = '#12191165'; ctx.beginPath(); ctx.ellipse(x, y + 8, r * 1.6, r * .7, 0, 0, TAU); ctx.fill();
@@ -563,17 +622,23 @@
     for (const v of state.villagers) {
       if (!v.alive) { ctx.fillStyle = '#604b35'; ctx.fillRect(v.x - 9, v.y, 18, 5); continue; }
       const bob = Math.sin(state.elapsed * 2 + v.x) * 1.2;
-      ctx.fillStyle = '#191b14aa'; ctx.beginPath(); ctx.ellipse(v.x, v.y + 3, 13, 5, 0, 0, TAU); ctx.fill();
-      ctx.fillStyle = v.id === 'herbalist' ? '#7d5c74' : v.id === 'tea' ? '#95503c' : '#546f5e'; ctx.fillRect(v.x - 10, v.y - 28 + bob, 20, 19);
-      ctx.fillStyle = '#d5aa7d'; ctx.fillRect(v.x - 8, v.y - 42 + bob, 16, 15); ctx.fillStyle = '#3a3028'; ctx.fillRect(v.x - 10, v.y - 45 + bob, 20, 6);
-      ctx.fillStyle = '#2c2622'; ctx.fillRect(v.x - 4, v.y - 35 + bob, 2, 2); ctx.fillRect(v.x + 3, v.y - 35 + bob, 2, 2);
-      ctx.fillStyle = '#43372b'; ctx.fillRect(v.x - 8, v.y - 9, 6, 11); ctx.fillRect(v.x + 2, v.y - 9, 6, 11);
+      ctx.fillStyle = 'rgba(24, 20, 14, .23)'; ctx.beginPath(); ctx.ellipse(v.x, v.y + 2, 10, 3.5, 0, 0, TAU); ctx.fill();
+      if (villagerAtlas.complete && villagerAtlas.naturalWidth) {
+        const atlasW = villagerAtlas.naturalWidth / 3, atlasH = villagerAtlas.naturalHeight;
+        const column = v.id === 'tea' ? 0 : v.id === 'herbalist' ? 1 : 2;
+        ctx.drawImage(villagerAtlas, column * atlasW, 0, atlasW, atlasH, v.x - 19, v.y - 54 + bob, 38, 57);
+      } else {
+        ctx.fillStyle = v.id === 'herbalist' ? '#7d5c74' : v.id === 'tea' ? '#95503c' : '#546f5e'; ctx.fillRect(v.x - 10, v.y - 28 + bob, 20, 19);
+        ctx.fillStyle = '#d5aa7d'; ctx.fillRect(v.x - 8, v.y - 42 + bob, 16, 15); ctx.fillStyle = '#3a3028'; ctx.fillRect(v.x - 10, v.y - 45 + bob, 20, 6);
+        ctx.fillStyle = '#2c2622'; ctx.fillRect(v.x - 4, v.y - 35 + bob, 2, 2); ctx.fillRect(v.x + 3, v.y - 35 + bob, 2, 2);
+        ctx.fillStyle = '#43372b'; ctx.fillRect(v.x - 8, v.y - 9, 6, 11); ctx.fillRect(v.x + 2, v.y - 9, 6, 11);
+      }
       if (v.hp < v.maxHp) { ctx.fillStyle = '#191512'; ctx.fillRect(v.x - 18, v.y - 52, 36, 4); ctx.fillStyle = '#d36b59'; ctx.fillRect(v.x - 17, v.y - 51, 34 * v.hp / v.maxHp, 2); }
     }
   }
   function drawLandmarks() {
     const distTown = Math.hypot(state.hero.x - 768, state.hero.y - 512);
-    if (distTown < 1450) { ctx.save(); ctx.fillStyle = '#39291dbb'; ctx.strokeStyle = '#c7a968'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(768, 512, 90, 35, 0, 0, TAU); ctx.fill(); ctx.stroke(); ctx.font = 'bold 16px Noto Sans SC'; ctx.textAlign = 'center'; ctx.fillStyle = '#eddaa8'; ctx.fillText('安平镇', 768, 468); ctx.restore(); }
+    if (distTown < 1450) { ctx.save(); ctx.strokeStyle = '#dfc27a66'; ctx.lineWidth = 2; ctx.setLineDash([9, 9]); ctx.beginPath(); ctx.ellipse(768, 512, 90, 35, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]); ctx.font = 'bold 14px Noto Sans SC'; ctx.textAlign = 'center'; ctx.fillStyle = '#f1dfb7b8'; ctx.shadowColor = '#241b13'; ctx.shadowBlur = 5; ctx.fillText('安平镇', 768, 428); ctx.restore(); }
   }
   function drawCamps() {
     const cx = Math.floor(state.hero.x / CAMP_SIZE), cy = Math.floor(state.hero.y / CAMP_SIZE);
@@ -588,9 +653,21 @@
   function drawHero(p) {
     const bob = p.walking ? Math.abs(Math.sin(p.walkTime)) * 3 : Math.sin(state.elapsed * 2.1) * 1;
     ctx.save(); ctx.translate(Math.round(p.x), Math.round(p.y + bob)); ctx.scale(1.08, 1.08);
-    ctx.fillStyle = '#11130f9c'; ctx.beginPath(); ctx.ellipse(0, 4, 22, 8, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = 'rgba(18, 16, 13, .34)'; ctx.beginPath(); ctx.ellipse(0, 4, 18, 5.5, 0, 0, TAU); ctx.fill();
     if (p.invuln > 0 && Math.floor(state.elapsed * 18) % 2) ctx.globalAlpha = .45;
-    const swing = p.walking ? Math.sin(p.walkTime) * 3 : 0, active = specFor();
+    const active = specFor();
+    if (heroSprite.complete && heroSprite.naturalWidth) {
+      if (p.facingX < -.15) ctx.scale(-1, 1);
+      if (p.walking) ctx.rotate(Math.sin(p.walkTime) * .018);
+      ctx.drawImage(heroSprite, -32, -74, 64, 75);
+      if (active && active.id !== 'fist' && active.style !== 'palm' && active.style !== 'beam' && active.style !== 'rain') drawHeldWeapon(active.id, p.attackAnim, p.facingX, p.facingY);
+      if (p.attackAnim > 0 && active?.style === 'melee') {
+        ctx.save(); ctx.translate(p.facingX * 16, p.facingY * 12 - 17); ctx.rotate(Math.atan2(p.facingY, p.facingX)); ctx.strokeStyle = '#f6d9a4'; ctx.globalAlpha = .7; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+        for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.moveTo(2, -7 + i * 6); ctx.lineTo(18 + i * 2, -7 + i * 6); ctx.stroke(); } ctx.restore();
+      }
+      ctx.restore(); return;
+    }
+    const swing = p.walking ? Math.sin(p.walkTime) * 3 : 0;
     // Road-worn novice: patched cotton robe, cloth belt and bare feet, with readable stitching at gameplay size.
     const cloth = state.passives.body ? '#71815a' : '#75674e';
     pixel(-11, -42, 22, 18, '#342b22'); pixel(-9, -40, 18, 15, '#d7aa7e');
@@ -619,7 +696,7 @@
   }
   function drawHeldWeapon(id, anim, facingX = 1, facingY = 0) {
     const aim = Math.atan2(facingY, facingX);
-    ctx.save(); ctx.translate(8 + facingX * 10, -18 + facingY * 9 - (anim > 0 ? 3 : 0)); ctx.rotate(aim + Math.PI / 2); if (anim > 0) ctx.rotate(-.2);
+    ctx.save(); ctx.translate(18 + facingX * 3, -24 + facingY * 5 - (anim > 0 ? 3 : 0)); ctx.rotate(aim + Math.PI / 2); if (anim > 0) ctx.rotate(-.2);
     if (id.includes('Spear') || id.includes('spear') || id === 'overlordSpear') { ctx.rotate(-.45); pixel(-2, -28, 4, 40, '#765337'); pixel(-5, -37, 10, 13, '#d0d6c0'); pixel(-2, -46, 4, 12, '#ece8d2'); }
     else if (id.toLowerCase().includes('saber') || id.includes('Blade')) { ctx.rotate(-.6); pixel(-2, -4, 5, 8, '#725034'); pixel(-1, -25, 5, 22, id.includes('dragon') ? '#d98350' : '#d2d5cc'); pixel(-6, -7, 13, 3, '#c5a65c'); }
     else if (id.toLowerCase().includes('staff')) { ctx.rotate(-.3); pixel(-2, -27, 4, 32, '#8a6742'); pixel(-4, -31, 8, 6, '#dbbe75'); }
@@ -632,6 +709,11 @@
   }
   function drawEnemy(e) {
     if (e.role === 'dragon') { drawDragon(e); return; }
+    if (e.beast && wolfSprite.complete && wolfSprite.naturalWidth) { drawSpriteEnemy(e, wolfSprite, 72, 48, true); return; }
+    if (['bandit', 'runner', 'brute'].includes(e.type) && banditSprite.complete && banditSprite.naturalWidth) {
+      const size = e.type === 'brute' ? 1.18 : e.type === 'runner' ? .88 : 1;
+      drawSpriteEnemy(e, banditSprite, 48 * size, 62 * size, false); return;
+    }
     const bob = Math.sin(e.anim) * (e.boss ? 2 : 1.5), size = e.radius / 15, gait = Math.sin(e.anim), lunge = (e.attackPose || 0) * e.radius * .14;
     ctx.save(); ctx.translate(e.x + e.facingX * lunge, e.y + bob + e.facingY * lunge); if (e.beast) ctx.rotate(Math.atan2(e.facingY, e.facingX)); else ctx.rotate(Math.sin(e.anim * .5) * .025 + e.facingY * .035); ctx.fillStyle = '#0d130e9c'; ctx.beginPath(); ctx.ellipse(0, 3, e.radius * 1.1, e.radius * .4, 0, 0, TAU); ctx.fill();
     if (e.hurt > 0) ctx.filter = 'brightness(1.8)';
@@ -668,14 +750,47 @@
       ctx.restore();
     }
     ctx.filter = 'none'; ctx.restore();
-    if (e.hp < e.maxHp || dist(e, state.hero) < 210 || e.boss) { const bw = e.boss ? 78 : 31; ctx.fillStyle = '#121510'; ctx.fillRect(e.x - bw / 2, e.y - e.radius - 10, bw, 4); ctx.fillStyle = e.boss ? '#db8a5b' : '#d36d59'; ctx.fillRect(e.x - bw / 2 + 1, e.y - e.radius - 9, (bw - 2) * clamp(e.hp / e.maxHp, 0, 1), 2); }
+    drawEnemyHealth(e);
+  }
+  function drawSpriteEnemy(e, sprite, width, height, rotateToAim) {
+    const gait = Math.sin(e.anim), prep = e.attackPose || 0;
+    const lunge = prep * e.radius * .14;
+    ctx.save(); ctx.translate(e.x + e.facingX * lunge, e.y + Math.sin(e.anim * 1.15) * (e.boss ? 2.6 : 1.7) + e.facingY * lunge);
+    ctx.fillStyle = 'rgba(22, 19, 14, .28)'; ctx.beginPath(); ctx.ellipse(0, 3, width * .27, Math.max(3, width * .075), 0, 0, TAU); ctx.fill();
+    if (e.hurt > 0) ctx.filter = 'brightness(1.65) saturate(1.2)';
+    if (rotateToAim) ctx.rotate(Math.atan2(e.facingY, e.facingX) + gait * .035 + prep * .12);
+    else { if (e.facingX < 0) ctx.scale(-1, 1); ctx.rotate(Math.sin(e.anim * .55) * .026 + e.facingY * .06 + prep * .15); }
+    const bounce = Math.max(0, gait) * (rotateToAim ? 3.2 : 1.8), stride = Math.sin(e.anim * .5) * (rotateToAim ? 1.4 : .8);
+    ctx.drawImage(sprite, -width / 2 + stride, -height + 5 - bounce, width, height + bounce);
+    if (prep > .35 && !rotateToAim) {
+      const swing = clamp((prep - .35) / .65, 0, 1);
+      ctx.save(); ctx.translate(width * .23, -height * .61); ctx.rotate(-.8 + swing * .7);
+      ctx.strokeStyle = `rgba(255, 213, 145, ${swing * .68})`; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(0, 0, width * .36, -.78, .42); ctx.stroke();
+      ctx.strokeStyle = `rgba(224, 138, 88, ${swing * .42})`; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, width * .31, -.75, .34); ctx.stroke(); ctx.restore();
+    }
+    ctx.filter = 'none'; ctx.restore(); drawEnemyHealth(e);
+  }
+  function drawEnemyHealth(e) {
+    if (e.hp < e.maxHp || dist(e, state.hero) < 210 || e.boss) {
+      const bw = e.boss ? 78 : 31; ctx.fillStyle = '#121510'; ctx.fillRect(e.x - bw / 2, e.y - e.radius - 10, bw, 4);
+      ctx.fillStyle = e.boss ? '#db8a5b' : '#d36d59'; ctx.fillRect(e.x - bw / 2 + 1, e.y - e.radius - 9, (bw - 2) * clamp(e.hp / e.maxHp, 0, 1), 2);
+    }
   }
   function drawDragon(e) {
+    if (wyrmSprite.complete && wyrmSprite.naturalWidth) {
+      const bob = Math.sin(e.anim * .7) * 2.5, lunge = (e.attackPose || 0) * 5;
+      ctx.save(); ctx.translate(e.x + e.facingX * lunge, e.y + bob + e.facingY * lunge);
+      ctx.fillStyle = '#17150f88'; ctx.beginPath(); ctx.ellipse(0, 8, e.radius * 1.4, e.radius * .42, 0, 0, TAU); ctx.fill();
+      if (e.hurt > 0) ctx.filter = 'brightness(1.5) saturate(1.15)';
+      ctx.rotate(Math.atan2(e.facingY, e.facingX) + Math.sin(e.anim * .45) * .018);
+      ctx.drawImage(wyrmSprite, -e.radius * 2.05, -e.radius * 1.02 + bob, e.radius * 4.1, e.radius * 2.05);
+      ctx.filter = 'none'; ctx.restore(); drawEnemyHealth(e); return;
+    }
     const bob = Math.sin(e.anim * .7) * 4; ctx.save(); ctx.translate(e.x + e.facingX * (e.attackPose || 0) * 5, e.y + bob + e.facingY * (e.attackPose || 0) * 5); ctx.rotate(Math.atan2(e.facingY, e.facingX));
     ctx.fillStyle = '#111510aa'; ctx.beginPath(); ctx.ellipse(0, 6, 76, 18, 0, 0, TAU); ctx.fill();
     ctx.lineCap = 'round'; ctx.strokeStyle = '#315d48'; ctx.lineWidth = 25; ctx.beginPath(); ctx.moveTo(-6, -13); ctx.bezierCurveTo(-62, -52, -97, -2, -67, 27); ctx.bezierCurveTo(-30, 51, 24, 39, 21, 3); ctx.stroke(); ctx.strokeStyle = e.hurt > 0 ? '#f4e4ae' : '#6ea47a'; ctx.lineWidth = 15; ctx.stroke();
     for (const [x, y] of [[-42,-23],[-69,-1],[-49,28],[-16,38],[8,20]]) { ctx.fillStyle = '#b6ca8c'; ctx.beginPath(); ctx.moveTo(x - 5, y); ctx.lineTo(x, y - 12); ctx.lineTo(x + 5, y); ctx.closePath(); ctx.fill(); }
-    ctx.fillStyle = '#75a67b'; ctx.beginPath(); ctx.ellipse(32, -17, 28, 20, -.2, 0, TAU); ctx.fill(); ctx.fillStyle = '#d9c17a'; ctx.beginPath(); ctx.moveTo(17, -31); ctx.lineTo(13, -48); ctx.lineTo(27, -31); ctx.moveTo(40, -32); ctx.lineTo(48, -48); ctx.lineTo(49, -28); ctx.fill(); ctx.fillStyle = '#f1d173'; ctx.fillRect(37, -22, 4, 4); ctx.restore();
+    ctx.fillStyle = '#75a67b'; ctx.beginPath(); ctx.ellipse(32, -17, 28, 20, -.2, 0, TAU); ctx.fill(); ctx.fillStyle = '#d9c17a'; ctx.beginPath(); ctx.moveTo(17, -31); ctx.lineTo(13, -48); ctx.lineTo(27, -31); ctx.moveTo(40, -32); ctx.lineTo(48, -48); ctx.lineTo(49, -28); ctx.fill(); ctx.fillStyle = '#f1d173'; ctx.fillRect(37, -22, 4, 4); ctx.restore(); drawEnemyHealth(e);
   }
   function drawPet() { ctx.fillStyle = '#171a11aa'; ctx.beginPath(); ctx.ellipse(state.petX, state.petY + 2, 15, 5, 0, 0, TAU); ctx.fill(); ctx.fillStyle = '#bd784a'; ctx.beginPath(); ctx.ellipse(state.petX, state.petY - 10, 13, 9, 0, 0, TAU); ctx.fill(); ctx.beginPath(); ctx.moveTo(state.petX + 6, state.petY - 16); ctx.lineTo(state.petX + 18, state.petY - 23); ctx.lineTo(state.petX + 12, state.petY - 11); ctx.fill(); ctx.fillStyle = '#ead9b3'; ctx.fillRect(state.petX - 2, state.petY - 12, 12, 5); }
   function drawShots() {
@@ -898,18 +1013,28 @@
 
   function screenToWorld(x, y) { return { x: cameraX + (x - w / 2) / scale, y: cameraY + (y - h / 2) / scale }; }
   function usePointerMove(e) {
-    if (joystick.id === e.pointerId) { const dx = e.clientX - joystick.originX, dy = e.clientY - joystick.originY, limit = 48, d = Math.hypot(dx, dy); joystick.x = (d > limit ? dx / d * limit : dx) / limit; joystick.y = (d > limit ? dy / d * limit : dy) / limit; const knob = $('stickKnob'); if (knob) knob.style.transform = `translate(${joystick.x * 25}px,${joystick.y * 25}px)`; return; }
+    if (touchPoints.has(e.pointerId)) {
+      touchPoints.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (touchPoints.size >= 2) { const distance = touchDistance(); if (pinchStartDistance > 0) setZoom(pinchStartZoom * distance / pinchStartDistance); return; }
+      if (joystick.id === e.pointerId) { const dx = e.clientX - joystick.originX, dy = e.clientY - joystick.originY, limit = 48, d = Math.hypot(dx, dy); joystick.x = (d > limit ? dx / d * limit : dx) / limit; joystick.y = (d > limit ? dy / d * limit : dy) / limit; const knob = $('stickKnob'); if (knob) knob.style.transform = `translate(${joystick.x * 25}px,${joystick.y * 25}px)`; }
+      return;
+    }
     if (pointer?.id === e.pointerId && e.pointerType === 'mouse') moveTarget = screenToWorld(e.clientX, e.clientY);
   }
   canvas.addEventListener('pointerdown', e => {
     canvas.setPointerCapture(e.pointerId);
-    if (e.pointerType === 'touch' || e.pointerType === 'pen') { joystick.id = e.pointerId; joystick.originX = e.clientX; joystick.originY = e.clientY; $('touchStick').style.left = `${clamp(e.clientX - 45, 8, w - 100)}px`; $('touchStick').style.top = `${clamp(e.clientY - 45, 70, h - 110)}px`; joystick.x = joystick.y = 0; e.preventDefault(); }
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') { e.preventDefault(); beginTouch(e, true); }
     else { pointer = { id: e.pointerId }; moveTarget = screenToWorld(e.clientX, e.clientY); }
   });
-  canvas.addEventListener('pointermove', usePointerMove);
-  function releasePointer(e) { if (joystick.id === e.pointerId) { joystick.id = null; joystick.x = joystick.y = 0; $('stickKnob').style.transform = ''; } if (pointer?.id === e.pointerId) pointer = null; }
-  canvas.addEventListener('pointerup', releasePointer); canvas.addEventListener('pointercancel', releasePointer);
-  $('touchStick').addEventListener('pointerdown', e => { e.stopPropagation(); canvas.dispatchEvent(new PointerEvent('pointerdown', { pointerId: e.pointerId, pointerType: 'touch', clientX: e.clientX, clientY: e.clientY })); });
+  window.addEventListener('pointermove', usePointerMove);
+  function releasePointer(e) {
+    if (touchPoints.has(e.pointerId)) touchPoints.delete(e.pointerId);
+    if (touchPoints.size === 0) { pinchStartDistance = 0; resetJoystick(); $('touchStick').style.opacity = '1'; }
+    else if (touchPoints.size === 1 && pinchStartDistance) { const [[id, point]] = touchPoints.entries(); joystick.id = id; joystick.originX = point.x; joystick.originY = point.y; joystick.x = joystick.y = 0; $('touchStick').style.left = `${clamp(point.x - 45, 8, w - 100)}px`; $('touchStick').style.top = `${clamp(point.y - 45, 70, h - 110)}px`; $('touchStick').style.opacity = '1'; pinchStartDistance = 0; }
+    if (pointer?.id === e.pointerId) pointer = null;
+  }
+  window.addEventListener('pointerup', releasePointer); window.addEventListener('pointercancel', releasePointer);
+  $('touchStick').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); $('touchStick').setPointerCapture(e.pointerId); beginTouch(e, false); });
 
   document.addEventListener('keydown', e => {
     const key = e.key.toLowerCase(); if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(key)) e.preventDefault();
@@ -919,8 +1044,9 @@
     keys[key] = true;
   });
   document.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
-  window.addEventListener('blur', () => { keys = Object.create(null); joystick.x = joystick.y = 0; });
+  window.addEventListener('blur', () => { keys = Object.create(null); touchPoints.clear(); pinchStartDistance = 0; resetJoystick(); $('touchStick').style.opacity = '1'; });
   $('startButton').addEventListener('click', startGame); $('restartButton').addEventListener('click', () => { state = freshState(); startGame(); });
+  $('zoomOut').addEventListener('click', () => setZoom(zoom - .1)); $('zoomIn').addEventListener('click', () => setZoom(zoom + .1)); syncZoomLabel();
   $('bagBtn').addEventListener('click', () => toggleBag()); $('mapBtn').addEventListener('click', () => { $('mapModal').hidden = false; drawMap(); });
   $('touchDodge').addEventListener('click', dodge); $('touchSkill').addEventListener('click', () => switchMove((state.activeMove + 1) % state.moves.length));
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => { $(b.dataset.close).hidden = true; if (b.dataset.close === 'bagModal') state.bagOpen = false; }));

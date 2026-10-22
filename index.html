@@ -21,7 +21,7 @@
         <span class="stat-pill"><small>历时</small><b id="timeText">00:00</b></span>
         <span class="stat-pill weather"><small id="weatherIcon">☀</small><b id="weatherText">晴</b></span>
       </div>
-      <div class="top-actions"><button id="mapBtn" type="button" title="江湖地图">地图</button><button id="bagBtn" type="button" title="行囊（B）">行囊 <kbd>B</kbd></button></div>
+      <div class="top-actions"><div class="zoom-controls" aria-label="地图缩放"><button id="zoomOut" type="button" aria-label="缩小地图">−</button><span id="zoomValue">100%</span><button id="zoomIn" type="button" aria-label="放大地图">+</button></div><button id="mapBtn" type="button" title="江湖地图">地图</button><button id="bagBtn" type="button" title="行囊（B）">行囊 <kbd>B</kbd></button></div>
     </header>
 
     <div class="event-ribbon" id="eventRibbon" hidden><i></i><span id="eventText"></span></div>
@@ -37,7 +37,7 @@
     </section>
 
     <section class="skill-dock" aria-label="当前武学">
-      <div class="dock-heading"><span>当前招式 <small>招式自动施展 · 按数字键切换</small></span><small id="moveHint">躲避、走位、挑选克制招式</small></div>
+      <div class="dock-heading"><span>当前招式 <small>选中招式自动攻击 · 1–4 切换</small></span><small id="moveHint">躲避、走位、挑选克制招式</small></div>
       <div id="skillSlots" class="skill-slots"></div>
     </section>
 
@@ -49,7 +49,7 @@
     <div class="modal-shade" id="bagModal" hidden><div class="dialog-panel"><div class="dialog-head"><div><small>行囊</small><h2>兵刃与武学</h2></div><button data-close="bagModal" aria-label="关闭行囊">×</button></div><div class="bag-columns"><section><h3>已习武学</h3><div id="bagSkills"></div></section><section><h3>所持兵刃</h3><div id="bagWeapons"></div></section></div><p class="dialog-note">拾得的秘籍、神兵和灵宠会保存在行囊。打开行囊时江湖仍在运转。</p></div></div>
     <div class="modal-shade map-shade" id="mapModal" hidden><div class="dialog-panel map-dialog"><div class="dialog-head"><div><small>山河图</small><h2>江湖地图</h2></div><button data-close="mapModal" aria-label="关闭地图">×</button></div><canvas id="minimap" width="760" height="460"></canvas><p class="dialog-note">金色为你，红点为敌，青色为安平镇。山河无尽，随时可以回镇护村。</p></div></div>
 
-    <section class="screen-overlay" id="startScreen"><div class="start-card"><span class="start-seal">侠</span><div class="eyebrow">独身闯荡 · 武学自成</div><h2>武侠世界</h2><p>踏入无尽江湖。游侠会自动施展当前招式；你的任务是走位避招、收集阅历、择武修行，保护安平镇的百姓。</p><div class="start-tags"><span>自动出招</span><span>武学构筑</span><span>山河探索</span><span>单人江湖</span></div><button id="startButton">踏入江湖 <b>→</b></button><small>WASD 移动 · 1–4 切换招式 · Shift 闪避</small></div></section>
+    <section class="screen-overlay" id="startScreen"><div class="start-card"><span class="start-seal">侠</span><div class="eyebrow">独身闯荡 · 武学自成</div><h2>武侠世界</h2><p>踏入无尽江湖。选中的武学会自动寻找目标；走位避招，收集阅历，择武修行，守护安平镇的百姓。</p><div class="start-tags"><span>自动出招</span><span>武学构筑</span><span>山河探索</span><span>单人江湖</span></div><button id="startButton">踏入江湖 <b>→</b></button><small>WASD 移动 · 1–4 切换招式 · Shift 闪避</small></div></section>
     <section class="screen-overlay end-screen" id="endScreen" hidden><div class="start-card"><span class="start-seal">☯</span><div class="eyebrow">暂别江湖</div><h2 id="endTitle">行走结束</h2><p id="endMessage"></p><button id="restartButton">再闯江湖 <b>↻</b></button></div></section>
   </main>
   <script src="game.js" defer></script>
