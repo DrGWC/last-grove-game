@@ -4,111 +4,54 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#111a16">
-  <meta name="description" content="武侠世界：独自闯荡江湖，练武、护村、寻宝，与强盗和山中异兽交手。">
-  <title>武侠世界 · 江湖初行</title>
-  <link rel="preload" as="image" href="assets/art/wuxia-village.jpg">
+  <meta name="description" content="武侠世界：独闯江湖、修习武学、收集神兵，在无尽山河中迎战群敌。">
+  <link rel="icon" href="data:,">
+  <title>武侠世界 · 江湖生存</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main id="game" class="game-shell">
+  <main class="game-shell">
+    <canvas id="world" tabindex="0" aria-label="使用方向键或 WASD 移动，武学会自动攻击附近的敌人"></canvas>
+
     <header class="topbar">
-      <div class="brand">
-        <div class="brand-seal" aria-hidden="true">武</div>
-        <div><h1>武侠世界</h1><p>江湖初行 · 单人篇</p></div>
+      <div class="brand"><span class="seal">侠</span><div><h1>武侠世界</h1><small id="regionName">安平镇</small></div></div>
+      <div class="top-stats">
+        <span class="stat-pill"><small>境界</small><b id="levelText">初入江湖 · 1</b></span>
+        <span class="stat-pill"><small>击败</small><b id="killText">0</b></span>
+        <span class="stat-pill"><small>历时</small><b id="timeText">00:00</b></span>
+        <span class="stat-pill weather"><small id="weatherIcon">☀</small><b id="weatherText">晴</b></span>
       </div>
-      <div class="top-status">
-        <span id="regionName" class="status-pill"><i></i>安平镇</span>
-        <span class="status-pill"><span class="gold-icon">◈</span><b id="goldText">0</b></span>
-        <span class="status-pill"><span class="time-icon">☼</span><b id="timeText">晨时</b></span>
-      </div>
-      <div class="top-actions">
-        <button id="libraryBtn" class="top-button" type="button" title="武学与装备（B）">行囊 <kbd>B</kbd></button>
-        <button id="skillsBtn" class="top-button" type="button" title="已学武学（K）">武学 <kbd>K</kbd></button>
-      </div>
+      <div class="top-actions"><button id="mapBtn" type="button" title="江湖地图">地图</button><button id="bagBtn" type="button" title="行囊（B）">行囊 <kbd>B</kbd></button></div>
     </header>
 
-    <section class="play-area" aria-label="武侠世界游戏画面">
-      <canvas id="world" tabindex="0" aria-label="使用方向键或 WASD 移动，空格攻击，靠近目标按 E 互动"></canvas>
-      <div class="scene-vignette" aria-hidden="true"></div>
-      <div id="worldToast" class="world-toast" role="status" aria-live="polite"></div>
-      <div class="scene-label"><span class="scene-dot"></span><span id="sceneTitle">安平镇</span><small id="sceneSubtitle">炊烟袅袅，江湖初行</small></div>
-      <div class="event-ribbon" id="eventRibbon" hidden><span class="event-mark">!</span><span id="eventText"></span></div>
-      <div id="bossBar" class="boss-bar" hidden>
-        <div class="boss-label"><span>☠</span><strong id="bossName">山中异兽</strong><span id="bossHpText"></span></div>
-        <div class="boss-track"><i id="bossHpBar"></i></div>
-      </div>
-      <div class="interaction-hint" id="interactionHint" hidden><kbd>E</kbd><span id="interactionText"></span></div>
-      <div id="touchStick" class="touch-stick" aria-label="移动摇杆"><div id="stickKnob"></div></div>
-      <div class="touch-actions">
-        <button id="touchInteract" type="button" aria-label="互动">↥<small>互动</small></button>
-        <button id="touchSkill" type="button" aria-label="武学技能">气<small>武学</small></button>
-        <button id="touchAttack" type="button" class="attack-touch" aria-label="攻击">✦<small>出招</small></button>
-      </div>
-      <div class="map-chip" id="mapChip"><span>⌖</span> <span id="mapScene">安平镇</span><b id="dayCount">第 1 日</b></div>
+    <div class="event-ribbon" id="eventRibbon" hidden><i></i><span id="eventText"></span></div>
+    <div class="boss-bar" id="bossBar" hidden><div class="boss-label"><b id="bossName">寨主</b><span id="bossHpText"></span></div><div><i id="bossHpBar"></i></div></div>
+    <div class="run-toast" id="toast" role="status" aria-live="polite"></div>
+
+    <section class="status-panel" aria-label="角色状态">
+      <div class="hero-line"><div class="hero-mark">侠</div><div class="hero-meta"><b>无名游侠</b><small id="weaponName">粗木棍</small></div><div class="gold"><span>◈</span><b id="goldText">25</b></div></div>
+      <div class="meter"><div class="meter-label"><span>气血</span><b id="hpText">100 / 100</b></div><div class="track hp"><i id="hpBar"></i></div></div>
+      <div class="meter"><div class="meter-label"><span>内力</span><b id="qiText">40 / 40</b></div><div class="track qi"><i id="qiBar"></i></div></div>
+      <div class="meter"><div class="meter-label"><span>江湖阅历</span><b id="xpText">0 / 30</b></div><div class="track xp"><i id="xpBar"></i></div></div>
+      <div class="compact-stats"><span>⚔ <b id="damageText">8</b></span><span>☯ <b id="critText">5</b>%会心</span><span>👣 <b id="speedText">210</b></span><span>村民 <b id="villagerText">3/3</b></span></div>
     </section>
 
-    <footer class="hud">
-      <section class="vital-panel">
-        <div class="vital-title"><span class="avatar-mark">侠</span><div><strong id="heroName">无名游侠</strong><small id="heroStyle">布衣 · 赤手空拳</small></div><button id="openStats" type="button" aria-label="打开角色属性">⌄</button></div>
-        <div class="meter-row"><div class="meter-copy"><span>气血</span><b id="hpText">100 / 100</b></div><div class="meter hp-meter"><i id="hpBar"></i></div></div>
-        <div class="meter-row qi-row"><div class="meter-copy"><span>内力</span><b id="qiText">40 / 40</b></div><div class="meter qi-meter"><i id="qiBar"></i></div></div>
-        <div class="small-stats"><span>⚔ <b id="damageText">18</b></span><span>👣 <b id="speedText">220</b></span><span>☯ <b id="critText">5</b>%</span><span>村民 <b id="villagerText">3/3</b></span></div>
-      </section>
-      <section class="combat-panel">
-        <div class="combat-heading"><div><strong>当前招式</strong><small id="combatHint">靠近敌人后挥拳，攻击会朝向目标</small></div><span id="weaponBadge" class="weapon-badge">空手</span></div>
-        <div class="skill-row">
-          <button id="basicAttack" class="skill-card basic-card" type="button"><span class="skill-key">SPACE</span><span class="skill-icon">✊</span><strong id="basicName">朴实拳</strong><small>近身 · 单体</small></button>
-          <button id="activeSkill" class="skill-card" type="button" disabled><span class="skill-key">Q</span><span id="activeIcon" class="skill-icon">?</span><strong id="activeName">未习得</strong><small id="activeDesc">击败强敌寻得秘籍</small><i id="skillCooldown" class="cooldown-shade"></i></button>
-          <div class="world-progress"><div class="progress-head"><strong>江湖阅历</strong><span id="xpText">0 / 80</span></div><div class="progress-track"><i id="xpBar"></i></div><div class="progress-foot"><span>击败 <b id="killText">0</b></span><span>护村 <b id="saveText">0</b></span></div></div>
-        </div>
-      </section>
-      <section class="quick-actions">
-        <button id="bagQuick" type="button"><span>🎒</span><b>行囊</b><kbd>B</kbd></button>
-        <button id="manualQuick" type="button"><span>📜</span><b>武学</b><kbd>K</kbd></button>
-        <button id="useTonic" type="button"><span>🧪</span><b>疗伤</b><small id="tonicCount">0</small></button>
-      </section>
-    </footer>
-    <div class="controls-note"><span>WASD / 方向键 移动</span><span>空格 / J 攻击</span><span>E 互动</span><span>Shift 闪避</span><span>点击地面可行走</span></div>
+    <section class="skill-dock" aria-label="当前武学">
+      <div class="dock-heading"><span>当前招式 <small>招式自动施展 · 按数字键切换</small></span><small id="moveHint">躲避、走位、挑选克制招式</small></div>
+      <div id="skillSlots" class="skill-slots"></div>
+    </section>
+
+    <div class="mobile-stick" id="touchStick" aria-label="移动摇杆"><i id="stickKnob"></i></div>
+    <div class="mobile-actions"><button id="touchDodge" aria-label="轻功闪避">闪<small>轻功</small></button><button id="touchSkill" aria-label="切换武学">换<small>武学</small></button></div>
+    <div class="controls-hint">WASD / 方向键移动 · 招式自动攻击 · 1–4 切换武学 · Shift 闪避 · B 行囊</div>
+
+    <div class="modal-shade" id="levelModal" hidden><div class="choice-panel"><div class="choice-kicker">江湖顿悟 · 第 <b id="choiceLevel">2</b> 重</div><h2>择一精进</h2><p>群敌仍在逼近，选一门武学或强化你的身法。</p><div id="choiceCards" class="choice-cards"></div></div></div>
+    <div class="modal-shade" id="bagModal" hidden><div class="dialog-panel"><div class="dialog-head"><div><small>行囊</small><h2>兵刃与武学</h2></div><button data-close="bagModal" aria-label="关闭行囊">×</button></div><div class="bag-columns"><section><h3>已习武学</h3><div id="bagSkills"></div></section><section><h3>所持兵刃</h3><div id="bagWeapons"></div></section></div><p class="dialog-note">拾得的秘籍、神兵和灵宠会保存在行囊。打开行囊时江湖仍在运转。</p></div></div>
+    <div class="modal-shade map-shade" id="mapModal" hidden><div class="dialog-panel map-dialog"><div class="dialog-head"><div><small>山河图</small><h2>江湖地图</h2></div><button data-close="mapModal" aria-label="关闭地图">×</button></div><canvas id="minimap" width="760" height="460"></canvas><p class="dialog-note">金色为你，红点为敌，青色为安平镇。山河无尽，随时可以回镇护村。</p></div></div>
+
+    <section class="screen-overlay" id="startScreen"><div class="start-card"><span class="start-seal">侠</span><div class="eyebrow">独身闯荡 · 武学自成</div><h2>武侠世界</h2><p>踏入无尽江湖。游侠会自动施展当前招式；你的任务是走位避招、收集阅历、择武修行，保护安平镇的百姓。</p><div class="start-tags"><span>自动出招</span><span>武学构筑</span><span>山河探索</span><span>单人江湖</span></div><button id="startButton">踏入江湖 <b>→</b></button><small>WASD 移动 · 1–4 切换招式 · Shift 闪避</small></div></section>
+    <section class="screen-overlay end-screen" id="endScreen" hidden><div class="start-card"><span class="start-seal">☯</span><div class="eyebrow">暂别江湖</div><h2 id="endTitle">行走结束</h2><p id="endMessage"></p><button id="restartButton">再闯江湖 <b>↻</b></button></div></section>
   </main>
-
-  <section id="startScreen" class="screen-overlay start-screen">
-    <div class="start-art" aria-hidden="true"></div>
-    <div class="start-card">
-      <div class="start-crest">武</div>
-      <div class="eyebrow">只手入江湖 · 江湖初行</div>
-      <h2>武侠世界</h2>
-      <p>从一双赤手开始。练拳、寻得秘籍与兵刃，守住安平镇，再去山道深处会会山贼与异兽。</p>
-      <div class="start-features"><span>✦ 即时近战</span><span>✦ 秘籍成长</span><span>✦ 村庄守护</span></div>
-      <button id="startButton" class="primary-button" type="button">踏入江湖 <span>→</span></button>
-      <small>单人体验 · 进度自动保存在本机</small>
-    </div>
-    <div class="start-controls"><span>移动 <b>W A S D</b></span><span>攻击 <b>SPACE</b></span><span>互动 <b>E</b></span><span>行囊 <b>B</b></span></div>
-  </section>
-
-  <section id="inventoryModal" class="modal" aria-hidden="true">
-    <div class="modal-backdrop" data-close="inventory"></div>
-    <div class="modal-card inventory-card" role="dialog" aria-modal="true" aria-labelledby="inventoryTitle">
-      <div class="modal-heading"><div><span class="modal-emblem">🎒</span><h2 id="inventoryTitle">行囊与装备</h2><p>拾得的兵刃、衣装与靴履会改变身法与出招。</p></div><button class="close-button" data-close="inventory" aria-label="关闭">×</button></div>
-      <div class="inventory-layout">
-        <div class="equipment-list" id="equipmentList"></div>
-        <div class="inventory-items"><div class="subheading"><strong>行囊</strong><small id="inventoryCount">0 件</small></div><div id="itemList" class="item-list"></div></div>
-      </div>
-      <div id="statsDetails" class="stats-details"></div>
-    </div>
-  </section>
-
-  <section id="skillsModal" class="modal" aria-hidden="true">
-    <div class="modal-backdrop" data-close="skills"></div>
-    <div class="modal-card skills-card" role="dialog" aria-modal="true" aria-labelledby="skillsTitle">
-      <div class="modal-heading"><div><span class="modal-emblem">📜</span><h2 id="skillsTitle">武学图谱</h2><p>秘籍由江湖中的人和异兽掉落，拾得后即可习得。</p></div><button class="close-button" data-close="skills" aria-label="关闭">×</button></div>
-      <div id="learnedSkills" class="learned-skills"></div>
-      <div class="martial-path"><span class="path-stamp">✦</span><p>拳掌 · 指法 · 刀剑 · 枪戟 · 轻功 · 内功</p><small>以原创招式构成的武学谱系，后续可继续扩充。</small></div>
-    </div>
-  </section>
-
-  <section id="endScreen" class="screen-overlay end-screen" hidden>
-    <div class="end-card"><span class="end-mark">☯</span><h2 id="endTitle">暂歇片刻</h2><p id="endMessage"></p><button id="returnButton" class="primary-button" type="button">回到安平镇 <span>↗</span></button></div>
-  </section>
   <script src="game.js" defer></script>
 </body>
 </html>
