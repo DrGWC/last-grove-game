@@ -532,19 +532,18 @@
     terrainCache.set(key, props); if (terrainCache.size > 480) terrainCache.delete(terrainCache.keys().next().value);
     return props;
   }
-  function terrainBlocked(x, y, radius = 10) {
-    if (villageWaterBlocked(x, y, radius) || villageStructureBlocked(x, y, radius) || landscapeLandmarkBlocked(x,y,radius)) return true;
+  function terrainBlocked(x, y, radius = 10, waterRadius = radius) {
+    if (villageWaterBlocked(x, y, waterRadius) || villageStructureBlocked(x, y, radius) || landscapeLandmarkBlocked(x,y,radius)) return true;
     const cx = Math.floor(x / 900), cy = Math.floor(y / 900);
     for (let gx = cx - 1; gx <= cx + 1; gx++) for (let gy = cy - 1; gy <= cy + 1; gy++) {
       for (const prop of worldPropsForCell(gx, gy)) {
         if (prop.type === 'ground-cover' || prop.type === 'shrub' || prop.type === 'bamboo-shrub' || prop.type === 'reed' || prop.type === 'banner') continue;
         if (prop.type === 'lotus') {
-          // The painted pond is a wide, shallow ellipse. A circular .8r
-          // blocker only covered its center and let land creatures walk over
-          // the visible water around the edges.
+          // Keep the visible body off pond edges as well as the village river;
+          // the smaller obstacle radius let large creatures clip into water.
           const variation = .91 + prop.seed * .18;
-          const waterRx = prop.r * 1.98 * variation + radius;
-          const waterRy = prop.r * 1.16 * variation + radius;
+          const waterRx = prop.r * 1.98 * variation + waterRadius;
+          const waterRy = prop.r * 1.16 * variation + waterRadius;
           const rotation = (prop.seed - .5) * .10;
           const dx = x - prop.x, dy = y - (prop.y + 2), cos = Math.cos(rotation), sin = Math.sin(rotation);
           const localX = cos * dx + sin * dy, localY = -sin * dx + cos * dy;
@@ -559,9 +558,12 @@
     return false;
   }
   function moveBody(body, dx, dy, radius = 10) {
+    // Keep the visible footprint of land enemies off the shoreline without
+    // widening their rock, tree, or bridge collision boxes.
+    const waterRadius = enemySpecs[body?.type] ? Math.max(radius, body.radius * .85) : radius;
     const ox = body.x, oy = body.y;
-    if (!terrainBlocked(body.x + dx, body.y, radius)) body.x += dx;
-    if (!terrainBlocked(body.x, body.y + dy, radius)) body.y += dy;
+    if (!terrainBlocked(body.x + dx, body.y, radius, waterRadius)) body.x += dx;
+    if (!terrainBlocked(body.x, body.y + dy, radius, waterRadius)) body.y += dy;
     return Math.hypot(body.x - ox, body.y - oy) > .01;
   }
   function terrainPathBlocked(x1, y1, x2, y2, radius = 2) {
@@ -639,11 +641,13 @@
     const s = enemySpecs[type]; if (!s) return null;
     const factor = 1 + Math.max(0, state.wave - 1) * .13;
     const e = { id: Math.random().toString(36).slice(2), type, name: s.name, x, y, hp: s.hp * factor, maxHp: s.hp * factor, damage: s.damage * (1 + (state.wave - 1) * .045), speed: s.speed * (1 + Math.min(12, state.wave) * .018), radius: s.radius, xp: s.xp, coin: s.coin, color: s.color, role: s.role, boss: !!s.boss, beast: !!s.beast, attackCd: rand(.3, 1.4), windup: 0, tell: 0, anim: rand(0, TAU), hurt: 0, moving: false, facingX: -1, facingY: 0, target: extra.target || null, summonCd: rand(3, 7), healCd: 3.4, retreat: false, ...extra };
-    if (terrainBlocked(e.x, e.y, e.radius * .62)) {
+    const spawnScale = e.boss ? 1.2 : 1;
+    const bodyRadius = e.radius * spawnScale * .62, waterRadius = e.radius * spawnScale * .85;
+    if (terrainBlocked(e.x, e.y, bodyRadius, waterRadius)) {
       let placed = false;
       for (let ring = 24; ring <= 300 && !placed; ring += 18) for (let step = 0; step < 16; step++) {
         const angle = step * TAU / 16, nx = x + Math.cos(angle) * ring, ny = y + Math.sin(angle) * ring;
-        if (!terrainBlocked(nx, ny, e.radius * .62)) { e.x = nx; e.y = ny; placed = true; break; }
+        if (!terrainBlocked(nx, ny, bodyRadius, waterRadius)) { e.x = nx; e.y = ny; placed = true; break; }
       }
     }
     state.enemies.push(e); return e;
@@ -1963,21 +1967,27 @@
     const x = state.petX, y = state.petY, moving = Math.hypot(state.hero.x - x, state.hero.y - y) > 84;
     const pounce = state.petAttack > 0 ? state.petAttack / (state.pet === 'tiger' ? .46 : state.pet === 'crane' ? .42 : .32) : 0;
     const leap = state.petPounce ? Math.sin(clamp(state.petPounce.elapsed / .34, 0, 1) * Math.PI) : 0;
+    const gait = Math.sin(state.petWalkTime), breath = Math.sin(state.elapsed * 2.35);
     const hover = state.pet === 'crane' ? Math.sin(state.elapsed * 6.2) * 5 : 0;
-    const bob = (state.pet === 'crane' ? hover : moving ? Math.abs(Math.sin(state.petWalkTime)) * (state.pet === 'tortoise' ? 1.5 : 2.8) : Math.sin(state.elapsed * 2.5) * 1.1) - leap * 11;
+    const bob = (state.pet === 'crane' ? hover : moving ? Math.abs(gait) * (state.pet === 'tortoise' ? 1.5 : 2.8) : Math.sin(state.elapsed * 2.5) * 1.1) - leap * 11;
     const sizes = { fox: [60, 60], crane: [80, 80], tiger: [74, 68], tortoise: [76, 70] }, [spriteW, spriteH] = sizes[state.pet] || sizes.fox;
     ctx.save(); ctx.translate(x + (state.petFacingX || 1) * (pounce * (state.pet === 'tiger' ? 8 : 4) + leap * 8), y + bob - pounce * 2);
     ctx.fillStyle = `rgba(17, 20, 18, ${.38 * (1 - leap * .62)})`; ctx.beginPath(); ctx.ellipse(0, 1, spriteW * .34 * (1 - leap * .18), 5.5 * (1 - leap * .68), 0, 0, TAU); ctx.fill();
     if ((state.petFacingX || 1) < 0) ctx.scale(-1, 1);
-    const idleSway = state.pet === 'tortoise' ? Math.sin(state.elapsed * 1.7) * .018 : Math.sin(state.petWalkTime * .8) * .025;
+    const idleSway = state.pet === 'tortoise' ? Math.sin(state.elapsed * 1.7) * .038
+      : state.pet === 'crane' ? Math.sin(state.elapsed * 6.2) * .026
+      : moving ? gait * (state.pet === 'tiger' ? .065 : .045) : Math.sin(state.elapsed * 2.5) * .024;
     ctx.rotate(idleSway + pounce * (state.pet === 'tiger' ? -.1 : .04) - leap * (state.pet === 'tiger' ? .17 : 0));
+    const runPulse = moving && state.pet === 'tiger' ? Math.max(0, gait) * .045 : 0;
+    const idleBreath = state.pet === 'fox' ? breath * .018 : state.pet === 'tortoise' ? Math.sin(state.elapsed * 1.7) * .012 : 0;
+    ctx.scale(1 + runPulse + idleBreath + leap * .09 + pounce * (state.pet === 'tiger' ? .06 : 0),
+      1 - runPulse * .72 - idleBreath + leap * (state.pet === 'tiger' ? -.06 : .025) - pounce * (state.pet === 'tiger' ? .035 : 0));
     if (pounce > 0) { ctx.shadowColor = state.pet === 'crane' ? '#b9f4cf' : state.pet === 'tortoise' ? '#78d8c0' : '#f3bd70'; ctx.shadowBlur = 13 * pounce; }
     if (state.pet === 'fox' && imageReady(foxSprite)) {
       ctx.drawImage(foxSprite, -spriteW / 2, -spriteH, spriteW, spriteH);
     } else if (imageReady(companionSprite) && companionSprite.naturalWidth >= 2100) {
       const cell = state.pet === 'crane' ? 0 : state.pet === 'tiger' ? 1 : 2, cellW = companionSprite.naturalWidth / 3;
-      if (state.pet === 'crane') ctx.scale(1, 1 + Math.sin(state.elapsed * 10) * .035);
-      if (state.pet === 'tiger') ctx.scale(1 + pounce * .06 + leap * .09, 1 - pounce * .035 - leap * .06);
+      if (state.pet === 'crane') ctx.scale(1, 1 + Math.sin(state.elapsed * 12.4) * .095);
       ctx.drawImage(companionSprite, cellW * cell, 0, cellW, companionSprite.naturalHeight, -spriteW / 2, -spriteH, spriteW, spriteH);
     } else {
       ctx.fillStyle = '#bd784a'; ctx.beginPath(); ctx.ellipse(0, -15, 14, 9, 0, 0, TAU); ctx.fill();
