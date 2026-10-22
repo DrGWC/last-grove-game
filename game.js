@@ -10,7 +10,7 @@
   const VILLAGE = { x: 0, y: 0, w: 1536, h: 1024 };
   const CAMP_SIZE = 1900;
   const TAU = Math.PI * 2;
-  const ground = new Image(); ground.src = 'assets/art/forest-ground-v2.jpg';
+  const ground = new Image(); ground.src = 'assets/art/forest-ground-v3.jpg';
   const villageArt = new Image(); villageArt.src = 'assets/art/wuxia-village.jpg';
   const heroSprite = new Image(); heroSprite.src = 'assets/art/jianghu-novice.png';
   const banditSprite = new Image(); banditSprite.src = 'assets/art/bandit-swordsman.png';
@@ -25,22 +25,23 @@
   const touchPoints = new Map(); let pinchStartDistance = 0, pinchStartZoom = 1;
 
   const moveSpecs = {
-    woodStaff: { name: '粗木棍', icon: '🪵', kind: '入门兵器', style: 'melee', range: 72, damage: 5, cd: .82, desc: '最低级的短棍，贴近敌人后单体敲击。', color: '#c39a5c' },
-    fist: { name: '赤手拳', icon: '✊', kind: '拳脚', style: 'melee', range: 82, damage: 10, cd: .7, desc: '短距离单体拳击，入门招式。', color: '#f1c78b' },
-    ironSword: { name: '精钢长剑', icon: '🗡️', kind: '剑法', style: 'slash', range: 330, damage: 24, cd: 1.15, speed: 560, pierce: 1, desc: '迅捷剑气直取前方，可贯穿一名敌人。', color: '#d5e4db' },
-    mountainSaber: { name: '断岳刀', icon: '刀', kind: '刀法', style: 'crescent', range: 390, damage: 37, cd: 1.65, speed: 410, pierce: 3, radius: 15, desc: '宽阔刀芒横扫一线，重创沿途敌人。', color: '#f0ad63' },
-    cloudSpear: { name: '青云枪', icon: '枪', kind: '枪法', style: 'thrust', range: 370, damage: 29, cd: 1.3, speed: 700, pierce: 5, desc: '长枪劲气穿透一列敌人。', color: '#8cd8c7' },
-    dogStaff: { name: '打狗棒', icon: '棍', kind: '棍法', style: 'orbit', range: 118, damage: 18, cd: .65, desc: '棒影环身，近身自动连打。', color: '#c9aa69' },
-    ironFan: { name: '铁骨折扇', icon: '扇', kind: '暗器', style: 'fan', range: 290, damage: 16, cd: 1.05, speed: 440, count: 3, desc: '扇骨分射三路，扰乱前方群敌。', color: '#b8d9df' },
-    oneYang: { name: '一阳指', icon: '☯', kind: '指法', style: 'beam', range: 520, damage: 41, cd: 1.9, pierce: 6, desc: '凝气成线，贯穿一条直线。', color: '#a7f0d5' },
-    dragonPalm: { name: '降龙十八掌', icon: '🐉', kind: '掌法', style: 'palm', range: 350, damage: 31, cd: 1.45, speed: 350, count: 3, radius: 13, desc: '掌劲化作三道龙形气浪。', color: '#f5bf64' },
-    rainNeedles: { name: '暴雨梨花针', icon: '针', kind: '暗器', style: 'volley', range: 310, damage: 12, cd: 1.25, speed: 650, count: 7, desc: '七枚细针扇形齐发，攻速迅疾。', color: '#d4e3c2' },
-    heavenSword: { name: '倚天剑', icon: '⚔', kind: '剑法', style: 'orbit', range: 150, damage: 24, cd: .58, desc: '剑影环身，近者皆受锋芒。', color: '#c9eff0' },
-    dragonBlade: { name: '屠龙刀·破军式', icon: '刀', kind: '刀法', style: 'crescent', range: 450, damage: 76, cd: 2.2, speed: 350, pierce: 6, radius: 24, desc: '沉重刀罡开山裂石，扫过大片敌阵。', color: '#ff9c56', rare: true },
-    skyHalberd: { name: '方天画戟', icon: '戟', kind: '戟法', style: 'spin', range: 168, damage: 52, cd: 1.3, desc: '画戟旋舞，四周敌人无处可避。', color: '#e8c36f', rare: true },
-    overlordSpear: { name: '霸王枪·贯日', icon: '枪', kind: '枪法', style: 'thrust', range: 520, damage: 59, cd: 1.35, speed: 800, pierce: 9, desc: '霸王枪劲贯穿长阵。', color: '#d3ddd1', rare: true },
-    tenThousandSwords: { name: '万剑归宗', icon: '✦', kind: '剑诀', style: 'rain', range: 440, damage: 33, cd: 1.9, speed: 360, count: 5, pierce: 2, desc: '剑气自天而落，追击周围敌人。', color: '#bce8eb', rare: true },
-    dragonPalmAwakened: { name: '亢龙有悔', icon: '🐉', kind: '掌法', style: 'palm', range: 420, damage: 44, cd: 1.6, speed: 390, count: 5, radius: 16, desc: '掌劲化出五道金龙，直破敌阵。', color: '#ffcc6f', rare: true, evolutionOnly: true }
+    woodStaff: { name: '粗木棍', icon: '🪵', category: '外功', kind: '近战兵器', style: 'melee', range: 64, damage: 11, cd: .86, desc: '贴身重击，近距离单体命中。', color: '#c39a5c' },
+    fist: { name: '赤手拳', icon: '✊', category: '外功', kind: '拳脚', style: 'melee', range: 74, damage: 16, cd: .72, desc: '短距离重拳，贴近后爆发伤害。', color: '#f1c78b' },
+    ironSword: { name: '精钢长剑', icon: '🗡️', category: '外功', kind: '近战剑法', style: 'melee', range: 94, damage: 28, cd: 1.08, desc: '近身斩击，剑锋扫及前方两人。', color: '#d5e4db' },
+    mountainSaber: { name: '断岳刀', icon: '刀', category: '外功', kind: '刀罡', style: 'crescent', range: 330, damage: 16, cd: 1.65, speed: 410, pierce: 3, radius: 15, desc: '中距离刀罡穿阵；近身兵器仍有更高单击伤害。', color: '#f0ad63' },
+    cloudSpear: { name: '青云枪', icon: '枪', category: '外功', kind: '近战枪法', style: 'thrust', range: 118, damage: 34, cd: 1.3, speed: 700, pierce: 5, desc: '长枪近身突刺，命中一线敌人。', color: '#8cd8c7' },
+    dogStaff: { name: '打狗棒', icon: '棍', category: '外功', kind: '棍法', style: 'orbit', range: 118, damage: 21, cd: .65, desc: '棒影环身，近身自动连打。', color: '#c9aa69' },
+    ironFan: { name: '铁骨折扇', icon: '扇', category: '外功', kind: '远程暗器', style: 'fan', range: 290, damage: 15, cd: 1.05, speed: 440, count: 3, desc: '扇骨分射三路，射程较远、单击较轻。', color: '#b8d9df' },
+    oneYang: { name: '一阳指', icon: '☯', category: '内功', kind: '指法', style: 'beam', range: 520, damage: 32, cd: 1.9, pierce: 6, desc: '内力凝为指劲，贯穿远处一线。', color: '#a7f0d5' },
+    dragonPalm: { name: '降龙十八掌', icon: '🐉', category: '内功', kind: '掌法', style: 'palm', range: 350, damage: 28, cd: 1.45, speed: 350, count: 3, radius: 13, desc: '金龙绕身聚势，再随掌劲扑向敌阵。', color: '#f5bf64' },
+    rainNeedles: { name: '暴雨梨花针', icon: '针', category: '外功', kind: '远程暗器', style: 'volley', range: 310, damage: 12, cd: 1.25, speed: 650, count: 7, desc: '七枚细针扇形齐发，攻速迅疾。', color: '#d4e3c2' },
+    heavenSword: { name: '倚天剑', icon: '⚔', category: '外功', kind: '近战剑法', style: 'orbit', range: 150, damage: 27, cd: .58, desc: '剑影环身，贴近者皆受锋芒。', color: '#c9eff0' },
+    dragonBlade: { name: '屠龙刀·破军式', icon: '刀', category: '外功', kind: '刀罡', style: 'crescent', range: 390, damage: 38, cd: 2.2, speed: 350, pierce: 6, radius: 24, desc: '沉重刀罡开山裂石，扫过大片敌阵。', color: '#ff9c56', rare: true },
+    skyHalberd: { name: '方天画戟', icon: '戟', category: '外功', kind: '近战戟法', style: 'spin', range: 168, damage: 52, cd: 1.3, desc: '画戟旋舞，四周敌人无处可避。', color: '#e8c36f', rare: true },
+    overlordSpear: { name: '霸王枪·贯日', icon: '枪', category: '外功', kind: '枪罡', style: 'thrustQi', range: 440, damage: 36, cd: 1.35, speed: 800, pierce: 9, desc: '枪罡贯穿长阵，远程伤害低于贴身枪刺。', color: '#d3ddd1', rare: true },
+    tenThousandSwords: { name: '万剑归宗', icon: '✦', category: '内功', kind: '剑诀', style: 'rain', range: 440, damage: 33, cd: 1.9, speed: 360, count: 5, pierce: 2, desc: '剑气自天而落，追击周围敌人。', color: '#bce8eb', rare: true },
+    dragonPalmAwakened: { name: '亢龙有悔', icon: '🐉', category: '内功', kind: '掌法', style: 'palm', range: 420, damage: 36, cd: 1.6, speed: 390, count: 5, radius: 16, desc: '金龙绕身咆哮，五道龙劲同时扑出。', color: '#ffcc6f', rare: true, evolutionOnly: true },
+    cloudStep: { name: '凌波微步', icon: '〰', category: '轻功', kind: '闪身步法', style: 'lightness', range: 172, damage: 15, cd: 4.6, desc: '敌人逼近时自动侧闪，留下风刃并短暂无敌。', color: '#9ce4c1' }
   };
   for (const [id, spec] of Object.entries(moveSpecs)) spec.id = id;
 
@@ -60,7 +61,7 @@
     { id: 'innerQi', name: '吐纳心法', icon: '☯', desc: '内力上限 +12，恢复速度提高；与满级招式共鸣。', max: 5 },
     { id: 'ironQi', name: '剑气淬炼', icon: '🗡️', desc: '招式伤害 +1；剑法伤害再提高 8%，可与精钢长剑共鸣。', max: 5 },
     { id: 'body', name: '铁布衫', icon: '🥋', desc: '气血上限 +18，并立刻恢复 18 点。', max: 5 },
-    { id: 'lightness', name: '轻功身法', icon: '〰', desc: '移动速度提高 9%，闪避冷却缩短。', max: 5 },
+    { id: 'lightness', name: '轻功身法', icon: '〰', desc: '移速提高 9%；闪身距离、伤害和无敌时间提升，轻功招式冷却缩短。', max: 5 },
     { id: 'focus', name: '凝神诀', icon: '🎯', desc: '会心率提高 4%，招式伤害提高 3%。', max: 5 },
     { id: 'magnet', name: '纳气归元', icon: '🧲', desc: '拾取阅历的范围扩大。', max: 4 },
     { id: 'foxPet', name: '灵狐相伴', icon: '🦊', desc: '结识灵狐伙伴，自动扑击附近敌人。', max: 1 }
@@ -78,7 +79,7 @@
       started: false, ended: false, draftOpen: false, bagOpen: false,
       elapsed: 0, wave: 1, kills: 0, gold: 25, savedVillagers: 0, xp: 0,
       hero: { x: 768, y: 330, level: 1, hp: 100, maxHp: 100, qi: 40, maxQi: 40, damage: 8, speed: 205, crit: .05, invuln: 0, attackCd: .35, attackAnim: 0, facingX: 1, facingY: 0, walking: false, walkTime: 0, dodgeCd: 0, dashTime: 0, vx: 0, vy: 0 },
-      moves: [{ id: 'woodStaff', level: 1 }], activeMove: 0, passives: {},
+      moves: [{ id: 'woodStaff', level: 1 }], passives: {},
       enemies: [], shots: [], orbs: [], effects: [], floats: [],
       villagers: [
         { id: 'tea', x: 449, y: 422, name: '茶摊掌柜', hp: 100, maxHp: 100, alive: true },
@@ -109,8 +110,8 @@
   }
   function rand(a, b) { return a + Math.random() * (b - a); }
   function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-  function activeMove() { return state?.moves[state.activeMove] || state?.moves[0] || null; }
-  function specFor(move = activeMove()) { return move ? moveSpecs[move.id] : null; }
+  function displayWeaponMove() { return state?.moves.find(m => moveSpecs[m.id]?.category === '外功') || state?.moves[0] || null; }
+  function specFor(move = displayWeaponMove()) { return move ? moveSpecs[move.id] : null; }
   function setToast(text, seconds = 2.2) { const el = $('toast'); el.textContent = text; el.classList.add('show'); toastTimer = seconds; }
   function resize() {
     const r = canvas.getBoundingClientRect(); w = r.width; h = r.height;
@@ -128,8 +129,8 @@
   function rngFor(x, y) { let s = seedFor(x, y); return () => { s += 0x6d2b79f5; let t = s; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   function getPattern() {
     if (groundPattern || !ground.complete || !ground.naturalWidth) return groundPattern;
-    const tile = document.createElement('canvas'); tile.width = 1024; tile.height = 1024;
-    const g = tile.getContext('2d');
+    const tile = document.createElement('canvas'); tile.width = 1536; tile.height = 1536;
+    const g = tile.getContext('2d', { willReadFrequently: true });
     g.drawImage(ground, 0, 0, ground.naturalWidth, ground.naturalHeight, 0, 0, tile.width, tile.height);
     // Fade the image edges into one another so the wilderness can repeat without hard tile borders.
     const image = g.getImageData(0, 0, tile.width, tile.height), d = image.data, size = tile.width, seam = 62;
@@ -144,11 +145,15 @@
     g.putImageData(image, 0, 0);
     // A larger supertile pushes the texture repeat beyond a normal screen view.
     const worldTiles = 2, worldTile = document.createElement('canvas');
+    const variants = [
+      { turns: 0, flipX: 1, flipY: 1 }, { turns: 1, flipX: 1, flipY: -1 },
+      { turns: 3, flipX: -1, flipY: 1 }, { turns: 2, flipX: 1, flipY: 1 }
+    ];
     worldTile.width = worldTile.height = size * worldTiles;
     const t = worldTile.getContext('2d');
     for (let row = 0; row < worldTiles; row++) for (let col = 0; col < worldTiles; col++) {
-      const cx = col * size + size / 2, cy = row * size + size / 2;
-      t.save(); t.translate(cx, cy); t.scale(col % 2 ? -1 : 1, row % 2 ? -1 : 1);
+      const cx = col * size + size / 2, cy = row * size + size / 2, variant = variants[row * worldTiles + col];
+      t.save(); t.translate(cx, cy); t.rotate(variant.turns * Math.PI / 2); t.scale(variant.flipX, variant.flipY);
       t.drawImage(tile, -size / 2, -size / 2, size, size); t.restore();
     }
     groundPattern = ctx.createPattern(worldTile, 'repeat');
@@ -175,10 +180,10 @@
   }
 
   function startGame() {
-    state = freshState(); state.started = true; cameraX = state.hero.x; cameraY = state.hero.y;
+    state = freshState(); terrainCache.clear(); state.started = true; cameraX = state.hero.x; cameraY = state.hero.y;
     $('startScreen').hidden = true; $('endScreen').hidden = true; $('levelModal').hidden = true; $('bagModal').hidden = true;
     keys = Object.create(null); moveTarget = null; lastFrame = performance.now(); resize(); refreshUI();
-    setToast('招式会自行寻找目标。移动走位，靠近敌人拾取阅历。', 4.5);
+    setToast('外功、内功、轻功各自寻找目标并同步施展。贴身外功威力更强。', 4.5);
     if (!raf) raf = requestAnimationFrame(frame);
   }
 
@@ -210,17 +215,101 @@
     let my = (keys.s || keys.arrowdown ? 1 : 0) - (keys.w || keys.arrowup ? 1 : 0) + joystick.y;
     if (!mx && !my && moveTarget) { const dx = moveTarget.x - p.x, dy = moveTarget.y - p.y, d = Math.hypot(dx, dy); if (d < 10) moveTarget = null; else { mx = dx / d; my = dy / d; } }
     const len = Math.hypot(mx, my); p.walking = len > .08;
-    if (p.walking) { mx /= Math.max(1, len); my /= Math.max(1, len); if (p.dashTime <= 0) { p.x += mx * p.speed * dt; p.y += my * p.speed * dt; } p.facingX = mx; p.facingY = my; p.walkTime += dt * (8 + p.speed * .014); }
-    if (p.dashTime > 0) { p.x += p.vx * dt; p.y += p.vy * dt; if (Math.random() < .7) state.effects.push({ kind: 'afterimage', x: p.x, y: p.y, life: .24, max: .24 }); }
+    if (p.walking) { mx /= Math.max(1, len); my /= Math.max(1, len); if (p.dashTime <= 0) moveBody(p, mx * p.speed * dt, my * p.speed * dt, 11); p.facingX = mx; p.facingY = my; p.walkTime += dt * (8 + p.speed * .014); }
+    if (p.dashTime > 0) {
+      const oldX = p.x, oldY = p.y; moveBody(p, p.vx * dt, p.vy * dt, 11);
+      if (Math.hypot(p.x - oldX, p.y - oldY) > 1 && Math.random() < .85) state.effects.push({ kind: 'afterimage', x: p.x, y: p.y, life: .3, max: .3 });
+      for (const enemy of state.enemies) if (!p.dashHits?.has(enemy.id) && Math.hypot(enemy.x - p.x, enemy.y - p.y) < enemy.radius + 20) {
+        p.dashHits ||= new Set(); p.dashHits.add(enemy.id); const direction = Math.atan2(enemy.y - p.y, enemy.x - p.x);
+        spawnImpact(enemy, 'lightness', direction, '#b9f0d1'); damageEnemy(enemy, 9 + (state.passives.lightness || 0) * 4, false);
+        if (!enemy.boss) moveBody(enemy, Math.cos(direction) * 15, Math.sin(direction) * 15, enemy.radius * .72);
+      }
+    }
   }
 
   function dodge() {
     if (!state || state.ended || state.hero.dodgeCd > 0) return;
     const p = state.hero; let dx = (keys.d || keys.arrowright ? 1 : 0) - (keys.a || keys.arrowleft ? 1 : 0) + joystick.x, dy = (keys.s || keys.arrowdown ? 1 : 0) - (keys.w || keys.arrowup ? 1 : 0) + joystick.y;
     if (Math.hypot(dx, dy) < .1) { dx = p.facingX; dy = p.facingY; }
-    const l = Math.hypot(dx, dy) || 1, factor = 1 + (state.passives.lightness || 0) * .08;
-    p.vx = dx / l * 690 * factor; p.vy = dy / l * 690 * factor; p.dashTime = .21; p.invuln = .34; p.dodgeCd = 1.15 / factor;
-    state.effects.push({ kind: 'wind', x: p.x, y: p.y, life: .38, max: .38, color: '#b9e4cc' });
+    const l = Math.hypot(dx, dy) || 1, rank = state.passives.lightness || 0, factor = 1 + rank * .1;
+    p.vx = dx / l * 720 * factor; p.vy = dy / l * 720 * factor; p.dashTime = .24 + rank * .018; p.invuln = .32 + rank * .025; p.dodgeCd = 1.05 / factor; p.dashHits = new Set();
+    state.effects.push({ kind: 'wind', x: p.x, y: p.y, life: .48, max: .48, color: '#b9e4cc' }); state.cameraShake = Math.max(state.cameraShake, .75);
+  }
+
+  const terrainCache = new Map();
+  const villageStructureRects = [
+    [0, 0, 590, 170], [850, 0, 1170, 158],
+    [0, 170, 335, 372], [900, 170, 1195, 370],
+    [0, 402, 295, 640], [1110, 612, 1500, 852]
+  ];
+  let villageWaterMask = null;
+  function getVillageWaterMask() {
+    if (villageWaterMask || !villageArt.complete || !villageArt.naturalWidth) return villageWaterMask;
+    const scratch = document.createElement('canvas'); scratch.width = VILLAGE.w; scratch.height = VILLAGE.h;
+    const sample = scratch.getContext('2d', { willReadFrequently: true }); sample.drawImage(villageArt, 0, 0, VILLAGE.w, VILLAGE.h);
+    const pixels = sample.getImageData(0, 0, VILLAGE.w, VILLAGE.h).data, mask = new Uint8Array(VILLAGE.w * VILLAGE.h);
+    for (let i = 0, p = 0; i < mask.length; i++, p += 4) {
+      const red = pixels[p], green = pixels[p + 1], blue = pixels[p + 2];
+      // Water stays impassable while the tan stone and timber bridge pixels remain walkable.
+      if (blue > 82 && blue > red * 1.2 && blue > green * 1.06) mask[i] = 1;
+    }
+    villageWaterMask = mask; return villageWaterMask;
+  }
+  function villageWaterBlocked(x, y, radius) {
+    const mask = getVillageWaterMask(); if (!mask) return false;
+    const waterAt = (px, py) => {
+      const ix = Math.floor(px - VILLAGE.x), iy = Math.floor(py - VILLAGE.y);
+      return ix >= 0 && iy >= 0 && ix < VILLAGE.w && iy < VILLAGE.h && mask[iy * VILLAGE.w + ix] === 1;
+    };
+    if (waterAt(x, y)) return true;
+    for (const ring of [.56, 1]) for (let i = 0; i < 12; i++) {
+      const angle = i * TAU / 12, reach = (radius + 2) * ring;
+      if (waterAt(x + Math.cos(angle) * reach, y + Math.sin(angle) * reach)) return true;
+    }
+    return false;
+  }
+  function villageStructureBlocked(x, y, radius) {
+    if (x < VILLAGE.x || y < VILLAGE.y || x > VILLAGE.x + VILLAGE.w || y > VILLAGE.y + VILLAGE.h) return false;
+    return villageStructureRects.some(([left, top, right, bottom]) => x + radius > left && x - radius < right && y + radius > top && y - radius < bottom);
+  }
+  function worldPropsForCell(cx, cy) {
+    const key = `${cx},${cy}`; if (terrainCache.has(key)) return terrainCache.get(key);
+    const props = [];
+    if (Math.hypot(cx * 900 + 450 - 768, cy * 900 + 450 - 512) >= 1060) {
+      const rnd = rngFor(cx, cy), count = 3 + Math.floor(rnd() * 5);
+      for (let i = 0; i < count; i++) {
+        const x = cx * 900 + 60 + rnd() * 780, y = cy * 900 + 70 + rnd() * 760, roll = rnd();
+        if (roll < .42) props.push({ type: 'tree', x, y, r: 17 + rnd() * 12, seed: rnd() });
+        else if (roll < .72) props.push({ type: 'rock', x, y, r: 9 + rnd() * 10 });
+        else props.push({ type: 'shrub', x, y, r: 10 + rnd() * 8 });
+      }
+    }
+    terrainCache.set(key, props); if (terrainCache.size > 480) terrainCache.delete(terrainCache.keys().next().value);
+    return props;
+  }
+  function terrainBlocked(x, y, radius = 10) {
+    if (villageWaterBlocked(x, y, radius) || villageStructureBlocked(x, y, radius)) return true;
+    const cx = Math.floor(x / 900), cy = Math.floor(y / 900);
+    for (let gx = cx - 1; gx <= cx + 1; gx++) for (let gy = cy - 1; gy <= cy + 1; gy++) {
+      for (const prop of worldPropsForCell(gx, gy)) {
+        if (prop.type === 'shrub') continue;
+        const obstacleRadius = prop.type === 'rock' ? prop.r * .72 : prop.r * .23 + 5;
+        const ox = prop.x, oy = prop.type === 'tree' ? prop.y + 6 : prop.y;
+        if (Math.hypot(x - ox, y - oy) < radius + obstacleRadius) return true;
+      }
+    }
+    return false;
+  }
+  function moveBody(body, dx, dy, radius = 10) {
+    const ox = body.x, oy = body.y;
+    if (!terrainBlocked(body.x + dx, body.y, radius)) body.x += dx;
+    if (!terrainBlocked(body.x, body.y + dy, radius)) body.y += dy;
+    return Math.hypot(body.x - ox, body.y - oy) > .01;
+  }
+  function terrainPathBlocked(x1, y1, x2, y2, radius = 2) {
+    const length = Math.hypot(x2 - x1, y2 - y1), steps = Math.ceil(length / 12);
+    for (let i = 1; i <= steps; i++) { const t = i / steps; if (terrainBlocked(x1 + (x2 - x1) * t, y1 + (y2 - y1) * t, radius)) return true; }
+    return false;
   }
 
   function updateSpawning(dt) {
@@ -247,6 +336,13 @@
     const s = enemySpecs[type]; if (!s) return null;
     const factor = 1 + Math.max(0, state.wave - 1) * .13;
     const e = { id: Math.random().toString(36).slice(2), type, name: s.name, x, y, hp: s.hp * factor, maxHp: s.hp * factor, damage: s.damage * (1 + (state.wave - 1) * .045), speed: s.speed * (1 + Math.min(12, state.wave) * .018), radius: s.radius, xp: s.xp, coin: s.coin, color: s.color, role: s.role, boss: !!s.boss, beast: !!s.beast, attackCd: rand(.3, 1.4), windup: 0, tell: 0, anim: rand(0, TAU), hurt: 0, facingX: -1, facingY: 0, target: extra.target || null, summonCd: rand(3, 7), healCd: 3.4, retreat: false, ...extra };
+    if (terrainBlocked(e.x, e.y, e.radius * .62)) {
+      let placed = false;
+      for (let ring = 24; ring <= 300 && !placed; ring += 18) for (let step = 0; step < 16; step++) {
+        const angle = step * TAU / 16, nx = x + Math.cos(angle) * ring, ny = y + Math.sin(angle) * ring;
+        if (!terrainBlocked(nx, ny, e.radius * .62)) { e.x = nx; e.y = ny; placed = true; break; }
+      }
+    }
     state.enemies.push(e); return e;
   }
 
@@ -288,11 +384,16 @@
     // Gentle separation prevents a stack of enemies from hiding their telegraphs.
     for (let i = 0; i < state.enemies.length; i++) for (let j = i + 1; j < state.enemies.length; j++) {
       const a = state.enemies[i], b = state.enemies[j], dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 1, min = (a.radius + b.radius) * .72;
-      if (d < min) { const push = (min - d) * .035; a.x -= dx / d * push; a.y -= dy / d * push; b.x += dx / d * push; b.y += dy / d * push; }
+      if (d < min) { const push = (min - d) * .035; moveBody(a, -dx / d * push, -dy / d * push, a.radius * .62); moveBody(b, dx / d * push, dy / d * push, b.radius * .62); }
     }
   }
 
-  function moveEnemy(e, dx, dy, distance, dt) { e.x += dx / distance * e.speed * dt; e.y += dy / distance * e.speed * dt; }
+  function moveEnemy(e, dx, dy, distance, dt) {
+    const vx = dx / distance * e.speed * dt, vy = dy / distance * e.speed * dt;
+    if (moveBody(e, vx, vy, e.radius * .62)) return;
+    const side = (parseInt(e.id.slice(0, 5), 36) || 1) % 2 ? 1 : -1, sx = -dy / distance * side, sy = dx / distance * side;
+    moveBody(e, (dx / distance * .45 + sx * .9) * e.speed * dt, (dy / distance * .45 + sy * .9) * e.speed * dt, e.radius * .62);
+  }
   function resolveEnemyAttack(e, target) {
     e.resolved = true; e.attackCd = e.boss ? 1.55 : 1.48;
     if (e.role === 'ranged' || e.role === 'summoner' || e.role === 'dragon') {
@@ -310,60 +411,87 @@
   }
 
   function updateAutoMove(dt) {
-    const move = activeMove(); if (!move) return;
-    const spec = moveSpecs[move.id], p = state.hero, rank = move.level || 1;
-    p.attackCd -= dt; if (p.attackCd > 0) return;
-    const range = spec.range * (1 + (state.passives.focus || 0) * .025) + (rank - 1) * 10;
-    const target = nearestEnemy(range);
-    if (!target) { p.attackCd = .12; return; }
-    const dx = target.x - p.x, dy = target.y - p.y, d = Math.hypot(dx, dy) || 1;
-    p.facingX = dx / d; p.facingY = dy / d; p.attackAnim = .28; p.attackCd = Math.max(.2, spec.cd * (1 - (rank - 1) * .055) * (1 - (state.passives.focus || 0) * .035));
-    fireMove(spec, rank, target);
+    const p = state.hero;
+    for (const move of state.moves) {
+      const spec = moveSpecs[move.id]; if (!spec) continue;
+      const rank = move.level || 1; move.cooldown = Math.max(0, (move.cooldown || 0) - dt);
+      if (move.cooldown > 0) continue;
+      const range = spec.style === 'lightness' ? Math.min(spec.range + rank * 5, 205) : spec.range * (1 + (state.passives.focus || 0) * .025) + Math.floor(rank / 2) * 7;
+      const target = nearestEnemy(range);
+      if (!target) { move.cooldown = .1; continue; }
+      const dx = target.x - p.x, dy = target.y - p.y, d = Math.hypot(dx, dy) || 1;
+      p.facingX = dx / d; p.facingY = dy / d; p.attackAnim = Math.max(p.attackAnim, .28);
+      move.cooldown = Math.max(.28, spec.cd * (1 - (rank - 1) * .075) * (1 - (state.passives.focus || 0) * .035));
+      fireMove(spec, rank, target);
+    }
   }
 
   function fireMove(spec, rank, target) {
-    const p = state.hero, angle = Math.atan2(target.y - p.y, target.x - p.x), swordQi = ['ironSword', 'tenThousandSwords'].includes(spec.id) ? (state.passives.ironQi || 0) * .08 : 0, power = (p.damage + spec.damage * (1 + (rank - 1) * .22)) * (1 + (state.passives.focus || 0) * .03 + swordQi), crit = Math.random() < p.crit;
+    const p = state.hero, angle = Math.atan2(target.y - p.y, target.x - p.x), swordQi = ['ironSword', 'tenThousandSwords'].includes(spec.id) ? (state.passives.ironQi || 0) * .08 : 0;
+    const contact = spec.category === '外功' && ['melee', 'thrust', 'orbit', 'spin'].includes(spec.style);
+    const damageReach = ['beam', 'fan', 'palm', 'volley', 'rain', 'crescent', 'thrustQi'].includes(spec.style);
+    const reachPower = contact ? 1.85 : damageReach ? .66 : 1;
+    const power = (p.damage + spec.damage * (1 + (rank - 1) * .25)) * (1 + (state.passives.focus || 0) * .03 + swordQi) * reachPower, crit = Math.random() < p.crit;
     const damage = Math.round(power * (crit ? 1.85 : 1));
-    if (crit) state.cameraShake = Math.max(state.cameraShake, 1.7);
-    const impact = (enemy, mult = 1) => { spawnImpact(enemy, spec.id === 'woodStaff' ? 'woodStaff' : spec.style, angle, spec.color, crit); damageEnemy(enemy, damage * mult, crit); };
+    if (crit) state.cameraShake = Math.max(state.cameraShake, 2.2);
+    const impact = (enemy, mult = 1) => {
+      spawnImpact(enemy, spec.id === 'woodStaff' ? 'woodStaff' : spec.style, angle, spec.color, crit);
+      damageEnemy(enemy, damage * mult, crit);
+      if (contact && !enemy.boss) { const d = Math.hypot(enemy.x - p.x, enemy.y - p.y) || 1; moveBody(enemy, (enemy.x - p.x) / d * (18 + rank * 4), (enemy.y - p.y) / d * (18 + rank * 4), enemy.radius * .62); }
+    };
     const style = spec.style;
     if (style === 'melee' || style === 'orbit' || style === 'spin') {
-      const radius = style === 'melee' ? spec.range * (1 + (state.passives.focus || 0) * .025) + (rank - 1) * 10 : style === 'spin' ? spec.range : spec.range * .8;
-      const targets = enemiesInArc(p, target, radius, style === 'spin' ? -1 : .45, style === 'melee' ? 1 : 4);
-      for (const enemy of targets) impact(enemy, style === 'melee' ? 1 : .72);
-      state.effects.push({ kind: 'weapon', style: style === 'melee' ? (spec.id === 'woodStaff' ? 'woodStaff' : 'fist') : style === 'spin' ? 'halberd' : spec.id === 'heavenSword' ? 'swordOrbit' : 'staffOrbit', x: p.x, y: p.y, angle, life: .34, max: .34, color: spec.color, radius });
+      const radius = (style === 'melee' ? spec.range : style === 'spin' ? spec.range : spec.range * .8) + Math.floor(rank / 2) * 4;
+      const limit = style === 'melee' ? (rank >= 5 ? 3 : rank >= 3 ? 2 : 1) : 4 + Math.floor((rank - 1) / 2);
+      const targets = enemiesInArc(p, target, radius, style === 'spin' ? -1 : style === 'melee' ? .35 : .15, limit);
+      for (const enemy of targets) impact(enemy, style === 'melee' ? 1 : .82);
+      const slashStyle = style === 'melee' ? (spec.id === 'woodStaff' ? 'woodStaff' : spec.id === 'ironSword' ? 'saberArc' : 'fist') : style === 'spin' ? 'halberd' : spec.id === 'heavenSword' ? 'swordOrbit' : 'staffOrbit';
+      state.effects.push({ kind: 'weapon', style: slashStyle, x: p.x, y: p.y, angle, life: .38, max: .38, color: spec.color, radius, rank });
+      if (contact) state.cameraShake = Math.max(state.cameraShake, .55 + rank * .1);
     } else if (style === 'beam') {
-      const targets = lineTargets(p, angle, spec.range, 27).slice(0, spec.pierce + rank);
+      const targets = lineTargets(p, angle, spec.range, 27 + Math.floor(rank / 2) * 3).slice(0, spec.pierce + Math.floor(rank / 2));
       for (const enemy of targets) impact(enemy, 1.12);
-      state.effects.push({ kind: 'weapon', style: 'fingerBeam', x: p.x, y: p.y, angle, length: spec.range, life: .34, max: .34, color: spec.color });
+      state.effects.push({ kind: 'weapon', style: 'fingerBeam', x: p.x, y: p.y, angle, length: spec.range, life: .34, max: .34, color: spec.color, rank });
     } else if (style === 'slash') {
       launch(spec, angle, target, damage * 1.06, rank, { radius: 8, pierce: spec.pierce + rank - 1, speed: spec.speed, style: 'swordQi', crit });
-      state.effects.push({ kind: 'weapon', style: 'swordDraw', x: p.x, y: p.y, angle, life: .28, max: .28, color: spec.color });
+      state.effects.push({ kind: 'weapon', style: 'swordDraw', x: p.x, y: p.y, angle, life: .28, max: .28, color: spec.color, rank });
     } else if (style === 'thrust') {
-      launch(spec, angle, target, damage, rank, { count: 1, radius: 7, pierce: spec.pierce + rank - 1, speed: spec.speed, style: 'spear' });
-      state.effects.push({ kind: 'weapon', style: 'spearThrust', x: p.x, y: p.y, angle, life: .27, max: .27, color: spec.color });
+      const targets = enemiesInArc(p, target, spec.range + Math.floor(rank / 2) * 7, .72, rank >= 5 ? 3 : rank >= 3 ? 2 : 1);
+      for (const enemy of targets) impact(enemy, 1.12);
+      state.effects.push({ kind: 'weapon', style: 'spearThrust', x: p.x, y: p.y, angle, life: .3, max: .3, color: spec.color, rank });
+    } else if (style === 'thrustQi') {
+      launch(spec, angle, target, damage, rank, { count: 1, radius: 8, pierce: spec.pierce + rank - 1, speed: spec.speed, style: 'spear' });
+      state.effects.push({ kind: 'weapon', style: 'spearThrust', x: p.x, y: p.y, angle, life: .3, max: .3, color: spec.color, rank });
     } else if (style === 'fan' || style === 'palm' || style === 'volley') {
-      const count = (spec.count || 3) + (rank >= 4 ? 2 : 0), spread = style === 'volley' ? .72 : style === 'palm' ? .42 : .62;
+      const count = (spec.count || 3) + (rank >= 3 ? 1 : 0) + (rank >= 5 ? 2 : 0), spread = style === 'volley' ? .72 : style === 'palm' ? .42 : .62;
+      if (style === 'palm') state.effects.push({ kind: 'weapon', style: 'dragonCoil', followHero: true, x: p.x, y: p.y, angle, life: .82, max: .82, color: spec.color, count, rank });
       for (let i = 0; i < count; i++) { const a = angle + (count === 1 ? 0 : (i / (count - 1) - .5) * spread); launch(spec, a, target, damage * (style === 'volley' ? .66 : 1), rank, { count: 1, radius: style === 'volley' ? 4 : 11, pierce: style === 'palm' ? 1 : 0, speed: spec.speed, style: style === 'volley' ? 'needle' : style === 'fan' ? 'fan' : 'palm', crit }); }
-      state.effects.push({ kind: 'weapon', style: style === 'fan' ? 'fanCast' : style === 'palm' ? 'dragonPalm' : 'needleFan', x: p.x, y: p.y, angle, life: style === 'palm' ? .42 : .24, max: style === 'palm' ? .42 : .24, color: spec.color, count });
+      state.effects.push({ kind: 'weapon', style: style === 'fan' ? 'fanCast' : style === 'palm' ? 'dragonPalm' : 'needleFan', x: p.x, y: p.y, angle, life: style === 'palm' ? .48 : .24, max: style === 'palm' ? .48 : .24, color: spec.color, count, rank });
     } else if (style === 'crescent') {
-      launch(spec, angle, target, damage * 1.25, rank, { count: 1, radius: spec.radius || 17, pierce: spec.pierce || 2, speed: spec.speed, style: 'crescent', crit });
-      state.effects.push({ kind: 'weapon', style: spec.id === 'dragonBlade' ? 'dragonBlade' : 'saberArc', x: p.x, y: p.y, angle, life: .38, max: .38, color: spec.color, radius: 106 });
+      launch(spec, angle, target, damage * 1.25, rank, { count: 1, radius: spec.radius || 17, pierce: (spec.pierce || 2) + Math.floor(rank / 2), speed: spec.speed, style: 'crescent', crit });
+      state.effects.push({ kind: 'weapon', style: spec.id === 'dragonBlade' ? 'dragonBlade' : 'saberArc', x: p.x, y: p.y, angle, life: .42, max: .42, color: spec.color, radius: 106, rank });
     } else if (style === 'rain') {
-      const targets = state.enemies.filter(e => dist(e, p) < spec.range + e.radius).sort((a, b) => dist(a, p) - dist(b, p)).slice(0, spec.count);
+      const targets = state.enemies.filter(e => dist(e, p) < spec.range + e.radius).sort((a, b) => dist(a, p) - dist(b, p)).slice(0, spec.count + Math.floor((rank - 1) / 2));
       for (const enemy of targets) { launch(spec, Math.atan2(enemy.y - p.y, enemy.x - p.x), enemy, damage, rank, { radius: 10, pierce: 2, speed: spec.speed, style: 'swordfall', crit }); }
-      state.effects.push({ kind: 'weapon', style: 'swordRain', x: p.x, y: p.y, angle, life: .46, max: .46, color: spec.color, count: targets.length });
+      state.effects.push({ kind: 'weapon', style: 'swordRain', x: p.x, y: p.y, angle, life: .46, max: .46, color: spec.color, count: targets.length, rank });
+    } else if (style === 'lightness') {
+      const awayX = -Math.cos(angle), awayY = -Math.sin(angle), side = Math.cos(state.elapsed * 3.1) >= 0 ? 1 : -1;
+      let dx = awayX * .42 - Math.sin(angle) * side * .91, dy = awayY * .42 + Math.cos(angle) * side * .91; const len = Math.hypot(dx, dy) || 1;
+      const factor = 1 + (state.passives.lightness || 0) * .1;
+      p.vx = dx / len * (555 + rank * 22) * factor; p.vy = dy / len * (555 + rank * 22) * factor; p.dashTime = .19 + rank * .015; p.invuln = Math.max(p.invuln, .24 + rank * .018); p.dashHits = new Set();
+      state.effects.push({ kind: 'wind', x: p.x, y: p.y, life: .58, max: .58, color: spec.color });
+      state.effects.push({ kind: 'weapon', style: 'lightnessArc', x: p.x, y: p.y, angle: angle + side * 1.35, life: .42, max: .42, color: spec.color, rank });
     }
     if (crit) state.effects.push({ kind: 'critical', x: target.x, y: target.y, life: .3, max: .3, color: '#ffe180' });
   }
 
   function enemiesInArc(p, focus, radius, arcDot, limit) {
     const fdx = focus.x - p.x, fdy = focus.y - p.y, fl = Math.hypot(fdx, fdy) || 1;
-    return state.enemies.filter(e => dist(e, p) <= radius + e.radius && ((e.x - p.x) * fdx + (e.y - p.y) * fdy) / ((dist(e, p) || 1) * fl) >= arcDot).sort((a, b) => dist(a, p) - dist(b, p)).slice(0, limit);
+    return state.enemies.filter(e => dist(e, p) <= radius + e.radius && ((e.x - p.x) * fdx + (e.y - p.y) * fdy) / ((dist(e, p) || 1) * fl) >= arcDot && !terrainPathBlocked(p.x, p.y, e.x, e.y, 2)).sort((a, b) => dist(a, p) - dist(b, p)).slice(0, limit);
   }
   function lineTargets(p, angle, length, width) {
     const dx = Math.cos(angle), dy = Math.sin(angle);
-    return state.enemies.filter(e => { const x = e.x - p.x, y = e.y - p.y, along = x * dx + y * dy, side = Math.abs(x * dy - y * dx); return along > 0 && along < length && side < width + e.radius; }).sort((a, b) => dist(a, p) - dist(b, p));
+    return state.enemies.filter(e => { const x = e.x - p.x, y = e.y - p.y, along = x * dx + y * dy, side = Math.abs(x * dy - y * dx); return along > 0 && along < length && side < width + e.radius && !terrainPathBlocked(p.x, p.y, e.x, e.y, 2); }).sort((a, b) => dist(a, p) - dist(b, p));
   }
   function launch(spec, angle, target, damage, rank, opts = {}) {
     const speed = opts.speed || spec.speed || 380;
@@ -375,6 +503,7 @@
       s.life -= dt;
       if (s.homing && s.side === 'hero') { const t = state.enemies.find(e => e.id === s.targetId && e.hp > 0); if (t) { const d = dist(s, t) || 1, nx = (t.x - s.x) / d, ny = (t.y - s.y) / d, speed = Math.hypot(s.vx, s.vy); s.vx = s.vx * (1 - s.homing * dt) + nx * speed * s.homing * dt; s.vy = s.vy * (1 - s.homing * dt) + ny * speed * s.homing * dt; } }
       s.px = s.x; s.py = s.y; s.x += s.vx * dt; s.y += s.vy * dt;
+      if (terrainPathBlocked(s.px, s.py, s.x, s.y, Math.max(2, s.r * .28))) { s.life = 0; continue; }
       if (s.side === 'hero') {
         for (const e of state.enemies) if (!s.hit.has(e.id) && Math.hypot(e.x - s.x, e.y - s.y) < e.radius + s.r) {
           s.hit.add(e.id); spawnImpact(e, s.style, Math.atan2(s.vy, s.vx), s.color, s.crit); damageEnemy(e, s.damage, s.crit); for (let i = 0; i < (s.style === 'needle' ? 2 : 5); i++) spark(e.x, e.y - 12, s.color); if (s.pierce > 0) s.pierce--; else { s.life = 0; break; }
@@ -394,7 +523,7 @@
     if (e.hp <= 0) defeatEnemy(e);
   }
   function spawnImpact(enemy, style, angle, color, crit = false) {
-    const impactStyle = style === 'woodStaff' ? 'woodHit' : style === 'palm' ? 'palmBurst' : style === 'crescent' || style === 'swordQi' ? 'bladeClash' : style === 'needle' ? 'needleHit' : style === 'swordfall' ? 'swordImpact' : style === 'fan' ? 'fanHit' : style === 'spear' ? 'spearHit' : style === 'beam' ? 'fingerHit' : 'fistHit';
+    const impactStyle = style === 'lightness' ? 'lightnessHit' : style === 'woodStaff' ? 'woodHit' : style === 'palm' ? 'palmBurst' : style === 'crescent' || style === 'swordQi' ? 'bladeClash' : style === 'needle' ? 'needleHit' : style === 'swordfall' ? 'swordImpact' : style === 'fan' ? 'fanHit' : style === 'spear' ? 'spearHit' : style === 'beam' ? 'fingerHit' : 'fistHit';
     state.effects.push({ kind: 'impact', style: impactStyle, x: enemy.x, y: enemy.y - 15, angle, life: crit ? .48 : .34, max: crit ? .48 : .34, color: crit ? '#fff0a6' : color, radius: enemy.radius + (crit ? 15 : 8), crit });
   }
   function defeatEnemy(e) {
@@ -428,8 +557,8 @@
     const out = [];
     for (const [id, spec] of Object.entries(moveSpecs)) {
       const found = state.moves.find(m => m.id === id);
-      if (found && found.level < 5) out.push({ id: `up:${id}`, title: `${spec.name} · 精进`, icon: spec.icon, desc: `招式威力与攻击频率提高。当前第 ${found.level} 重。`, type: 'upgrade', rarity: found.level >= 4 ? '精进' : '武学', level: found.level });
-      else if (!found && !spec.evolutionOnly && state.moves.length < 4 && (!spec.rare || state.wave >= 3)) out.push({ id, title: spec.name, icon: spec.icon, desc: spec.desc, type: 'move', rarity: spec.rare ? '绝世神兵' : spec.kind });
+      if (found && found.level < 5) out.push({ id: `up:${id}`, title: `${spec.name} · 精进`, icon: spec.icon, desc: upgradeDescription(spec, found.level + 1), type: 'upgrade', rarity: found.level >= 4 ? '精进' : spec.category, level: found.level });
+      else if (!found && !spec.evolutionOnly && state.moves.length < 4 && (!spec.rare || state.wave >= 3)) out.push({ id, title: spec.name, icon: spec.icon, desc: spec.desc, type: 'move', rarity: spec.rare ? '绝世神兵' : spec.category });
     }
     for (const card of passiveCards) { const level = state.passives[card.id] || 0; if (level < card.max) out.push({ ...card, title: card.name, type: 'passive', rarity: card.id === 'foxPet' ? '奇遇' : '心法', level }); }
     const eligibleEvolutions = [
@@ -438,18 +567,37 @@
     for (const [base, passive, title] of eligibleEvolutions) { const m = state.moves.find(x => x.id === base); if (m?.level >= 5 && state.passives[passive]) out.push({ id: `evo:${base}`, title, icon: '✦', desc: `第 5 重招式与对应心法相融，蜕变为绝技。`, type: 'evolution', rarity: '武学共鸣' }); }
     return out;
   }
+  function upgradeDescription(spec, nextRank) {
+    const parts = [`威力 +25%`, `出招间隔缩短 7.5%`];
+    if (spec.style === 'melee' || spec.style === 'thrust') {
+      if (nextRank % 2 === 0) parts.push('攻击距离 +7');
+      if (nextRank === 3) parts.push('一次命中人数 +1');
+      if (nextRank === 5) parts.push('一次命中人数 +1，冲击更强');
+    } else if (['palm', 'fan', 'volley'].includes(spec.style) && (nextRank === 3 || nextRank === 5)) parts.push(`每轮飞射数量 +${nextRank === 3 ? 1 : 2}`);
+    else if (spec.style === 'beam' && nextRank % 2 === 0) parts.push('贯穿人数 +1');
+    else if (spec.style === 'rain' && nextRank % 2 === 1) parts.push('追击目标 +1');
+    else if (spec.style === 'lightness') parts.push('闪身更远，无敌时间更长');
+    else if (nextRank % 2 === 0) parts.push('攻击范围 +7');
+    return `升至第 ${nextRank} 重：${parts.join(' · ')}。`;
+  }
   function openDraft() {
     const pool = availableCards(), picked = [];
+    const owned = new Set(state.moves.map(m => moveSpecs[m.id]?.category));
+    for (const category of ['内功', '轻功']) {
+      if (owned.has(category) || picked.length >= 3) continue;
+      const option = pool.find(card => card.type === 'move' && moveSpecs[card.id]?.category === category);
+      if (option) { picked.push(option); pool.splice(pool.indexOf(option), 1); }
+    }
     while (picked.length < 3 && pool.length) { const i = Math.floor(Math.random() * pool.length); picked.push(pool.splice(i, 1)[0]); }
     if (!picked.length) picked.push({ id: 'body', title: '铁布衫', icon: '🥋', desc: '气血上限 +18。', type: 'passive', rarity: '心法', level: 0 });
     state.choiceCards = picked; state.draftOpen = true; $('choiceLevel').textContent = state.hero.level || 2;
-    $('choiceCards').innerHTML = picked.map((c, i) => `<button class="choice-card" data-index="${i}"><span class="card-top"><span class="card-icon">${c.icon}</span><small class="rarity">${c.rarity}</small></span><b>${c.title}</b><p>${c.desc}</p>${c.type === 'move' ? '<span class="new-tag">新招式 · 可按 1–4 切换</span>' : c.level ? `<span class="new-tag">当前第 ${c.level} 重</span>` : ''}</button>`).join('');
+    $('choiceCards').innerHTML = picked.map((c, i) => `<button class="choice-card" data-index="${i}"><span class="card-top"><span class="card-icon">${c.icon}</span><small class="rarity">${c.rarity}</small></span><b>${c.title}</b><p>${c.desc}</p>${c.type === 'move' ? `<span class="new-tag">${moveSpecs[c.id]?.category} · 学会后同步施展</span>` : c.type === 'upgrade' ? `<span class="new-tag">当前第 ${c.level} 重 → 第 ${c.level + 1} 重</span>` : c.level ? `<span class="new-tag">当前第 ${c.level} 重</span>` : ''}</button>`).join('');
     $('levelModal').hidden = false; $('choiceCards').querySelectorAll('button').forEach(button => button.addEventListener('click', () => takeCard(Number(button.dataset.index))));
   }
   function takeCard(index) {
     const card = state.choiceCards[index]; if (!card) return;
-    if (card.type === 'move') state.moves.push({ id: card.id, level: 1 });
-    if (card.type === 'upgrade') { const id = card.id.slice(3), move = state.moves.find(m => m.id === id); if (move) move.level = Math.min(5, move.level + 1); }
+    if (card.type === 'move') { state.moves.push({ id: card.id, level: 1, cooldown: .25 }); const s = moveSpecs[card.id]; state.effects.push({ kind: 'rankUp', x: state.hero.x, y: state.hero.y - 25, life: .8, max: .8, color: s.color, rank: 1 }); }
+    if (card.type === 'upgrade') { const id = card.id.slice(3), move = state.moves.find(m => m.id === id); if (move) { move.level = Math.min(5, move.level + 1); move.cooldown = .15; const s = moveSpecs[id]; state.effects.push({ kind: 'rankUp', x: state.hero.x, y: state.hero.y - 25, life: .9, max: .9, color: s.color, rank: move.level }); } }
     if (card.type === 'passive') {
       state.passives[card.id] = (state.passives[card.id] || 0) + 1;
       if (card.id === 'body') { state.hero.maxHp += 18; state.hero.hp = Math.min(state.hero.maxHp, state.hero.hp + 18); }
@@ -460,7 +608,7 @@
       if (card.id === 'foxPet' && !state.pet) { state.pet = 'fox'; state.petX = state.hero.x - 26; state.petY = state.hero.y + 28; }
     }
     if (card.type === 'evolution') { const base = card.id.slice(4), move = state.moves.find(m => m.id === base), next = { ironSword: 'tenThousandSwords', mountainSaber: 'dragonBlade', dragonPalm: 'dragonPalmAwakened', cloudSpear: 'overlordSpear' }[base]; if (move && next) { move.id = next; move.level = 1; } }
-    if (state.moves.length && state.moves.length === 2 && state.activeMove === 0) state.activeMove = 1;
+    if (card.type === 'passive' && card.id === 'lightness') state.effects.push({ kind: 'rankUp', x: state.hero.x, y: state.hero.y - 25, life: .9, max: .9, color: '#9ce4c1', rank: state.passives.lightness });
     state.draftOpen = false; state.choiceCards = []; $('levelModal').hidden = true; refreshUI(); saveRun();
   }
 
@@ -472,12 +620,12 @@
     if (state.floats.length > 55) state.floats.shift();
   }
   function spark(x, y, color) { state.effects.push({ kind: 'spark', x: x + rand(-8, 8), y: y + rand(-8, 5), vx: rand(-70, 70), vy: rand(-85, 45), life: rand(.18, .38), max: .38, color, size: rand(2, 5) }); }
-  function updateEffects(dt) { for (const e of state.effects) { e.life -= dt; e.x += (e.vx || 0) * dt; e.y += (e.vy || 0) * dt; } state.effects = state.effects.filter(e => e.life > 0); if (state.effects.length > 360) state.effects.splice(0, state.effects.length - 360); for (const f of state.floats) { f.y -= 20 * dt; f.life -= dt; } state.floats = state.floats.filter(f => f.life > 0); state.cameraShake = Math.max(0, state.cameraShake - dt * 8); hitFlash = Math.max(0, hitFlash - dt); }
+  function updateEffects(dt) { for (const e of state.effects) { e.life -= dt; if (e.followHero) { e.x = state.hero.x; e.y = state.hero.y; } else { e.x += (e.vx || 0) * dt; e.y += (e.vy || 0) * dt; } } state.effects = state.effects.filter(e => e.life > 0); if (state.effects.length > 360) state.effects.splice(0, state.effects.length - 360); for (const f of state.floats) { f.y -= 20 * dt; f.life -= dt; } state.floats = state.floats.filter(f => f.life > 0); state.cameraShake = Math.max(0, state.cameraShake - dt * 8); hitFlash = Math.max(0, hitFlash - dt); }
 
   function updatePet(dt) {
     if (!state.pet) return;
     const p = state.hero; state.petCd -= dt; const dx = p.x - state.petX, dy = p.y - state.petY, d = Math.hypot(dx, dy) || 1;
-    if (d > 54) { state.petX += dx / d * 240 * dt; state.petY += dy / d * 240 * dt; }
+    if (d > 54) { const pet = { x: state.petX, y: state.petY }; moveBody(pet, dx / d * 240 * dt, dy / d * 240 * dt, 8); state.petX = pet.x; state.petY = pet.y; }
     const target = nearestEnemy(260);
     if (target && state.petCd <= 0) { state.petCd = 1.8; const a = Math.atan2(target.y - state.petY, target.x - state.petX); state.shots.push({ side: 'hero', x: state.petX, y: state.petY - 10, vx: Math.cos(a) * 420, vy: Math.sin(a) * 420, life: .8, r: 8, damage: 12 + (state.hero.level || 1) * 2, pierce: 0, hit: new Set(), style: 'paw', color: '#efcc7d' }); }
   }
@@ -542,7 +690,7 @@
 
   function refreshUI() {
     if (!state) return;
-    const p = state.hero, move = activeMove(), spec = specFor(move), alive = state.villagers.filter(v => v.alive).length, weather = weatherTypes[state.weather];
+    const p = state.hero, move = displayWeaponMove(), spec = specFor(move), alive = state.villagers.filter(v => v.alive).length, weather = weatherTypes[state.weather];
     $('regionName').textContent = regionName(p.x, p.y); $('goldText').textContent = state.gold;
     $('timeText').textContent = formatTime(state.elapsed); $('levelText').textContent = `${realmName(p.level || 1)} · ${p.level || 1}`; $('killText').textContent = state.kills;
     $('weatherText').textContent = weather.name; $('weatherIcon').textContent = weather.icon;
@@ -550,12 +698,11 @@
     $('qiText').textContent = `${Math.floor(p.qi)} / ${p.maxQi}`; $('qiBar').style.width = `${clamp(p.qi / p.maxQi * 100, 0, 100)}%`;
     $('xpText').textContent = `${Math.floor(state.xp || 0)} / ${xpNeed()}`; $('xpBar').style.width = `${clamp((state.xp || 0) / xpNeed() * 100, 0, 100)}%`;
     $('damageText').textContent = p.damage; $('critText').textContent = Math.round(p.crit * 100); $('speedText').textContent = Math.round(p.speed); $('villagerText').textContent = `${alive}/3`;
-    $('weaponName').textContent = spec?.name || '赤手空拳'; $('moveHint').textContent = state.raidWarning ? '安平镇即将遇袭 · 往镇南回防' : state.enemies.length ? `附近 ${state.enemies.length} 名敌人 · ${weather.name}` : '走位避招，收集散落阅历';
+    $('weaponName').textContent = spec?.name || '赤手空拳'; $('moveHint').textContent = state.raidWarning ? '安平镇即将遇袭 · 往镇南回防' : state.enemies.length ? `已学招式同步出手 · 附近 ${state.enemies.length} 敌` : '走位避招，收集散落阅历';
     $('skillSlots').innerHTML = Array.from({ length: 4 }, (_, i) => {
       const m = state.moves[i], s = m ? moveSpecs[m.id] : null;
-      return `<button class="skill-slot ${i === state.activeMove ? 'active' : ''} ${s ? '' : 'empty'}" ${s ? `data-slot="${i}"` : 'disabled'}><kbd>${i + 1}</kbd><span class="slot-icon">${s?.icon || '·'}</span><b>${s?.name || '空位'}</b><small>${s ? `${s.kind} · ${i === state.activeMove ? '当前施展' : '已习得'}` : '升级可习得'}</small>${m ? `<span class="level-tag">${m.level}重</span>` : ''}</button>`;
+      return `<div class="skill-slot ${s ? 'learned' : 'empty'}" ${s ? `data-category="${s.category}"` : ''}><span class="slot-icon">${s?.icon || '·'}</span><b>${s?.name || '空位'}</b><small>${s ? `<span class="slot-category">${s.category}</span><span class="slot-kind"> · ${s.kind}</span>` : '升级可习得'}</small>${m ? `<span class="level-tag">${m.level}重</span>` : ''}</div>`;
     }).join('');
-    $('skillSlots').querySelectorAll('[data-slot]').forEach(b => b.addEventListener('click', () => switchMove(Number(b.dataset.slot))));
     const boss = state.enemies.find(e => e.boss && dist(e, p) < Math.max(viewW, viewH) * .78);
     $('bossBar').hidden = !boss;
     if (boss) { $('bossName').textContent = boss.name; $('bossHpText').textContent = `${Math.max(0, Math.ceil(boss.hp))} / ${Math.ceil(boss.maxHp)}`; $('bossHpBar').style.width = `${clamp(boss.hp / boss.maxHp * 100, 0, 100)}%`; }
@@ -565,11 +712,13 @@
   function regionName(x, y) { const r = Math.hypot(x - 768, y - 512); return r < 750 ? '安平镇' : r < 2400 ? '青竹林' : r < 5200 ? '黑风岭' : '群山深处'; }
   function realmName(lvl) { return lvl < 3 ? '初入江湖' : lvl < 7 ? '三流武者' : lvl < 12 ? '二流高手' : lvl < 20 ? '一流高手' : '绝世宗师'; }
   function formatTime(n) { return `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(Math.floor(n % 60)).padStart(2, '0')}`; }
-  function switchMove(i) { if (state.moves[i]) { state.activeMove = i; refreshUI(); setToast(`切换招式：${moveSpecs[state.moves[i].id].name}`, 1); } }
-
   function renderBag() {
     if (!state) return;
-    $('bagSkills').innerHTML = state.moves.map((m, i) => { const s = moveSpecs[m.id]; return `<div class="bag-item"><i>${s.icon}</i><div><b>${s.name} · 第 ${m.level} 重</b><small>${s.desc}${i === state.activeMove ? ' · 当前施展' : ' · 已习得'}</small></div></div>`; }).join('') || '<small>尚无武学</small>';
+    $('bagSkills').innerHTML = ['外功', '内功', '轻功'].map(category => {
+      const moves = state.moves.filter(m => moveSpecs[m.id]?.category === category);
+      const items = moves.map(m => { const s = moveSpecs[m.id]; return `<div class="bag-item"><i>${s.icon}</i><div><b>${s.name} · 第 ${m.level} 重</b><small>${s.desc} · 独立冷却，自动施展</small></div></div>`; }).join('') || '<small>尚未习得</small>';
+      return `<section class="bag-skill-group" data-category="${category}"><h4>${category}<small>并行出招</small></h4>${items}</section>`;
+    }).join('');
     const list = passiveCards.filter(c => state.passives[c.id]);
     $('bagWeapons').innerHTML = list.map(c => `<div class="bag-item"><i>${c.icon}</i><div><b>${c.name} · 第 ${state.passives[c.id]} 重</b><small>${c.desc}</small></div></div>`).join('') + `<div class="bag-item"><i>◈</i><div><b>碎银 ${state.gold}</b><small>用于江湖拾遗与后续补给</small></div></div>`;
   }
@@ -582,7 +731,7 @@
     const p = state.hero; cameraX += (p.x - cameraX) * .14; cameraY += (p.y - cameraY) * .14;
     const kick = state.cameraShake || 0, shakeX = Math.sin(state.elapsed * 83) * kick, shakeY = Math.cos(state.elapsed * 67) * kick;
     ctx.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * (w / 2 - (cameraX - shakeX) * scale), dpr * (h / 2 - (cameraY - shakeY) * scale));
-    drawGround(); drawLandmarks(); drawCamps(); drawVillage(); drawWeather();
+    drawGround(); drawLandmarks(); drawCamps(); drawVillage(); drawWeather(); drawDragonCoils();
     for (const o of state.orbs) drawOrb(o); for (const d of state.drops) drawDrop(d);
     const actors = state.enemies.filter(e => e.hp > 0).map(e => ({ y: e.y, type: 'enemy', ref: e })); actors.push({ y: p.y, type: 'hero', ref: p }); if (state.pet) actors.push({ y: state.petY, type: 'pet', ref: state });
     actors.sort((a, b) => a.y - b.y);
@@ -600,10 +749,10 @@
     else { ctx.fillStyle = '#656340'; ctx.fillRect(left, top, viewW + 200, viewH + 200); }
     // Add repeatable clearings, shrine stones and tree silhouettes around the textured floor.
     const cx1 = Math.floor(left / 900), cx2 = Math.floor((left + viewW + 200) / 900), cy1 = Math.floor(top / 900), cy2 = Math.floor((top + viewH + 200) / 900);
-    for (let cx = cx1; cx <= cx2; cx++) for (let cy = cy1; cy <= cy2; cy++) {
-      if (Math.hypot(cx * 900 + 450 - 768, cy * 900 + 450 - 512) < 1060) continue;
-      const rnd = rngFor(cx, cy), count = 3 + Math.floor(rnd() * 5);
-      for (let i = 0; i < count; i++) { const x = cx * 900 + 60 + rnd() * 780, y = cy * 900 + 70 + rnd() * 760, type = rnd(); if (type < .42) drawWorldTree(x, y, 17 + rnd() * 12, rnd()); else if (type < .72) drawWorldRock(x, y, 9 + rnd() * 10); else drawWorldShrub(x, y, 10 + rnd() * 8); }
+    for (let cx = cx1; cx <= cx2; cx++) for (let cy = cy1; cy <= cy2; cy++) for (const prop of worldPropsForCell(cx, cy)) {
+      if (prop.type === 'tree') drawWorldTree(prop.x, prop.y, prop.r, prop.seed);
+      else if (prop.type === 'rock') drawWorldRock(prop.x, prop.y, prop.r);
+      else drawWorldShrub(prop.x, prop.y, prop.r);
     }
     const village = getVillageBlend(); if (village) ctx.drawImage(village, VILLAGE.x, VILLAGE.y, VILLAGE.w, VILLAGE.h);
   }
@@ -709,13 +858,13 @@
   }
   function drawEnemy(e) {
     if (e.role === 'dragon') { drawDragon(e); return; }
-    if (e.beast && wolfSprite.complete && wolfSprite.naturalWidth) { drawSpriteEnemy(e, wolfSprite, 72, 48, true); return; }
+    if (e.beast && wolfSprite.complete && wolfSprite.naturalWidth) { drawSpriteEnemy(e, wolfSprite, 72, 48, false); return; }
     if (['bandit', 'runner', 'brute'].includes(e.type) && banditSprite.complete && banditSprite.naturalWidth) {
       const size = e.type === 'brute' ? 1.18 : e.type === 'runner' ? .88 : 1;
       drawSpriteEnemy(e, banditSprite, 48 * size, 62 * size, false); return;
     }
     const bob = Math.sin(e.anim) * (e.boss ? 2 : 1.5), size = e.radius / 15, gait = Math.sin(e.anim), lunge = (e.attackPose || 0) * e.radius * .14;
-    ctx.save(); ctx.translate(e.x + e.facingX * lunge, e.y + bob + e.facingY * lunge); if (e.beast) ctx.rotate(Math.atan2(e.facingY, e.facingX)); else ctx.rotate(Math.sin(e.anim * .5) * .025 + e.facingY * .035); ctx.fillStyle = '#0d130e9c'; ctx.beginPath(); ctx.ellipse(0, 3, e.radius * 1.1, e.radius * .4, 0, 0, TAU); ctx.fill();
+    ctx.save(); ctx.translate(e.x + e.facingX * lunge, e.y + bob + e.facingY * lunge); if (e.facingX < 0) ctx.scale(-1, 1); ctx.rotate(Math.sin(e.anim * .5) * .018); ctx.fillStyle = '#0d130e9c'; ctx.beginPath(); ctx.ellipse(0, 3, e.radius * 1.1, e.radius * .4, 0, 0, TAU); ctx.fill();
     if (e.hurt > 0) ctx.filter = 'brightness(1.8)';
     if (e.beast) {
       // Four independently stepping paws and a swaying tail keep the wild beasts from sliding like tokens.
@@ -778,15 +927,16 @@
   }
   function drawDragon(e) {
     if (wyrmSprite.complete && wyrmSprite.naturalWidth) {
-      const bob = Math.sin(e.anim * .7) * 2.5, lunge = (e.attackPose || 0) * 5;
-      ctx.save(); ctx.translate(e.x + e.facingX * lunge, e.y + bob + e.facingY * lunge);
-      ctx.fillStyle = '#17150f88'; ctx.beginPath(); ctx.ellipse(0, 8, e.radius * 1.4, e.radius * .42, 0, 0, TAU); ctx.fill();
+      const bob = Math.sin(e.anim * .7) * 1.1, lunge = (e.attackPose || 0) * 3;
+      ctx.save(); ctx.translate(e.x + e.facingX * lunge, e.y + bob);
+      ctx.fillStyle = '#17150fb8'; ctx.beginPath(); ctx.ellipse(0, 5, e.radius * 1.5, e.radius * .44, 0, 0, TAU); ctx.fill();
       if (e.hurt > 0) ctx.filter = 'brightness(1.5) saturate(1.15)';
-      ctx.rotate(Math.atan2(e.facingY, e.facingX) + Math.sin(e.anim * .45) * .018);
+      if (e.facingX < 0) ctx.scale(-1, 1);
+      ctx.rotate(Math.sin(e.anim * .45) * .012);
       ctx.drawImage(wyrmSprite, -e.radius * 2.05, -e.radius * 1.02 + bob, e.radius * 4.1, e.radius * 2.05);
       ctx.filter = 'none'; ctx.restore(); drawEnemyHealth(e); return;
     }
-    const bob = Math.sin(e.anim * .7) * 4; ctx.save(); ctx.translate(e.x + e.facingX * (e.attackPose || 0) * 5, e.y + bob + e.facingY * (e.attackPose || 0) * 5); ctx.rotate(Math.atan2(e.facingY, e.facingX));
+    const bob = Math.sin(e.anim * .7) * 1.5; ctx.save(); ctx.translate(e.x + e.facingX * (e.attackPose || 0) * 3, e.y + bob); if (e.facingX < 0) ctx.scale(-1, 1);
     ctx.fillStyle = '#111510aa'; ctx.beginPath(); ctx.ellipse(0, 6, 76, 18, 0, 0, TAU); ctx.fill();
     ctx.lineCap = 'round'; ctx.strokeStyle = '#315d48'; ctx.lineWidth = 25; ctx.beginPath(); ctx.moveTo(-6, -13); ctx.bezierCurveTo(-62, -52, -97, -2, -67, 27); ctx.bezierCurveTo(-30, 51, 24, 39, 21, 3); ctx.stroke(); ctx.strokeStyle = e.hurt > 0 ? '#f4e4ae' : '#6ea47a'; ctx.lineWidth = 15; ctx.stroke();
     for (const [x, y] of [[-42,-23],[-69,-1],[-49,28],[-16,38],[8,20]]) { ctx.fillStyle = '#b6ca8c'; ctx.beginPath(); ctx.moveTo(x - 5, y); ctx.lineTo(x, y - 12); ctx.lineTo(x + 5, y); ctx.closePath(); ctx.fill(); }
@@ -871,8 +1021,14 @@
       if (e.kind === 'spark') {
         ctx.translate(e.x, e.y); ctx.rotate(Math.atan2(e.vy || 1, e.vx || 1)); ctx.fillStyle = e.color; ctx.shadowColor = e.color; ctx.shadowBlur = 7;
         ctx.beginPath(); ctx.moveTo(-e.size * 1.8, 0); ctx.lineTo(0, -e.size * .42); ctx.lineTo(e.size * 2.6, 0); ctx.lineTo(0, e.size * .42); ctx.closePath(); ctx.fill();
-      } else if (e.kind === 'weapon') drawWeaponEffect(e, a, t);
+      } else if (e.kind === 'weapon' && e.style !== 'dragonCoil') drawWeaponEffect(e, a, t);
       else if (e.kind === 'impact') drawImpact(e, a, t);
+      else if (e.kind === 'rankUp') {
+        ctx.translate(e.x, e.y); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = e.color; ctx.shadowColor = e.color; ctx.shadowBlur = 16;
+        ctx.lineWidth = 4 - t * 2; ctx.beginPath(); ctx.ellipse(0, 18, 20 + t * 48, 10 + t * 16, 0, 0, TAU); ctx.stroke();
+        ctx.strokeStyle = '#fff1c4'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, -8, 13 + t * 25, -2.5, 1.8); ctx.stroke();
+        for (let i = 0; i < Math.min(6, e.rank + 2); i++) { const angle = i * TAU / Math.min(6, e.rank + 2) + t * 2; ctx.fillStyle = '#fff0bd'; drawStarPath(Math.cos(angle) * (17 + t * 24), -8 + Math.sin(angle) * (12 + t * 14), 4, 1.6, 4); ctx.fill(); }
+      }
       else if (e.kind === 'afterimage') { ctx.fillStyle = '#d9ead377'; ctx.strokeStyle = '#f0dca055'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(e.x, e.y - 18, 13, 23, 0, 0, TAU); ctx.fill(); ctx.stroke(); }
       else if (e.kind === 'wind') { ctx.strokeStyle = e.color; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(e.x, e.y, 20 + t * 38, 0, TAU); ctx.stroke(); }
       else if (e.kind === 'heal' || e.kind === 'summon') { ctx.strokeStyle = e.kind === 'heal' ? '#9be7a3' : '#bd87db'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(e.x, e.y - 10, 16 + t * 30, 0, TAU); ctx.stroke(); }
@@ -881,16 +1037,39 @@
       ctx.restore();
     }
   }
+  function drawDragonCoils() {
+    for (const e of state.effects) if (e.kind === 'weapon' && e.style === 'dragonCoil') {
+      const a = clamp(e.life / e.max, 0, 1), t = 1 - a; ctx.save(); ctx.globalAlpha = a * .82; drawWeaponEffect(e, a, t); ctx.restore();
+    }
+  }
   function drawStarPath(x, y, outer, inner, points) {
     ctx.beginPath(); for (let i = 0; i < points * 2; i++) { const r = i % 2 ? inner : outer, a = -Math.PI / 2 + i * Math.PI / points; const px = x + Math.cos(a) * r, py = y + Math.sin(a) * r; i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.closePath();
   }
   function drawWeaponEffect(e, a, t) {
-    ctx.translate(e.x, e.y); ctx.rotate(e.angle || 0); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.translate(e.x, e.y); if (e.style !== 'dragonCoil') ctx.rotate(e.angle || 0); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
     const color = e.color || '#eed59b';
-    if (e.style === 'woodStaff') {
+    if (e.style === 'dragonCoil') {
+      ctx.translate(0, -37); ctx.shadowColor = color; ctx.shadowBlur = 18;
+      ctx.strokeStyle = '#ffca7155'; ctx.lineWidth = 3; ctx.setLineDash([10, 7]); ctx.beginPath(); ctx.ellipse(0, 7, 55 + e.rank * 2, 28 + e.rank, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = '#fff0bd99'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(0, 7, 45 + e.rank, 21 + e.rank * .5, 0, .25, 5.35); ctx.stroke();
+      const orbit = t * TAU * 1.24, dx = Math.cos(orbit) * (47 + e.rank * 1.5), dy = Math.sin(orbit) * (23 + e.rank * .7);
+      ctx.save(); ctx.translate(dx, 7 + dy); ctx.globalAlpha *= .92 + Math.max(0, Math.sin(orbit)) * .08;
+      if (Math.cos(orbit) < 0) ctx.scale(-1, 1);
+      if (wyrmSprite.complete && wyrmSprite.naturalWidth) {
+        ctx.globalCompositeOperation = 'source-over'; ctx.shadowColor = '#e9853f'; ctx.shadowBlur = 14;
+        ctx.drawImage(wyrmSprite, -72, -35, 144, 70);
+      }
+      else { ctx.strokeStyle = '#e5a14e'; ctx.lineWidth = 14; ctx.beginPath(); ctx.arc(0, 0, 30, -.8, 4.8); ctx.stroke(); ctx.fillStyle = '#ffe6a2'; ctx.beginPath(); ctx.ellipse(28, -14, 16, 11, 0, 0, TAU); ctx.fill(); }
+      ctx.fillStyle = '#ffe9a6'; ctx.shadowBlur = 10; ctx.beginPath(); ctx.arc(39, -15, 2.5, 0, TAU); ctx.fill(); ctx.restore();
+      for (let i = 0; i < 7; i++) { const phase = orbit - i * .25, px = Math.cos(phase) * 48, py = 7 + Math.sin(phase) * 24; ctx.globalAlpha = a * (1 - i / 9); ctx.fillStyle = i % 2 ? '#fff2bd' : color; ctx.beginPath(); ctx.arc(px, py, 3.4 - i * .22, 0, TAU); ctx.fill(); }
+    } else if (e.style === 'lightnessArc') {
+      ctx.translate(8, -17); ctx.shadowColor = color; ctx.shadowBlur = 14;
+      for (let i = 0; i < 3; i++) { const rise = i * 9; ctx.strokeStyle = i === 1 ? '#f3fff0' : color + 'cc'; ctx.lineWidth = (5 - i) * (1 - t * .35); ctx.beginPath(); ctx.moveTo(-5 + t * 12, 15 + rise); ctx.quadraticCurveTo(32, -30 + rise, 74 + e.rank * 3, -7 + rise); ctx.stroke(); }
+      for (let i = 0; i < 4; i++) { const x = 18 + i * 15 + t * 12; ctx.fillStyle = i % 2 ? '#e6f6c1' : '#bbdf96'; ctx.save(); ctx.translate(x, Math.sin(i * 2.2 + t * 5) * 9 - 9); ctx.rotate(-.65 + i * .32); ctx.beginPath(); ctx.ellipse(0, 0, 4, 2, 0, 0, TAU); ctx.fill(); ctx.restore(); }
+    } else if (e.style === 'woodStaff') {
       ctx.translate(18, -16); ctx.rotate(-.3); ctx.lineCap = 'round'; ctx.shadowColor = color; ctx.shadowBlur = 9;
-      ctx.strokeStyle = '#6b472c'; ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(1, 16); ctx.quadraticCurveTo(25, 2, 53, -16); ctx.stroke();
-      ctx.strokeStyle = '#d6b275'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(1, 14); ctx.quadraticCurveTo(25, 0, 52, -16); ctx.stroke();
+      ctx.strokeStyle = '#6b472c'; ctx.lineWidth = 8 + (e.rank || 1) * 1.3; ctx.beginPath(); ctx.moveTo(1, 16); ctx.quadraticCurveTo(25, 2, 53 + (e.rank || 1) * 3, -16); ctx.stroke();
+      ctx.strokeStyle = '#d6b275'; ctx.lineWidth = 3 + (e.rank || 1) * .45; ctx.beginPath(); ctx.moveTo(1, 14); ctx.quadraticCurveTo(25, 0, 52 + (e.rank || 1) * 3, -16); ctx.stroke();
       ctx.strokeStyle = '#f4d998'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(46, -10); ctx.lineTo(53, -16); ctx.lineTo(45, -14); ctx.stroke();
     } else if (e.style === 'fist') {
       ctx.translate(14, -14); ctx.strokeStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 9; ctx.lineWidth = 3;
@@ -898,11 +1077,11 @@
       ctx.strokeStyle = '#fff3d2'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(43, 0, 7 + t * 16, -.95, .95); ctx.stroke();
       ctx.fillStyle = '#fff1cf'; drawStarPath(48, 0, 5 + t * 6, 2, 4); ctx.fill();
     } else if (e.style === 'saberArc' || e.style === 'dragonBlade') {
-      const r = e.style === 'dragonBlade' ? 126 : 96; ctx.translate(8, -16); ctx.shadowColor = color; ctx.shadowBlur = 12;
+      const r = e.radius || (e.style === 'dragonBlade' ? 126 : 96); ctx.translate(8, -16); ctx.shadowColor = color; ctx.shadowBlur = 12 + (e.rank || 1) * 2;
       const rr = r * (.9 + t * .14), end = e.style === 'dragonBlade' ? 1.18 : .94;
       const blade = ctx.createLinearGradient(0, -rr, rr, rr); blade.addColorStop(0, '#fff1bd'); blade.addColorStop(.22, color); blade.addColorStop(1, color + '22');
       // Layered curved strokes read as a blade edge, instead of a filled wedge that hides the fighters.
-      ctx.strokeStyle = blade; ctx.lineWidth = e.style === 'dragonBlade' ? 22 : 15; ctx.beginPath(); ctx.arc(0, 0, rr, -end, end); ctx.stroke();
+      ctx.strokeStyle = blade; ctx.lineWidth = (e.style === 'dragonBlade' ? 22 : 15) + (e.rank || 1) * 1.6; ctx.beginPath(); ctx.arc(0, 0, rr, -end, end); ctx.stroke();
       ctx.strokeStyle = '#fff7de'; ctx.lineWidth = e.style === 'dragonBlade' ? 4 : 3; ctx.beginPath(); ctx.arc(0, 0, rr - 2, -end * .96, end * .96); ctx.stroke();
       ctx.strokeStyle = color + 'bb'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, rr * .76, -end * .72, end * .72); ctx.stroke();
       if (e.style === 'dragonBlade') {
@@ -964,6 +1143,10 @@
     if (e.style === 'woodHit') {
       ctx.strokeStyle = '#d8b477'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-r * .7, -r * .36); ctx.lineTo(r * .72, r * .22); ctx.moveTo(-r * .45, r * .55); ctx.lineTo(r * .55, -r * .44); ctx.stroke();
       ctx.fillStyle = '#bd8b50'; for (let i = 0; i < 4; i++) { const ang = -.9 + i * .55; ctx.save(); ctx.rotate(ang); ctx.fillRect(r * (.55 + t * .35), -1.2, 7, 2.4); ctx.restore(); }
+    } else if (e.style === 'lightnessHit') {
+      ctx.strokeStyle = '#d7ffe5'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, r * (.85 + t * .7), -.9, .9); ctx.stroke();
+      ctx.strokeStyle = '#9ce4c1'; ctx.lineWidth = 3; for (let i = -1; i <= 1; i++) { ctx.beginPath(); ctx.moveTo(-r * .35, i * r * .2); ctx.quadraticCurveTo(r * .25, i * r * .1 - r * .25, r * (1 + t * .25), i * r * .22); ctx.stroke(); }
+      for (let i = 0; i < 5; i++) { const ang = -.8 + i * .4, x = Math.cos(ang) * r * (1 + t), y = Math.sin(ang) * r * .65; ctx.fillStyle = i % 2 ? '#e7efb1' : '#9ce4c1'; ctx.beginPath(); ctx.ellipse(x, y, 4, 2, ang, 0, TAU); ctx.fill(); }
     } else if (e.style === 'palmBurst') {
       ctx.strokeStyle = '#ffb459'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(-r * .8, 0); ctx.bezierCurveTo(-r * .4, -r, r * .2, r, r * .95, -.15); ctx.stroke();
       ctx.strokeStyle = '#fff2bd'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(-r * .55, -2); ctx.bezierCurveTo(-r * .24, -r * .64, r * .15, r * .63, r * .72, 0); ctx.stroke();
@@ -1040,7 +1223,7 @@
     const key = e.key.toLowerCase(); if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(key)) e.preventDefault();
     if (key === 'b') { toggleBag(); return; } if (key === 'm') { $('mapModal').hidden = !$('mapModal').hidden; drawMap(); return; }
     if (key === 'escape') { if (state?.bagOpen) toggleBag(false); else if (!$('mapModal').hidden) $('mapModal').hidden = true; return; }
-    if (key === 'shift') dodge(); if (['1', '2', '3', '4'].includes(key)) switchMove(Number(key) - 1); if (key === 'q') switchMove(Math.max(0, (state?.activeMove || 0) - 1)); if (key === 'e') switchMove(Math.min((state?.moves.length || 1) - 1, (state?.activeMove || 0) + 1));
+    if (key === 'shift') dodge();
     keys[key] = true;
   });
   document.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
@@ -1048,14 +1231,14 @@
   $('startButton').addEventListener('click', startGame); $('restartButton').addEventListener('click', () => { state = freshState(); startGame(); });
   $('zoomOut').addEventListener('click', () => setZoom(zoom - .1)); $('zoomIn').addEventListener('click', () => setZoom(zoom + .1)); syncZoomLabel();
   $('bagBtn').addEventListener('click', () => toggleBag()); $('mapBtn').addEventListener('click', () => { $('mapModal').hidden = false; drawMap(); });
-  $('touchDodge').addEventListener('click', dodge); $('touchSkill').addEventListener('click', () => switchMove((state.activeMove + 1) % state.moves.length));
+  $('touchDodge').addEventListener('click', dodge);
   document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => { $(b.dataset.close).hidden = true; if (b.dataset.close === 'bagModal') state.bagOpen = false; }));
   document.querySelectorAll('.modal-shade').forEach(overlay => overlay.addEventListener('pointerdown', e => { if (e.target === overlay && overlay.id !== 'levelModal') { overlay.hidden = true; state.bagOpen = false; } }));
 
   function villageEntities() { return state.villagers; }
   function drawMapMarker() { /* Reserved for future map labels; landmark positions are already plotted in drawMap. */ }
   function formatVersion() { return 2; }
-  window.__WUXIA_GAME__ = { getState: () => state, selectMove: switchMove, dodge, spawnEnemy, checkLevel, moveSpecs, enemySpecs };
+  window.__WUXIA_GAME__ = { getState: () => state, dodge, spawnEnemy, checkLevel, moveSpecs, enemySpecs, terrainBlocked, moveBody };
 
   resize();
   state = freshState();

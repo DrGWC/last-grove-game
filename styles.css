@@ -7,3 +7,19 @@
 #levelModal .choice-card{border-color:#d8bb7a7d;background:linear-gradient(155deg,#745a39e8,#3d3224f5);box-shadow:inset 0 1px #f5e0b51c,0 4px 12px #08080633}
 #levelModal .choice-card:hover{border-color:#ffdf91;box-shadow:inset 0 1px #fff0cc33,0 7px 22px #d49d4930}
 #levelModal .choice-card .card-icon{background:#e1c27824;color:#f1d58b}
+.skill-slot.learned{cursor:default}
+.skill-slot[data-category="外功"]{border-color:#d89d5970;background:linear-gradient(125deg,#4e382b99,#101a15c9)}
+.skill-slot[data-category="内功"]{border-color:#d9bd6f70;background:linear-gradient(125deg,#4a462a99,#101a15c9)}
+.skill-slot[data-category="轻功"]{border-color:#77cba480;background:linear-gradient(125deg,#214b4199,#101a15c9)}
+.skill-slot[data-category="外功"] .level-tag{color:#efbd82}
+.skill-slot[data-category="内功"] .level-tag{color:#f0da8a}
+.skill-slot[data-category="轻功"] .level-tag{color:#a7e7c0}
+.skill-slot.empty{cursor:default}
+.bag-skill-group{margin:0 0 11px;padding:0 9px 6px;border-left:2px solid #d89d59}
+.bag-skill-group[data-category="内功"]{border-color:#d9bd6f}
+.bag-skill-group[data-category="轻功"]{border-color:#77cba4}
+.bag-skill-group h4{display:flex;justify-content:space-between;align-items:center;margin:0 0 2px;font-size:10px;color:#efbd82}
+.bag-skill-group[data-category="内功"] h4{color:#f0da8a}
+.bag-skill-group[data-category="轻功"] h4{color:#a7e7c0}
+.bag-skill-group h4 small{font-size:8px;color:var(--muted);font-weight:400}
+@media(max-width:760px),(pointer:coarse){.skill-slot .slot-kind{display:none}.skill-slot .level-tag{right:3px;bottom:2px;padding-left:2px;font-size:6px;background:#101a15d9}}
