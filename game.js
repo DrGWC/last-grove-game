@@ -2406,6 +2406,16 @@
       ctx.shadowBlur = 3; ctx.strokeStyle = '#c6f4dfc8'; ctx.lineWidth = width * .58; trace(); ctx.stroke();
       ctx.shadowBlur = 0; ctx.strokeStyle = '#e9f8d7'; ctx.lineWidth = 1.05 + rank * .1; trace(); ctx.stroke();
       for (const side of [-1, 1]) { ctx.globalAlpha *= .52; ctx.shadowBlur = 4; ctx.strokeStyle = qiColor + '99'; ctx.lineWidth = 1 + rank * .1; trace(side * (width * .82)); ctx.stroke(); ctx.globalAlpha /= .52; }
+      // At higher mastery the point strike opens into two widening qi branches,
+      // so each rank changes the silhouette of the technique, not just its stats.
+      if (rank >= 3) {
+        const spread = rank >= 5 ? 25 : 14;
+        for (const side of [-1, 1]) {
+          ctx.save(); ctx.globalAlpha *= rank >= 5 ? .46 : .32; ctx.shadowColor = '#a9e8ce'; ctx.shadowBlur = rank >= 5 ? 9 : 5;
+          ctx.strokeStyle = rank >= 5 ? '#d9edb6aa' : '#a7f0d566'; ctx.lineWidth = rank >= 5 ? 3.2 : 2.1;
+          ctx.beginPath(); ctx.moveTo(2, side * 1.5); ctx.bezierCurveTo(len * .22, side * 4, len * .48, bend(.48) + side * spread, len, bend(1) * .35 + side * spread * .72); ctx.stroke(); ctx.restore();
+        }
+      }
       // Small travelling qi motes give the straight-through hit a visible flow
       // without the repeated hard rings that made this read like a laser.
       for (let i = 0; i < 4; i++) {
@@ -2418,7 +2428,28 @@
       const bloom = ctx.createRadialGradient(len, bend(1, 0), 1, len, bend(1, 0), 10 + rank);
       bloom.addColorStop(0, '#e9f6d9cc'); bloom.addColorStop(.28, qiColor + '88'); bloom.addColorStop(1, qiColor + '00'); ctx.fillStyle = bloom;
       ctx.beginPath(); ctx.arc(len, bend(1, 0), 10 + rank, 0, TAU); ctx.fill();
-      ctx.shadowBlur = 4; ctx.strokeStyle = '#d8f3dfbb'; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.arc(0, 0, 5 + rank * .3, -.8, .8); ctx.stroke();
+      // A readable fingertip seal anchors the ray to the hero, while the far
+      // seal blossoms at the end of the channel. Both pulse with the qi wave.
+      const pulse = .5 + Math.sin(t * TAU * 2.4 + rank * .35) * .5;
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.shadowColor = '#a7f0d5'; ctx.shadowBlur = 8 + rank * 1.5;
+      ctx.strokeStyle = '#dcf4d7'; ctx.lineWidth = 1.4 + rank * .18;
+      ctx.beginPath(); ctx.arc(0, 0, 6 + rank * .65 + pulse * 2.3, -.9 + t * 1.4, .9 + t * 1.4); ctx.stroke();
+      ctx.strokeStyle = '#f2d994cc'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(0, 0, 10 + rank * .8 + pulse * 2.8, Math.PI * .75 - t, Math.PI * 2.22 - t); ctx.stroke();
+      ctx.fillStyle = '#f8f4d7'; drawStarPath(0, 0, 3.5 + rank * .45 + pulse * 1.4, 1.2, 6); ctx.fill();
+      ctx.save(); ctx.translate(len, bend(1, 0)); ctx.rotate(t * 1.7);
+      const sealR = 5 + rank * 1.15 + pulse * 3.5;
+      ctx.strokeStyle = '#e6f4d4'; ctx.lineWidth = 1.25; ctx.beginPath(); ctx.arc(0, 0, sealR, 0, TAU); ctx.stroke();
+      ctx.strokeStyle = '#f2d994bb'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, 0, sealR * .58, -.7, 2.25); ctx.stroke();
+      ctx.fillStyle = '#fff5d7'; drawStarPath(0, 0, 3 + pulse * 2, 1.1, 6); ctx.fill(); ctx.restore();
+      if (rank >= 5) {
+        // Five-fold mastery marks the end of the beam with a rotating eight-point seal.
+        ctx.save(); ctx.translate(len, bend(1, 0)); ctx.rotate(-t * 1.8); ctx.strokeStyle = '#f2d994aa'; ctx.lineWidth = 1.15;
+        ctx.beginPath(); ctx.arc(0, 0, 15 + pulse * 3, 0, TAU); ctx.stroke();
+        for (let i = 0; i < 8; i++) { const ang = i * TAU / 8; ctx.beginPath(); ctx.moveTo(Math.cos(ang) * 10, Math.sin(ang) * 10); ctx.lineTo(Math.cos(ang) * (19 + pulse * 4), Math.sin(ang) * (19 + pulse * 4)); ctx.stroke(); }
+        ctx.restore();
+      }
+      ctx.restore();
     } else if (e.style === 'swordDraw') {
       ctx.translate(14, -16); ctx.shadowColor = color; ctx.shadowBlur = 10;
       ctx.strokeStyle = color; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(8, 21); ctx.quadraticCurveTo(42, 4, 76, -18); ctx.stroke();
